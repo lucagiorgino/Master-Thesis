@@ -41,7 +41,7 @@
 \usepackage[latin1]{inputenc}% IMPORTANTE! usare codifica ISO-8859-1 per le lettere accentate
 
 
-\input{commands.tex}
+\input{other/commands.tex}
 
 \begin{document}
 \selectlanguage{english}
@@ -82,7 +82,7 @@
 %\annoaccademico{1615-1616}% solo con l'opzione classica
 %\annoaccademico{2006-2007}% idem
 %\ciclodidottorato{XV}% per il dottorato
-\logosede{logopolito}
+\logosede{other/logopolito}
 %
 %\chapterbib %solo per vedere che cosa succede; e' preferibile comporre una sola bibliografia
 %\AdvisorName{Supervisors}
@@ -118,9 +118,9 @@
 
 % opzionale, solo se si vuole dedicare la tesi a delle persone care
 \begin{dedica}
-A mio padre
+Ai miei genitori,
 
-\textdagger\ A mio nonno Pino
+\textdagger\ Ai miei nonni
 \end{dedica}
 
 \sommario
@@ -146,11 +146,11 @@ Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente ril
 
 \chapter{Scrivere testi complessi}
 
-\input{latex.tex}
+\input{chapters/2/chapter2.tex}
 
 \chapter{La tesi di laurea magistrale}
 
-\input{magistrale.tex}
+\input{chapters/1/chapter1.tex}
 
 \chapter{Progettazione}
 
@@ -176,7 +176,7 @@ Qui si inseriscono brevi conclusioni sul lavoro svolto, senza ripetere inutilmen
 Si possono evidenziare i punti di forza e quelli di debolezza, nonch� i possibili sviluppi futuri o attivit� da svolgere per migliorare i risultati.
 
 % bibliografia scritta "a mano"
-%\input{biblio.tex}
+%\input{other/biblio.tex}
 
 % se la bibliografia è stata scritta (usando Bibtex) nel file biblio.bib allora commentare la riga precedente e scommentare le due righe seguenti
 \bibliographystyle{torsec}
