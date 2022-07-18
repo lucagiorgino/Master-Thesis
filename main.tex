@@ -45,6 +45,8 @@
 
 \begin{document}
 \selectlanguage{english}
+
+
 \ateneo{Politecnico di Torino}
 
 %%% scegliere la propria facoltà (solo PRIMA dell'AA 2012-2013)
@@ -55,14 +57,14 @@
 
 %\monografia{Gestione informatizzata di un magazzino ricambi}% per la laurea triennale
 \titolo{Self-Sovereign-Identity as a Service}% per la laurea quinquennale e il dottorato
-\sottotitolo{for IoT constrained devices}% NON obbligatorio, per la laurea quinquennale e il dottorato
+\sottotitolo{Computation offloading in TEEs for IoT constrained devices}% NON obbligatorio, per la laurea quinquennale e il dottorato
 
 %%% scegliere il proprio corso
 %
 %\corsodilaurea{Ingegneria dell'Organizzazione d'Impresa}% per la laurea di primo e secondo livello
 %\corsodilaurea{Ingegneria Logistica e della Produzione}% per la laurea di primo e secondo livello
 %\corsodilaurea{Ingegneria Gestionale}% per la laurea di primo e secondo livello
-\corsodilaurea{Ingegneria Informatica}% per la laurea di primo e secondo livello
+\corsodilaurea{Computer Engineering}% per la laurea di primo e secondo livello
 %\corsodidottorato{Meccanica}% per il dottorato
 
 \candidato{Luca \textsc{Giorgino}}% per tutti i percorsi
@@ -74,11 +76,12 @@
 %\terzorelatore{{\tabular{@{}l}dott.\ Neil Armstrong\\prof. Maria Rossi\endtabular}}% per la laurea magistrale
 %\tutore{ing.~Karl Von Braun}% per il dottorato
 \tutoreaziendale{PhD.\ ing.\ Andrea Vesco} % solo per la laurea di secondo livello con tesi svolta in azienda
+%\tutoreaziendale{PhD.\ ing.\ Andrea Vesco\\PhD.\ ing.\ Alberto Carelli} % solo per la laurea di secondo livello con tesi svolta in azienda
 \NomeTutoreAziendale{Supervisore aziendale\\LINKS FOUNDATION}
 %\sedutadilaurea{Ottobre 2022}% per la laurea quinquennale
 %\esamedidottorato{Novembre 1610}% per il dottorato
 %\sedutadilaurea{\textsc{Ottobre} 2022}% per la laurea triennale
-\sedutadilaurea{\textsc{Anno~accademico} 2021-2022}% per la laurea magistrale
+\sedutadilaurea{\textsc{Academic~year} 2021-2022}% per la laurea magistrale
 %\annoaccademico{1615-1616}% solo con l'opzione classica
 %\annoaccademico{2006-2007}% idem
 %\ciclodidottorato{XV}% per il dottorato
@@ -109,6 +112,25 @@
 
 \errorcontextlines=9
 
+\iflanguage{english}{
+  %\retrofrontespizio{This work is subject to the Creative Commons Licence}
+  \DottoratoIn{PhD Course in\space}
+  \CorsoDiLaureaIn{Master degree course in\space}
+  \NomeMonografia{Bachelor Degree Final Work}
+  \TesiDiLaurea{Master Degree Thesis}
+  \NomeDissertazione{PhD Dissertation}
+  \InName{in}
+  \CandidateName{Candidate}
+  \AdvisorName{Supervisor}
+  \TutorName{Tutor}
+  \NomeTutoreAziendale{Internship Tutor\\LINKS FOUNDATION}
+  \CycleName{cycle}
+  \NomePrimoTomo{First volume}
+  \NomeSecondoTomo{Second Volume}
+  \NomeTerzoTomo{Third Volume}
+  \NomeQuartoTomo{Fourth Volume}
+}{}
+
 \frontespizio
 \paginavuota
 \newpage
@@ -118,9 +140,7 @@
 
 % opzionale, solo se si vuole dedicare la tesi a delle persone care
 \begin{dedica}
-Ai miei genitori,
-
-\textdagger\ Ai miei nonni
+Una piccola dedica
 \end{dedica}
 
 \sommario
@@ -144,32 +164,25 @@ Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente ril
 
 \mainmatter
 
-\chapter{Scrivere testi complessi}
-
-\input{chapters/2/chapter2.tex}
-
-\chapter{La tesi di laurea magistrale}
+\chapter{Introduction}
+\chapter{Self-Sovereign-Identity}
 
 \input{chapters/1/chapter1.tex}
 
-\chapter{Progettazione}
+\chapter{SSI as a Service}
 
-Discutere in questo capitolo come � stata progettata la soluzione al problema trattato nella tesi, indicando anche se sono stati valutati vari possibili approcci o soluzioni pre-esistenti e giustificando le proprie scelte. Descrivere quindi la soluzione vera e propria.
+\input{chapters/2/chapter2.tex}
 
-Nel caso sia stato sviluppato del software non triviale, � buona norma dedicargli tre sezioni:
-\begin{itemize}
-\item architettura dell'applicazione (interazioni con gli utenti e con altri sistemi, moduli logici, flussi dati interni ed esterni);
-\item manuale dello sviluppatore (descrizione dei moduli, degli algoritmi, delle interfacce e delle strutture dati);
-\item manuale utente (come installare ed usare il programma, interfacce, comandi, dati in input ed in output).
-\end{itemize}
-Nel caso di software molto voluminoso, queste tre sezioni possono diventare tre capitoli separati.
+\chapter{Solution}
 
-\chapter{Risultati}
+\input{chapters/3/chapter3.tex}
+
+\chapter{Demo design}
 
 Inserire in questo capitolo i risultati conseguiti, cercando di analizzarli -- se possibile -- in modo quantitativo.
 
 
-\chapter{Conclusioni}
+\chapter{Conclusion and future work}
 
 Qui si inseriscono brevi conclusioni sul lavoro svolto, senza ripetere inutilmente il sommario.
 
@@ -179,8 +192,10 @@ Si possono evidenziare i punti di forza e quelli di debolezza, nonch� i possib
 %\input{other/biblio.tex}
 
 % se la bibliografia è stata scritta (usando Bibtex) nel file biblio.bib allora commentare la riga precedente e scommentare le due righe seguenti
-\bibliographystyle{torsec}
-\bibliography{biblio}
+%\bibliographystyle{other/torsec}
+%\bibliography{other/biblio2}
 
-
+\appendix
+\chapter{ST board and server test installation}
+\chapter{Keystone and demo install}
 \end{document}
