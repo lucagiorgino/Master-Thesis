@@ -7,10 +7,10 @@
 % per commentare una riga mettere % al suo inizio
 % per s-commentare una riga (ossia attivarla) togliere il % al suo inizio
 %
-\documentclass[pdfa% formato PDF/A, obbligatorio per l'archiviazione delle tesi di Polito
-,cucitura%lascia margine per la rilegatura
-%,twoside% per stampa fronte-retro (fortemente consigliato per tesi voluminose, opzionale per le altre)
-%,12pt% font più grande (12pt) rispetto a quello normalmente usato (11pt)
+\documentclass[%pdfa% formato PDF/A, obbligatorio per l'archiviazione delle tesi di Polito
+%,cucitura%lascia margine per la rilegatura
+,twoside% per stampa fronte-retro (fortemente consigliato per tesi voluminose, opzionale per le altre)
+%,12pt% font pi? grande (12pt) rispetto a quello normalmente usato (11pt)
 ]{toptesi}
 %
 \usepackage{hyperref}
@@ -49,7 +49,7 @@
 
 \ateneo{Politecnico di Torino}
 
-%%% scegliere la propria facoltà (solo PRIMA dell'AA 2012-2013)
+%%% scegliere la propria facolt? (solo PRIMA dell'AA 2012-2013)
 %
 %\facolta[III]{Ingegneria dell'Informazione}
 %\facolta[IV]{Organizzazione d'Impresa\\e Ingegneria Gestionale}
@@ -75,9 +75,9 @@
 %\secondorelatore{dipl.~ing.~Werner von Braun}% per la laurea magistrale
 %\terzorelatore{{\tabular{@{}l}dott.\ Neil Armstrong\\prof. Maria Rossi\endtabular}}% per la laurea magistrale
 %\tutore{ing.~Karl Von Braun}% per il dottorato
-\tutoreaziendale{PhD.\ ing.\ Andrea Vesco} % solo per la laurea di secondo livello con tesi svolta in azienda
-%\tutoreaziendale{PhD.\ ing.\ Andrea Vesco\\PhD.\ ing.\ Alberto Carelli} % solo per la laurea di secondo livello con tesi svolta in azienda
-\NomeTutoreAziendale{Supervisore aziendale\\LINKS FOUNDATION}
+%\tutoreaziendale{PhD.\ ing.\ Andrea Vesco} % solo per la laurea di secondo livello con tesi svolta in azienda
+\tutoreaziendale{PhD.\ ing.\ Andrea Vesco\\PhD.\ ing.\ Alberto Carelli} % solo per la laurea di secondo livello con tesi svolta in azienda
+% \NomeTutoreAziendale{Supervisore aziendale\\LINKS FOUNDATION}
 %\sedutadilaurea{Ottobre 2022}% per la laurea quinquennale
 %\esamedidottorato{Novembre 1610}% per il dottorato
 %\sedutadilaurea{\textsc{Ottobre} 2022}% per la laurea triennale
@@ -104,7 +104,7 @@
 
 %
 % per numerare e far comparire nell'indice anche le sezioni di quarto livello
-% SCONSIGLIATO! da usarsi solo in caso di estrema necessità
+% SCONSIGLIATO! da usarsi solo in caso di estrema necessit?
 %\setcounter{secnumdepth}{4}% section-numbering-depth
 %\setcounter{tocdepth}{4}% TOC-numbering-depth (TOC=Table-Of-Content)
 
@@ -123,7 +123,7 @@
   \CandidateName{Candidate}
   \AdvisorName{Supervisor}
   \TutorName{Tutor}
-  \NomeTutoreAziendale{Internship Tutor\\LINKS FOUNDATION}
+  \NomeTutoreAziendale{Tutor\\LINKS FOUNDATION}
   \CycleName{cycle}
   \NomePrimoTomo{First volume}
   \NomeSecondoTomo{Second Volume}
@@ -151,10 +151,21 @@ Inserire qui un breve sommario della tesi.
 
 Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente rilevante.
 
-%% inserire sempre nella tesi per la laurea di I livello, perch� il nome dei tutori non � indicato sul frontespizio.
-%Il lavoro descritto in questa monografia � stato svolto sotto la supervisione
+% Questo lavoro non sarebbe stato possibile senza la supervisione ed i consigli dei miei relatori, il
+% Prof. Antonio Lioy e il Prof. Andrea Atzeni.
+% Vorrei ringraziare inoltre l?assistente di laboratorio e ricercatore Ignazio Pedone per avermi
+% concesso l?utilizzo di una macchina virtuale del Politecnico di Torino al fine di rendere disponibile
+% al pubblico il gioco realizzato.
+% Ringrazio la mia famiglia, che mi ha supportato lungo tutto il percorso universitario, anche
+% nei momenti pi`u difficili. Ringrazio in particolare mio padre Ezio e mia madre Paola che mi hanno
+% permesso di studiare al Politecnico di Torino.
+% Infine un ringraziamento speciale va a Chiara, che mi ha sempre mostrato il suo supporto e il
+% suo amore in questi anni di studio
+
+%% inserire sempre nella tesi per la laurea di I livello, perch? il nome dei tutori non ? indicato sul frontespizio.
+%Il lavoro descritto in questa monografia ? stato svolto sotto la supervisione
 %del Prof. Antonio Lioy (tutore accademico)% inserire sempre il nome del tutore accademico
-% e dell'Ing. Mario Rossi (tutore aziendale)% inserire solo se la monografia � relativa ad un tirocinio.
+% e dell'Ing. Mario Rossi (tutore aziendale)% inserire solo se la monografia ? relativa ad un tirocinio.
 %.
 
 %\tablespagetrue % normalmente questa riga non serve ed e' commentata
@@ -165,7 +176,7 @@ Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente ril
 \mainmatter
 
 \chapter{Introduction}
-\chapter{Self-Sovereign-Identity}
+\chapter{Background and related work}
 
 \input{chapters/1/chapter1.tex}
 
@@ -173,27 +184,25 @@ Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente ril
 
 \input{chapters/2/chapter2.tex}
 
-\chapter{Solution}
+\chapter{Design and Implementation}
 
 \input{chapters/3/chapter3.tex}
 
-\chapter{Demo design}
-
-Inserire in questo capitolo i risultati conseguiti, cercando di analizzarli -- se possibile -- in modo quantitativo.
+\chapter{Setup, test and result analysis}
 
 
 \chapter{Conclusion and future work}
 
 Qui si inseriscono brevi conclusioni sul lavoro svolto, senza ripetere inutilmente il sommario.
 
-Si possono evidenziare i punti di forza e quelli di debolezza, nonch� i possibili sviluppi futuri o attivit� da svolgere per migliorare i risultati.
+Si possono evidenziare i punti di forza e quelli di debolezza, nonch? i possibili sviluppi futuri o attivit? da svolgere per migliorare i risultati.
 
 % bibliografia scritta "a mano"
 %\input{other/biblio.tex}
 
-% se la bibliografia è stata scritta (usando Bibtex) nel file biblio.bib allora commentare la riga precedente e scommentare le due righe seguenti
-%\bibliographystyle{other/torsec}
-%\bibliography{other/biblio2}
+% se la bibliografia ? stata scritta (usando Bibtex) nel file biblio.bib allora commentare la riga precedente e scommentare le due righe seguenti
+\bibliographystyle{other/torsec}
+\bibliography{other/biblio2}
 
 \appendix
 \chapter{ST board and server test installation}
