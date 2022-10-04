@@ -39,9 +39,16 @@
 % solo caratteri a 7 bit (ASCII) nei file d'entrata.
 %
 \usepackage[latin1]{inputenc}% IMPORTANTE! usare codifica ISO-8859-1 per le lettere accentate
-
+% \usepackage[outputdir=out,cache=false]{minted}
 
 \input{other/commands.tex}
+\usepackage{cryptocode}
+\usepackage{listings}
+\usepackage{svg}
+% modificare il path di inkscape nel caso di errori
+\setsvg{inkscape={"C:/Program Files/Inkscape/bin/inkscape.com"}}
+\svgpath{{chapters/images}}
+\usepackage{xcolor}
 
 \begin{document}
 \selectlanguage{english}
@@ -57,7 +64,7 @@
 
 %\monografia{Gestione informatizzata di un magazzino ricambi}% per la laurea triennale
 \titolo{Self-Sovereign-Identity as a Service}% per la laurea quinquennale e il dottorato
-\sottotitolo{Computation offloading in TEEs for IoT constrained devices}% NON obbligatorio, per la laurea quinquennale e il dottorato
+\sottotitolo{Trusted Computation Offloading for IoT constrained devices}% NON obbligatorio, per la laurea quinquennale e il dottorato
 
 %%% scegliere il proprio corso
 %
@@ -178,18 +185,15 @@ Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente ril
 \chapter{Introduction}
 \chapter{Background and related work}
 
-\input{chapters/1/chapter1.tex}
-
-\chapter{SSI as a Service}
-
-\input{chapters/2/chapter2.tex}
+\input{chapters/chapter1.tex}
 
 \chapter{Design and Implementation}
 
-\input{chapters/3/chapter3.tex}
+\input{chapters/chapter2.tex}
 
 \chapter{Setup, test and result analysis}
 
+\input{chapters/chapter3.tex}
 
 \chapter{Conclusion and future work}
 
@@ -202,9 +206,12 @@ Si possono evidenziare i punti di forza e quelli di debolezza, nonch? i possibil
 
 % se la bibliografia ? stata scritta (usando Bibtex) nel file biblio.bib allora commentare la riga precedente e scommentare le due righe seguenti
 \bibliographystyle{other/torsec}
-\bibliography{other/biblio2}
+\bibliography{other/biblio}
 
 \appendix
-\chapter{ST board and server test installation}
-\chapter{Keystone and demo install}
+\chapter{User Manual}
+\input{chapters/a.tex}
+\chapter{Developer manual}
+\input{chapters/b.tex}
+  
 \end{document}
