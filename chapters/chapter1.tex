@@ -1,9 +1,9 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-This chapter provides an overview of Self-Sovereign-Identity (SSI) and Keystone Enclave.
+This chapter provides an overview of the Self-Sovereign-Identity ecosystem and Keystone Enclave framework.
 
-\section{Self-Sovereign-Identity }
+\section{Self-Sovereign-Identity}
 Self-Sovereign Identity (SSI) \cite{tobin2016inevitable} is a new model for digital identity. In the SSI ecosystem, a user can fully control his own identity and use it between any service. SSI is different from today's digital identities: it is anchored to distributed ledgers so is not controlled by any centralized services.
 One SSI innovation is the design and development of a common set of specifications: 
 Decentralized Identifiers (DIDs) \cite{didW3C} and Verifiable Credentials (VCs) \cite{vcW3C}, by doing this a user identity can be anchored to different distributed ledgers but it will be defined in the same standard way.
@@ -30,7 +30,7 @@ Specifically, a DID is a simple text string, as shown in the figure \ref{didExam
     \label{didExample}
 \end{figure}
 
-A DID resolves to a DID document, a DID document contains information about a DID subject and cryptographic material that will be used to prove control of that DID. DID documents can be rapresented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format, as can be seen in the listing \ref{didDocExample}. Only the controller of the DID has the right to make changes to the related DID document. 
+A DID resolves to a DID document, a DID document contains information about a DID subject and cryptographic material that will be used to prove control of that DID. DID documents can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format, as can be seen in the listing \ref{didDocExample}. Only the controller of the DID has the right to make changes to the related DID document. 
 
 DIDs are generally stored in some underlying system or network for resolution to DID documents. A verifiable data registry is a system that enables the recording of DIDs and the return of the data required to produce DID documents. Distributed ledgers, decentralized file systems, all types of databases, peer-to-peer networks, and other trusted data storage methods are some examples.
 
@@ -62,7 +62,92 @@ A DID URL expands the syntax of a DID with other standard components of URI such
 \end{figure}
 
 \subsection{Verifiable Credentials}
-VCs is pre
+Verifiable Credential \cite{vcW3C} provides a standard method to express credentials on the internet in a way that is cryptographically safe, privacy-respecting, and machine-verifiable.
+In our daily lives a credential could consist of:
+\begin{itemize}
+    \item information related to identifying the subject of the credential (for example, a photo, name, or identification number)
+    \item information related to the issuing authority (for example, a city government or a university)
+    \item information related to the type of credential this is (for example, a passport or a driving license)
+    \item information related to specific attributes or properties being asserted by the issuing authority about the subject (for example, nationality, the classes of vehicle entitled to drive, or date of birth)
+    \item information related to constraints on the credential (such as expiration date, or terms of use). 
+\end{itemize}
+
+In verifiable credentials, the inclusion of digital signatures makes them more trustworthy and more tamper-evident against physical credentials allowing third-party verified machine-readable personal information usable on the Web for receiving services and benefits as in the physical world \cite{vcW3C}.
+
+\subsubsection*{Overview}
+
+Distinct actors can be identified in the verifiable credentials ecosystem, which defines the roles and the relationships between them. The separation of roles allows the standardization of interfaces and protocols. In detail the existing entities that determine the \textit{trust triangle} \cite{trustOverIP} are: 
+
+\begin{itemize}
+    \item \textit{holder}: his role is to request, possess or use verifiable credentials. Example holders include students, employees, and customers.
+    \item \textit{issuer}: his role is to create a verifiable credential and provide that to a holder by asserting claims about one or more subjects. For example, an issuer is a government. 
+    \item \textit{verifier}: his role is to process verifiable credentials provided by holders. Example verifiers are whoever provides a service. 
+\end{itemize}
+
+
+
+\begin{figure}[h!]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.70]{./chapters/images/vc-ecosystem.svg}
+    \caption{The roles and information flows of Verifiable Credential \cite{vcW3C}.}
+    \label{vcEcosystem}
+\end{figure}
+
+Verifiable credentials and verifiable presentations can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format as can be seen in listings \ref{vcExample} and \ref{vpExample}. 
+
+\begin{lstlisting}[caption={A simple example of a verifiable credential \cite{vcW3C}.},captionpos=b,style=json, label={vcExample},breaklines=true]
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/2018/credentials/examples/v1"
+    ],
+    "id": "http://example.edu/credentials/1872",
+    "type": ["VerifiableCredential", "AlumniCredential"],
+    "issuer": "https://example.edu/issuers/565049",
+    "issuanceDate": "2010-01-01T19:23:24Z",
+    "credentialSubject": {
+        "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+        "alumniOf": {
+            "id": "did:example:c276e12ec21ebfeb1f712ebc6f1",
+            "name": [{
+                "value": "Example University",
+                "lang": "en"
+            }]
+        }
+    },    
+    "proof": {
+        "type": "RsaSignature2018",
+        "created": "2017-06-18T21:19:10Z",
+        "proofPurpose": "assertionMethod",
+        "verificationMethod": "https://example.edu/issuers/565049#key-1",
+        "proofValue": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0..."
+        }
+}
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption={A simple example of a verifiable presentation \cite{vcW3C}.},captionpos=b,style=json, label={vpExample},breaklines=true]
+    {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://www.w3.org/2018/credentials/examples/v1"
+        ],
+        "type": "VerifiablePresentation",
+        "verifiableCredential": [{
+            ...
+        }],
+        "proof": {
+          "type": "RsaSignature2018",
+          "created": "2018-09-14T21:19:10Z",
+          "proofPurpose": "authentication",
+          "verificationMethod": "did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1",
+          "challenge": "1f44d55f-f161-4938-a659-f8026467f126",
+          "domain": "4jt78h47fh47",
+          "proofValue": "Qy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78..."
+        }
+      }   
+\end{lstlisting}
+    
 
 \subsection{Distributed Ledgers Technologies}
 
@@ -79,9 +164,19 @@ Trusted applications running on TEE have access to the full capabilities of a de
 %aggiungere definizione di enclave, tcb?
 The two most common TEE implementations at the moment are ARM TrustZone and Intel SGX. All these TEEs make design decisions based on either the target applications or threat models and these choices are fixed since they are strictly hardware related. They were not designed to have flexibility or extensibility for enclave developers.  If the hardware changes or has a new feature, the enclave developer has to redesign the TEE.
 All TEE platforms aim to reduce the enclave's TCB, yet they have managed to achieve different degrees of success. Additionally, closed-source hardware and microcode implementations make it impossible for a third party to evaluate the security of TEEs.
+
+
+
 \textbf{Customizable TEE} is the solution to these problems. It has been designed to be flexible, configurable and to have a small TCB. It has been developed with clear abstractions and a modular programming model which simplifies for others to extend and add features to the TEE. A customizable TEE is Keystone.
 \cite{lee2020keystone} 
 \subsection{Keystone overview}
 Keystone \cite{lee2020keystone} is an open-source framework for creating RISC-V hardware-based Trusted Execution Environments (TEEs) that are adaptable for use on a variety of platforms. Keystone offers security primitives that can be joined together via the software framework rather than creating a single instance of TEE hardware. The TEE can be modified by the creator of the enclave and the platform provider to suit their threat models or platform configurations. The Keystone project offers a general and formally proven interface for a variety of devices to create an open standard for TEEs. Every piece of hardware could, in our opinion, have a secure TEE at practically no extra cost.
+
+\begin{figure}[h!]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.40]{./chapters/images/TEE-keystone-vs-x86.svg}
+    \caption{architecture differences between x86 and keystone}
+    \label{keystone-vs-x86}
+\end{figure}
 \subsubsection{Security Monitor}
 \subsubsection{Runtime}
