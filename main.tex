@@ -7,10 +7,10 @@
 % per commentare una riga mettere % al suo inizio
 % per s-commentare una riga (ossia attivarla) togliere il % al suo inizio
 %
-\documentclass[%pdfa% formato PDF/A, obbligatorio per l'archiviazione delle tesi di Polito
+\documentclass[pdfa% formato PDF/A, obbligatorio per l'archiviazione delle tesi di Polito
 %,cucitura%lascia margine per la rilegatura
 ,twoside% per stampa fronte-retro (fortemente consigliato per tesi voluminose, opzionale per le altre)
-%,12pt% font pi? grande (12pt) rispetto a quello normalmente usato (11pt)
+,12pt% font pi? grande (12pt) rispetto a quello normalmente usato (11pt)
 ]{toptesi}
 %
 \usepackage{hyperref}
@@ -48,8 +48,14 @@
 % modificare il path di inkscape nel caso di errori
 \setsvg{inkscape={"C:/Program Files/Inkscape/bin/inkscape.com"}}
 \svgpath{{chapters/images}}
-\usepackage{xcolor}
 
+\usepackage{xcolor}
+\lstdefinestyle{json}{
+  string=[s]{"}{"},
+  stringstyle=\color{blue},
+  comment=[l]{:},
+  commentstyle=\color{black},
+}
 \begin{document}
 \selectlanguage{english}
 
@@ -146,28 +152,19 @@
 \advance\textheight 30mm
 
 % opzionale, solo se si vuole dedicare la tesi a delle persone care
-\begin{dedica}
-Una piccola dedica
-\end{dedica}
+% \begin{dedica}
+% To my parents
+% \end{dedica}
 
 \sommario
+
+todo
 
 Inserire qui un breve sommario della tesi.
 
 \ringraziamenti
 
-Opzionali, solo nel caso si sia ricevuto un aiuto speciale e particolarmente rilevante.
-
-% Questo lavoro non sarebbe stato possibile senza la supervisione ed i consigli dei miei relatori, il
-% Prof. Antonio Lioy e il Prof. Andrea Atzeni.
-% Vorrei ringraziare inoltre l?assistente di laboratorio e ricercatore Ignazio Pedone per avermi
-% concesso l?utilizzo di una macchina virtuale del Politecnico di Torino al fine di rendere disponibile
-% al pubblico il gioco realizzato.
-% Ringrazio la mia famiglia, che mi ha supportato lungo tutto il percorso universitario, anche
-% nei momenti pi`u difficili. Ringrazio in particolare mio padre Ezio e mia madre Paola che mi hanno
-% permesso di studiare al Politecnico di Torino.
-% Infine un ringraziamento speciale va a Chiara, che mi ha sempre mostrato il suo supporto e il
-% suo amore in questi anni di studio
+todo
 
 %% inserire sempre nella tesi per la laurea di I livello, perch? il nome dei tutori non ? indicato sul frontespizio.
 %Il lavoro descritto in questa monografia ? stato svolto sotto la supervisione
