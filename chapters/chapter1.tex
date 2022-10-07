@@ -37,7 +37,7 @@ DIDs are generally stored in some underlying system or network for resolution to
 The operations to create, resolve, update, and deactivate a DID and the related DID document are defined by DID methods and their specifications, which are generally coupled with a distinct verifiable data registry \cite{didW3C}. 
 A DID URL expands the syntax of a DID with other standard components of URI such as path, query, and fragment to find a specific resource, such as a cryptographic public key in a DID document or a resource outside the DID document.
 
-\begin{lstlisting}[caption={Example of a simple DID document from \cite{didW3C}.},captionpos=b,style=json, label={didDocExample}]
+\begin{lstlisting}[caption={Example of a simple DID document from \cite{didW3C}.},captionpos=b,style=json, label={didDocExample},frame=single]
 {
     "@context": [
         "https://www.w3.org/ns/did/v1",
@@ -84,8 +84,6 @@ Distinct actors can be identified in the verifiable credentials ecosystem, which
     \item \textit{verifier}: his role is to process verifiable credentials provided by holders. Example verifiers are whoever provides a service. 
 \end{itemize}
 
-
-
 \begin{figure}[h!]
     \centering
     \includesvg[inkscapelatex=false, scale=0.70]{./chapters/images/vc-ecosystem.svg}
@@ -95,7 +93,7 @@ Distinct actors can be identified in the verifiable credentials ecosystem, which
 
 Verifiable credentials and verifiable presentations can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format as can be seen in listings \ref{vcExample} and \ref{vpExample}. 
 
-\begin{lstlisting}[caption={A simple example of a verifiable credential \cite{vcW3C}.},captionpos=b,style=json, label={vcExample},breaklines=true]
+\begin{lstlisting}[caption={A simple example of a verifiable credential \cite{vcW3C}.},captionpos=b,style=json, label={vcExample},breaklines=true,frame=single]
 {
     "@context": [
         "https://www.w3.org/2018/credentials/v1",
@@ -120,13 +118,12 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
         "created": "2017-06-18T21:19:10Z",
         "proofPurpose": "assertionMethod",
         "verificationMethod": "https://example.edu/issuers/565049#key-1",
-        "proofValue": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0..."
+        "proofValue": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsI..."
         }
 }
 \end{lstlisting}
 
-
-\begin{lstlisting}[caption={A simple example of a verifiable presentation \cite{vcW3C}.},captionpos=b,style=json, label={vpExample},breaklines=true]
+\begin{lstlisting}[caption={A simple example of a verifiable presentation \cite{vcW3C}.},captionpos=b,style=json, label={vpExample},breaklines=true,frame=single]
     {
         "@context": [
           "https://www.w3.org/2018/credentials/v1",
@@ -143,13 +140,24 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
           "verificationMethod": "did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1",
           "challenge": "1f44d55f-f161-4938-a659-f8026467f126",
           "domain": "4jt78h47fh47",
-          "proofValue": "Qy72IFLN25DYuNzVBAh4vGHSrQyHUGlcTwLtjPAnKb78..."
+          "proofValue": "Qy72IFLN25DYuNzVBAh4vGHSrQyHUGlc..."
         }
       }   
 \end{lstlisting}
-    
 
 \subsection{Distributed Ledgers Technologies}
+
+Distributed Ledger Technology (DLT)  is a new paradigm for collecting and sharing information between people. A distributed ledger is a database that is spread across several nodes or computing devices. An exact copy of the ledger is replicated and stored on each node. The revolutionary aspect of distributed ledger technology is that no single administrator or central authority is responsible for maintaining the ledger. Each network's participant node keeps its state updated by constructing and recording updates to the ledger independently. The nodes then vote on these adjustments to ensure that the majority agrees with the conclusion reached. This voting and agreement on the state of the ledger is called consensus and is conducted automatically via a consensus algorithm \cite{dlt-intro-1}. 
+The following criteria can be used to categorize DLTs: data structures, consensus algorithms, permissions, mining accessibility and so on. The main data structure types are blockchains and Directed Acyclic Graphs (DAGs). Although blockchains are the most popular and well-known DLT type,  DLTs based on Directed Acyclic Graph (DAG) data structures are becoming more popular because they reduce transaction data size and transaction fees, and increase transaction speeds \cite{dlt-intro-2}.
+
+An Example of DAG DLT is the \textit{tangle} of IOTA \cite{popov2018tangle}, a cryptocurrency for the Internet-of-Things (IoT) industry.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=10cm]{./chapters/images/tangle.png}
+    \caption{Visualizations of the IOTA tangle \cite{popov2018tangle}.}
+    \label{tangleFigure}
+\end{figure}
 
 
 \section{Keystone Enclave}
