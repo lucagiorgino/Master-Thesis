@@ -13,7 +13,10 @@
 ,12pt% font pi? grande (12pt) rispetto a quello normalmente usato (11pt)
 ]{toptesi}
 %
-\usepackage{hyperref}
+\usepackage{url}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref}
+\def\UrlBreaks{\do\/\do-}
 \hypersetup{%
     pdfpagemode={UseOutlines},
     bookmarksopen,
@@ -43,12 +46,14 @@
 
 \input{other/commands.tex}
 \usepackage{cryptocode}
-\usepackage{listings}
 \usepackage{svg}
+\usepackage{plantuml}
 % modificare il path di inkscape nel caso di errori
 \setsvg{inkscape={"C:/Program Files/Inkscape/bin/inkscape.com"}}
 \svgpath{{chapters/images}}
 
+\usepackage{booktabs}
+\usepackage{fontawesome}
 \usepackage{multicol}
 \usepackage{xcolor}
 \lstdefinestyle{json}{
@@ -57,6 +62,7 @@
   comment=[l]{:},
   commentstyle=\color{black},
 }
+
 \begin{document}
 \selectlanguage{english}
 
@@ -71,7 +77,7 @@
 
 %\monografia{Gestione informatizzata di un magazzino ricambi}% per la laurea triennale
 \titolo{Self-Sovereign-Identity as a Service}% per la laurea quinquennale e il dottorato
-\sottotitolo{Trusted Computation Offloading for IoT constrained devices}% NON obbligatorio, per la laurea quinquennale e il dottorato
+\sottotitolo{Trusted computation offloading for IoT constrained devices}% NON obbligatorio, per la laurea quinquennale e il dottorato
 
 %%% scegliere il proprio corso
 %
@@ -161,7 +167,8 @@
 
 todo
 
-Inserire qui un breve sommario della tesi.
+Design and develop an edge device capable to support a constrained device to create and
+manage its own self-sovereign-identity
 
 \ringraziamenti
 
