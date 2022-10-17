@@ -15,16 +15,36 @@ Customizable TEE is the solution to these problems. It has been designed to be f
 Keystone offers security primitives that can be joined together via the software framework rather than creating a single instance of TEE hardware. The TEE can be modified by the creator of the enclave and the platform provider to suit their threat models or platform configurations. The Keystone project offers a general and formally proven interface for a variety of devices to create an open standard for TEEs. 
 
 \subsection{RISC-V Background}
+RISC-V offers several advantages, apart from being open-source, security-oriented primitives have been added that provide efficient isolation, the most notable being Physical Memory Protection (PMP). RISC-V is an evolving and community-driven Instruction Set Architecture (ISA). Keystone can be designed and developed using standard features and the ever-growing world of RISC-V gives Keystone a wide variety of potential platforms and different deployment scenarios to which it can adapt to. \cite{keysyone-blog-2}
 
-\subsection{Keystone overview}
-
-
+\subsubsection{RISC-V Privilieged ISA}
+RISC-V \cite{risc-v-spec} has three software privilege levels (in increasing order of capability): user mode (U-mode), supervisor mode (S-mode), and machine mode (M-mode). Only one of the privilege modes can be active on the processor at once.
+The active privilege level determines what the software can do while it is running. These are typical applications for each level of privilege:
+\begin{itemize}
+    \item U-mode: user processes 
+    \item S-mode: kernel (including kernel modules and device drivers) or hypervisor
+    \item M-mode: bootloader and firmware
+\end{itemize}
+When the processor is in the highest privilege mode, M-mode, it is in control of all physical resources and interrupts. As with microcode in Complex Instruction Set Computer (CISC) ISAs (such as x86), M-mode is not interruptible and not affected by the interference of lower modes. M-mode is used in Keystone for executing the TCB of the system, the \textit{security monitor} (SM).
 \begin{figure}[h!]
     \centering
     \includesvg[inkscapelatex=false, scale=0.40]{./chapters/images/TEE-keystone-vs-x86.svg}
     \caption{Architecture differences between x86 and keystone}
     \label{keystone-vs-x86}
 \end{figure}
+The following are some advantages of utilizing an M-mode software as the TCB:
+\begin{itemize}
+    \item Programmability: unlike microcode for x86, in RISC-V M-mode software can be written using already existing toolchains and programming languages, such as C. 
+    \item Agile Patching: since the TCB is purely software, bugs or vulnerabilities can be patched without the need for updates that are specific to particular hardware. 
+    \item Verifiability: compared to hardware, the software is generally simpler to formally verify.
+\end{itemize}
+
+\subsubsection{Physical Memory Protection}
+
+\subsection{Keystone overview}
+
+
+
 
 \begin{figure}[h!]
     \centering

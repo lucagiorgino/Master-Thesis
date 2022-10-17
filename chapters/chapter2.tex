@@ -42,7 +42,7 @@ To understand how much critical these operations are on a constrained device it 
 As a constrained device a board with STM32L4S5 MCU @ 120 MHz has been used, while as a non-constrained device, which has also been called \textit{edge device}, has been used a server with an Intel Xeon Silver 4110 CPU @ 2.10GHz. As a library that implements the operation for key generation and signature (generation and verification), Mbed TLS has been used. \textit{Mbed TLS} is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library which implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
 
 \subsubsection*{Results}
-It is apparent from the table \ref{time-table1} that RSA is unusable on constrained devices in real-life applications because the   Note the time differences between an MCU and a CPU and their frequency of operation
+It is apparent from the table \ref{time-table1} that RSA is unusable on constrained devices in real-life applications because the ... [da continuare]  
 
 \begin{table}[!h]
     \centering
@@ -89,7 +89,7 @@ It is apparent from the table \ref{time-table1} that RSA is unusable on constrai
 \end{table}
     
 
-\faEye\enspace Note the order of magnitude of the percentage increase
+\faEye\enspace Note the order of magnitude of the percentage increase, the time differences between an MCU and a CPU and their frequency of operation
 
 \subsection{Design}
 
