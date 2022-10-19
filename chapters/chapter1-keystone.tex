@@ -10,7 +10,7 @@ Trusted applications running on TEE have access to the full capabilities of a de
 The two most common TEE implementations at the moment are ARM TrustZone and Intel SGX. All these TEEs make design decisions based on either the target applications or threat models and these choices are fixed since they are strictly hardware related. They were not designed to have flexibility or extensibility for enclave developers.  If the hardware changes or has a new feature, the enclave developer has to redesign the TEE.
 All TEE platforms aim to reduce the enclave's Trusted computing Base, yet they have managed to achieve different degrees of success \cite{keysyone-blog-1}. The Trusted Computing Base (TCB) is a section of the system, it could include hardware, firmware and software, which is responsible for enforcing the security policy of the system \cite{tcb-def}. Additionally, closed-source hardware and microcode implementations make it impossible for a third party to evaluate the security of TEEs.
 
-\subsection{Customizable Trusted Execution Environment}
+\subsubsection{Customizable Trusted Execution Environment}
 Customizable TEE is the solution to these problems. It has been designed to be flexible, and configurable and to have a small TCB. It has been designed with clear abstractions and a modular programming model which simplifies for others to extend and add features to the TEE. A customizable TEE is Keystone \cite{lee2020keystone}. Three logical actors, such as the manufacturer (who makes the hardware), the platform provider (runs the hardware, such as a cloud provider), and the enclave developer (who writes software that runs in the enclaves), were identified by keystone developers as being a part of the customizable TEE ecosystem. In a customizable TEE, as opposed to a standard TEE, decisions made by all 3 actors together determine the security guarantees offered and the functionalities enabled \cite{keysyone-blog-1}. 
 Keystone offers security primitives that can be joined together via the software framework rather than creating a single instance of TEE hardware. The TEE can be modified by the creator of the enclave and the platform provider to suit their threat models or platform configurations. The Keystone project offers a general and formally proven interface for a variety of devices to create an open standard for TEEs. 
 
@@ -34,17 +34,18 @@ When the processor is in the highest privilege mode, M-mode, it is in control of
 \end{figure}
 The following are some advantages of utilizing an M-mode software as the TCB:
 \begin{itemize}
-    \item Programmability: unlike microcode for x86, in RISC-V M-mode software can be written using already existing toolchains and programming languages, such as C. 
-    \item Agile Patching: since the TCB is purely software, bugs or vulnerabilities can be patched without the need for updates that are specific to particular hardware. 
-    \item Verifiability: compared to hardware, the software is generally simpler to formally verify.
+    \item Programmability: unlike microcode for x86, in RISC-V M-mode software can be written using pre-existing toolchains and programming languages, such as C. 
+    \item Agile Patching: since the TCB is purely software, bugs or vulnerabilities can be patched without updates, which are specific to a particular hardware 
+    \item Verifiability: compared to hardware, the software is generally simpler to be formally verified.
 \end{itemize}
 
 \subsubsection{Physical Memory Protection}
+Physical Memory Protection (PMP) is a strong standard primitive that enables M-mode to control the access to physical memory from lower privileges modes. Keystone requires PMP to implement memory isolation of enclaves.
+Only software in M-mode can configure the PMP, which is controlled by a series of control and status registers (CSR) that limit physical memory access to the U-mode and S-mode. Depending on the platform design, PMP entries number can change. 
+Since PMP exclusively works on physical addresses, S-mode can continue to support virtual addresses without affecting the security of the system. Even though each processor may implement PMP differently in hardware, the basic guarantees are part of the standard. PMP is used by Keystone Security Monitor to create memory isolation.
 
 \subsection{Keystone overview}
-
-
-
+A Keystone-capable system is made up of different modules operating in various privilege modes as shown in figure \ref{keystoneComponents}.
 
 \begin{figure}[h!]
     \centering
@@ -52,5 +53,11 @@ The following are some advantages of utilizing an M-mode software as the TCB:
     \caption{Keystone system with host processes, untrusted OS, security monitor, and multiple enclaves (each with runtime and eapp) \cite{lee2020keystone}.}
     \label{keystoneComponents}
 \end{figure}
+\subsubsection{Trusted Hardware}
+Trusted Hardware is a CPU package built by an honest manufacturer that must enclose standard RISC-V cores that are Keystone compatible and a root of trust. Optional features on the hardware could also include memory encryption, cache partitioning, a cryptographically safe source of randomness, etc. Platform-specific plug-ins are needed by the Security Monitor to support optional features.
 \subsubsection{Security Monitor}
+Security Monitor (SM) is an M-mode software developed to be a small TCB. The SM serves as an interface for managing the enclave's lifecycle and utilising platform-specific features. The SM manages the isolation boundary between the enclaves and the untrusted OS, therefore it implements the majority of Keystone's security guarantees.
 \subsubsection{Runtime}
+Runtime is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
+\subsubsection{Enclave}
+An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone.
