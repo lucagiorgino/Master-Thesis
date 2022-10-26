@@ -56,8 +56,23 @@ A Keystone-capable system is made up of different modules operating in various p
 \subsubsection{Trusted Hardware}
 Trusted Hardware is a CPU package built by an honest manufacturer that must enclose standard RISC-V cores that are Keystone compatible and a root of trust. Optional features on the hardware could also include memory encryption, cache partitioning, a cryptographically safe source of randomness, etc. Platform-specific plug-ins are needed by the Security Monitor to support optional features.
 \subsubsection{Security Monitor}
-Security Monitor (SM) is an M-mode software developed to be a small TCB. The SM serves as an interface for managing the enclave's lifecycle and utilising platform-specific features. The SM manages the isolation boundary between the enclaves and the untrusted OS, therefore it implements the majority of Keystone's security guarantees.
+Security Monitor (SM) is a trusted software that runs in M-mode and works as the small trusted computing base (TCB) in the Keystone system. Before the security monitor can be considered trusted, first it must be verified by the hardware root of trust. After the root of trust measures the SM, it generates a keypair for remote attestation, signs the public key, and then continues booting. The SM manages the isolation boundary between the enclaves and the untrusted OS, therefore it implements the majority of Keystone's security guarantees.  It serves as an interface for managing the enclave's lifecycle and utilising platform-specific features. The OS and enclaves may call SM functions using the Supervisor Binary Interface (SBI). Specifically, the SM provides the following functionality:
+\begin{itemize}
+    \item \textbf{Memory Isolation using RISC-V PMP}
+        In Keystone, developers refer to the memory section that an enclave uses as a region and each region is defined by a PMP entry.
+
+    \item Remote Attestation (signatures and measurement)
+    \item And other features, such as System PMP Synchronization, Enclave Thread Management and Side-Channel Defenses  
+\end{itemize}
+
 \subsubsection{Runtime}
 Runtime is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
 \subsubsection{Enclave}
-An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone.
+An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone. The enclaave lifecycle can be seen in figure \ref{enclave-lifecycle}. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.45]{./chapters/images/Enclave lifecycle.png}
+    \caption{Enclave Lifecycle \cite{keystone-doc}.}
+    \label{enclave-lifecycle}
+\end{figure}

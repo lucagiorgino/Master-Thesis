@@ -96,7 +96,7 @@
 %\terzorelatore{{\tabular{@{}l}dott.\ Neil Armstrong\\prof. Maria Rossi\endtabular}}% per la laurea magistrale
 %\tutore{ing.~Karl Von Braun}% per il dottorato
 %\tutoreaziendale{PhD.\ ing.\ Andrea Vesco} % solo per la laurea di secondo livello con tesi svolta in azienda
-\tutoreaziendale{PhD.\ ing.\ Andrea Vesco\\PhD.\ ing.\ Alberto Carelli} % solo per la laurea di secondo livello con tesi svolta in azienda
+\tutoreaziendale{Andrea Vesco, Ph.D.\\Alberto Carelli, Ph.D.} % solo per la laurea di secondo livello con tesi svolta in azienda
 % \NomeTutoreAziendale{Supervisore aziendale\\LINKS FOUNDATION}
 %\sedutadilaurea{Ottobre 2022}% per la laurea quinquennale
 %\esamedidottorato{Novembre 1610}% per il dottorato
@@ -143,7 +143,7 @@
   \CandidateName{Candidate}
   \AdvisorName{Supervisor}
   \TutorName{Tutor}
-  \NomeTutoreAziendale{Tutor\\LINKS FOUNDATION}
+  \NomeTutoreAziendale{Tutors\\LINKS FOUNDATION}
   \CycleName{cycle}
   \NomePrimoTomo{First volume}
   \NomeSecondoTomo{Second Volume}
@@ -165,10 +165,7 @@
 
 \sommario
 
-todo
-
-Design and develop an edge device capable to support a constrained device to create and
-manage its own self-sovereign-identity
+Digital Identity makes loT objects unique and distinguishes them from each other. Self-Sovereign Identity (SSI) aims to provide a digital identity that is both verified and verifiable to loT objects while building a digital ecosystem for secure interactions between heterogeneous objects. However, in many real-world use cases, loT are constrained devices and cannot run natively a full SSI stack implementation. An edge device has been designed with the capability of supporting a constrained device to create and manage its own digital identity and it has been developed using Keystone, an open-source framework for building Trusted Execution Environments, allowing confidentiality and integrity of the offloaded operations. Such a solution has the advantage to increase the number of devices that can interact in such a secure digital ecosystem and defines a new paradigm called Self-Sovereign Identity as a Service. 
 
 \ringraziamenti
 
@@ -188,20 +185,26 @@ todo
 \mainmatter
 
 \chapter{Introduction}
-\input{chapters/introduction.tex}
+\label{chap:1}
+\input{chapters/chapter1-introduction.tex}
 
 \chapter{Background and related work}
+\label{chap:2}
 This chapter provides an overview of the Self-Sovereign-Identity ecosystem and Keystone Enclave framework.
-\input{chapters/chapter1.tex}
-\input{chapters/chapter1-keystone.tex}
-
-\chapter{Design and Implementation}
 \input{chapters/chapter2.tex}
+\input{chapters/chapter2-keystone.tex}
 
-\chapter{Setup, test and result analysis}
+\chapter{Design}
+\label{chap:3}
 \input{chapters/chapter3.tex}
 
+\chapter{Implementation, setup and tests}
+\label{chap:4}
+\input{chapters/chapter4.tex}
+\input{chapters/a.tex}
+\input{chapters/b.tex}
 \chapter{Conclusion and future work}
+\label{chap:5}
 
 Qui si inseriscono brevi conclusioni sul lavoro svolto, senza ripetere inutilmente il sommario.
 
@@ -214,12 +217,8 @@ Si possono evidenziare i punti di forza e quelli di debolezza, nonch? i possibil
 \bibliographystyle{other/torsec}
 \bibliography{other/biblio}
 
-\appendix
-\chapter{User Manual}
-\input{chapters/a.tex}
-\chapter{Developer manual}
-\input{chapters/b.tex}
-
-
+% \appendix
+% \chapter{User Manual}
+% \chapter{Developer manual}
 
 \end{document}
