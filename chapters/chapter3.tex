@@ -90,11 +90,54 @@ Furthermore, in table \ref{time-table2} ECDSA signatures and BBS\texttt{+} signa
 \end{table}
 
 \subsection{Design}
-The obtained results suggest that a constrained device cannot use the BBS\texttt{+} signature scheme in real-world applications, since we can suppose that execution times will be considerably high. 
+The obtained results suggest that a constrained device cannot use the BBS\texttt{+} signature scheme in real-world applications, since it can be supposed that execution times will be considerably high. In the Self-sovereign Identity as a Service (SSIaaS) paradigm, a new role is defined, called edge. The edge device interacts with a constrained IoT object and provides functionalities to create and support it in identity management, this can be seen in figure \ref{poc-design}. The identified and exposed operations by the edge device are:
+\begin{itemize}
+    \item key pairs generation
+    \item storage of a verifiable credential
+    \item generation of a verifiable presentation
+\end{itemize}
 
+{\color{red} ToDo: spiegare il design delle operazioni}
 \begin{figure}[!h]
     \centering
     \includesvg[inkscapelatex=false, scale=1]{./chapters/images/poc.svg}
     \caption{Basic components of Self-Sovereign-Identity as a Service}
     \label{poc-design}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc_gen_keys.svg}
+    \caption{Key pairs generation operation in detail}
+    \label{poc-gen-keys}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc_store_vc.svg}
+    \caption{Storage of a verifiable credential operation in detail}
+    \label{poc-store-vc}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc_get_vp.svg}
+    \caption{Generation of a verifiable presentation operation in detail}
+    \label{poc-get-vp}
+\end{figure}
+
+\subsection{Architecture}
+{\color{red} ToDo: spiegare provisioning iniziale e architettura finale}
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/manufacturer.svg}
+    \caption{Manufacturer provisions device with expected hashes, keys and signature of the public key}
+    \label{manufacturer-provisioning}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture3.svg}
+    \caption{Demo architecture}
+    \label{poc-architecture}
 \end{figure}

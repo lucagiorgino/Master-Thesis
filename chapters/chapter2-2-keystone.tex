@@ -61,7 +61,9 @@ Security Monitor (SM) is a trusted software that runs in M-mode and works as the
     \item \textbf{Memory Isolation using RISC-V PMP}
         In Keystone, developers refer to the memory section that an enclave uses as a region and each region is defined by a PMP entry.
 
-    \item Remote Attestation (signatures and measurement)
+         {\color{red} ToDo: espandere questo}
+
+    \item Remote Attestation (signatures and measurement)  {\color{red} ToDo: spiegare gerarchia chiavi}
     \item And other features, such as System PMP Synchronization, Enclave Thread Management and Side-Channel Defenses  
 \end{itemize}
 
@@ -69,7 +71,7 @@ Security Monitor (SM) is a trusted software that runs in M-mode and works as the
 Runtime is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
 \subsubsection{Enclave}
 An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone. The enclaave lifecycle can be seen in figure \ref{enclave-lifecycle}. 
-
+{\color{red} ToDo: spiegare lifecycle}
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.45]{./chapters/images/Enclave lifecycle.png}

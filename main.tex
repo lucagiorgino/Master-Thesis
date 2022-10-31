@@ -13,6 +13,7 @@
 ,12pt% font pi? grande (12pt) rispetto a quello normalmente usato (11pt)
 ]{toptesi}
 %
+\PassOptionsToPackage{dvipsnames}{xcolor}
 \usepackage{url}
 \usepackage{breakurl}
 \usepackage[breaklinks]{hyperref}
@@ -52,17 +53,19 @@
 \setsvg{inkscape={"C:/Program Files/Inkscape/bin/inkscape.com"}}
 \svgpath{{chapters/images}}
 
+\usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{fontawesome}
 \usepackage{multicol}
 \usepackage{xcolor}
+\usepackage{tcolorbox}
+\newtcolorbox{mybox}{colback=red!5!white,colframe=red!75!black}
 \lstdefinestyle{json}{
   string=[s]{"}{"},
   stringstyle=\color{blue},
   comment=[l]{:},
   commentstyle=\color{black},
 }
-
 \begin{document}
 \selectlanguage{english}
 
@@ -165,11 +168,11 @@
 
 \sommario
 
-Digital Identity makes loT objects unique and distinguishes them from each other. Self-Sovereign Identity (SSI) aims to provide a digital identity that is both verified and verifiable to loT objects while building a digital ecosystem for secure interactions between heterogeneous objects. However, in many real-world use cases, loT are constrained devices and cannot run natively a full SSI stack implementation. An edge device has been designed with the capability of supporting a constrained device to create and manage its own digital identity and it has been developed using Keystone, an open-source framework for building Trusted Execution Environments, allowing confidentiality and integrity of the offloaded operations. Such a solution has the advantage to increase the number of devices that can interact in such a secure digital ecosystem and defines a new paradigm called Self-Sovereign Identity as a Service. 
+Digital identity makes IoT objects unique and distinguishes them from each other. Self-Sovereign Identity aims to provide a digital identity that is both verified and verifiable to IoT objects while building a digital ecosystem for secure interactions between heterogeneous objects. However, in many real-world use cases, IoT devices are constrained and cannot run natively a full Self-Sovereign Identity stack implementation. For this reason, an edge device has been designed with the capability of supporting a constrained device to create and manage its own self-sovereign identity and it has been developed using Keystone, an open-source framework for building Trusted Execution Environments, providing trust in the system that handles offloaded operations. Such a solution has the advantage to increase the number of devices that can interact in a secure digital ecosystem of this kind and defines a new paradigm called Self-Sovereign Identity as a Service. 
 
 \ringraziamenti
 
-todo
+{\color{red} TODO}
 
 %% inserire sempre nella tesi per la laurea di I livello, perch? il nome dei tutori non ? indicato sul frontespizio.
 %Il lavoro descritto in questa monografia ? stato svolto sotto la supervisione
@@ -191,8 +194,8 @@ todo
 \chapter{Background and related work}
 \label{chap:2}
 This chapter provides an overview of the Self-Sovereign-Identity ecosystem and Keystone Enclave framework.
-\input{chapters/chapter2.tex}
-\input{chapters/chapter2-keystone.tex}
+\input{chapters/chapter2-1-ssi.tex}
+\input{chapters/chapter2-2-keystone.tex}
 
 \chapter{Design}
 \label{chap:3}
@@ -201,14 +204,9 @@ This chapter provides an overview of the Self-Sovereign-Identity ecosystem and K
 \chapter{Implementation, setup and tests}
 \label{chap:4}
 \input{chapters/chapter4.tex}
-\input{chapters/a.tex}
-\input{chapters/b.tex}
 \chapter{Conclusion and future work}
 \label{chap:5}
-
-Qui si inseriscono brevi conclusioni sul lavoro svolto, senza ripetere inutilmente il sommario.
-
-Si possono evidenziare i punti di forza e quelli di debolezza, nonch? i possibili sviluppi futuri o attivit? da svolgere per migliorare i risultati.
+\input{chapters/chapter5-conclusion.tex}
 
 % bibliografia scritta "a mano"
 %\input{other/biblio.tex}

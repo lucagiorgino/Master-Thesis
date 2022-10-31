@@ -1,3 +1,259 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
+This chapter describes how the solution has been implemented and how to use it. 
+%to configure the environment used for testing the proposed solution.
+% \section{Implementation}
+
+\section{User manual}
+\subsection{Constrained and edge device comparison}
+This section describes how to install and execute the code used for testing the cryptographic capabilities of constrained and non-constrained devices.  
+\subsubsection{Test MbedTLS library}
+Mbed TLS \cite{mbed-tls} is a C library and it was used for testing RSA and ECDSA, cryptographic primitives. 
+{\color{red} ToDo: spiegare installazione su board a su ubuntu}
+\subsubsection{Test BBS\texttt{+} signatures scheme}
+BBS\texttt{+} rust library was used for testing BBS\texttt{+} signatures that can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs. In these tests, only simple single-message signing and verification were tested.
+
+Before starting, we need to install Rust. The installation of Rust is through a tool called Rustup, which is a Rust installer and version management tool. The way to install Rustup differs by platform, on Unix, run the next command in the shell. This downloads and runs \texttt{rustup-init.sh}, which in turn downloads and runs the correct version of the \texttt{rustup-init} executable for your platform. For other platforms check the Rust documentation \cite{rust-install}. 
+\begin{lstlisting}[frame=single]
+$ curl https://sh.rustup.rs -sSf | sh
+\end{lstlisting}
+When Rustup is installed, it will also add the latest stable version of the Rust build tool and package manager, also known as Cargo. The following commands will install dependencies and build the project. 
+\begin{lstlisting}[frame=single]
+$ cd bbs-test
+$ cargo build
+\end{lstlisting}
+To launch the test and take executions times of BBS\texttt{+} signatures and verification, run:  
+\begin{lstlisting}[frame=single]
+$ cargo run
+\end{lstlisting}
+\subsection{Proof of concept}
+
+The proof of concept relies on the full Keystone SDK. The easiest way for building and try Keystone and the proof of concept is to use QEMU. QEMU is an open-source machine emulator, in this case, is used to emulate RISC-V architecture.
+The proof of concept has been tested with \texttt{Ubuntu 18.04}. 
+\subsubsection{Keystone installation and requirements}
+The following dependencies must be installed before installing Keystone.
+\begin{lstlisting}[frame=single]
+$ sudo apt update
+$ sudo apt install autoconf automake autotools-dev bc \
+  bison build-essential curl expat libexpat1-dev flex gawk \ 
+  gcc git gperf libgmp-dev libmpc-dev libmpfr-dev libtool \ 
+  texinfo tmux patchutils zlib1g-dev wget bzip2 patch vim-common \
+  lbzip2 python pkg-config libglib2.0-dev libpixman-1-dev \
+  libssl-dev screen device-tree-compiler expect makeself \
+  unzip cpio rsync cmake p7zip-full
+\end{lstlisting}
+Then check out the keystone repository and install everything with the quick setup script, it will install the RISC-V toolchain and if \texttt{KEYSTONE\_SDK\_DIR} environment variable is not set, it will also install Keystone SDK. 
+
+\begin{lstlisting}[frame=single]
+$ git clone https://github.com/keystone-enclave/keystone.git
+$ cd keystone
+$ ./fast-setup.sh
+\end{lstlisting}
+If everything goes right, the following message is shown: 
+
+\begin{lstlisting}[frame=single]
+    RISC-V toolchain and Keystone SDK have been fully setup
+\end{lstlisting}
+After running \texttt{fast-setup.sh}, run the following command to temporarily set in the current shell relevant environment variables: 
+\begin{lstlisting}[frame=single]
+$ source source.sh
+\end{lstlisting}
+Otherwise for permanently store the environment variables, if bash is used this command will add the lines in \texttt{source.sh} to the shell's startup file: 
+\begin{lstlisting}[frame=single]
+$ cat source.sh >> $HOME/.bashrc
+\end{lstlisting}
+CMake \cite{cmake} is used as a build system. As \texttt{<build directory>} the name \texttt{build} has been chosen. Then all components can be built, beware that this will take a while. 
+\begin{lstlisting}[frame=single]
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+\end{lstlisting}
+\begin{mybox}
+\faExclamation\enspace It has been noted that under \texttt{Windows Subsystem for Linux (WSL)} the build of the image can fail. To solve this issue just modify the \texttt{PATH} to not include \texttt{/mnt/c/*} folders.
+\end{mybox}
+
+\subsubsection{Build the demo}
+Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document.
+{\color{red}TODO: spiegare come generare SM\_HASH}
+\begin{lstlisting}[frame=single]
+$ cd keystone-demo
+$ SM_HASH=../sm/tools/sm_expected_hash.h ./quick-start.sh
+\end{lstlisting}
+Then once the demo is built, the binaries need to be copied into the keystone build folder.
+
+\begin{lstlisting}[frame=single]
+$ cp ./build/demo-server.ke ./build/trusted_client.riscv ../keystone/build/overlay/root/
+\end{lstlisting}
+Now the QEMU image can be re-generated.
+
+\begin{lstlisting}[frame=single]
+$ cd keystone/build
+$ make image
+\end{lstlisting}
+
+\subsubsection{Run QEMU}
+The following script will run QEMU, and start executing from the emulated silicon root of trust. The root of trust then jumps to the SM, and the SM boots Linux. 
+\begin{lstlisting}[frame=single]
+$ cd keystone/build
+$ ./scripts/run-qemu.sh
+\end{lstlisting}
+The script will start ssh on a random forwarded localhost port, which allows multiple test runs on the same development machine. The script will print what port it has forwarded ssh to on start. For example, to start a new shell in another window the next command can be used, and it is useful to run the client and the server in two different terminal windows. 
+\begin{lstlisting}[frame=single]
+$ ssh root@localhost -p <port number>
+\end{lstlisting}
+Login as \texttt{\color{RedOrange}root} with the password \texttt{\color{RedOrange}sifive}. You can exit QEMU by \texttt{\color{RedOrange}ctrl-a\ `+`\ x} or using  \texttt{\color{RedOrange}poweroff}  command
+
+\subsubsection{Run the demo}
+Inside QEMU, run the following commands. The first one will load the keystone kernel module and the second one will set up the loopback device. 
+\begin{lstlisting}[frame=single]
+> insmod keystone-driver.ko 
+> ifdown lo && ifup lo           
+\end{lstlisting}
+On the server side run: 
+\begin{lstlisting}[frame=single]
+> ./demo-server.ke         
+\end{lstlisting}
+On the client side run:
+\begin{lstlisting}[frame=single]
+> ./trusted_client.riscv         
+\end{lstlisting}
+The client will connect to the enclave and perform the remote attestation. If the attestation is successful, the client can send back the session context and if server checks go right the communication can start and the client can request operation to the server. 
+
+If the enclave server app will be modified, the expected hash values have to be regenerated, otherwise, it can be tested with an option that will ignore the validation of the attestation report (it will still print the status of the validation). 
+
+\begin{lstlisting}[frame=single]
+  > ./trusted_client.riscv 127.0.0.1 --ignore-valid        
+\end{lstlisting}
+{\color{red} ToDo: esempio di esecuzione/output da aggiungere}
+\section{Developer manual}
+\section{Constrained and edge device comparison}
+\subsubsection{Test MbedTLS library}
+{\color{red} ToDo: spiegare come il progetto è organizzato e file/funzioni rilevanti}
+\subsubsection{Test BBS\texttt{+} signatures scheme}
+For this subproject the most relevant files are:
+\begin{itemize}
+  \item \texttt{Cargo.toml} where dependencies are added, such as  
+  \texttt{bbs} and \texttt{rand}. 
+  \item \texttt{main.rs} where tests for BBS\texttt{+} key generation, signature and verification are defined. 
+  \begin{itemize} 
+    \item \texttt{fn key\_gen\_test(iterations: usize)}
+    \item \texttt{fn simple\_sign\_ver\_test(iterations: usize)}
+    \item \texttt{fn pok\_sign\_ver\_test(iterations: usize)}
+  \end{itemize}
+\end{itemize}
+\section{Proof of concept}
+\subsubsection{Guide to Keystone Components}
+The Keystone repository consists of several sub-components such as gitmodules or directories. This is a brief overview of them.
+\begin{lstlisting}[frame=single]
++ keystone/
+|-- patches/
+|  # required patches for submodules
+|-- bootrom/
+|  # Keystone bootROM for QEMU virt board, including trusted boot chain.
+|-- buildroot/
+|  # Linux buildroot. Builds a minimal working Linux image for our test platforms.
+|-- docs/
+|  # Contains read-the-docs formatted and hosted documentation, such as this article.
+|-- riscv-gnu-toolchain/
+|  # Unmodified toolchain for building riscv targets. Required to build all other components.
+|-- linux-keystone-driver/
+|  # A loadable kernel module for Keystone enclave.
+|-- linux/
+|  # Linux kernel
+|-- sm/
+|  # OpenSBI firmware + Keystone security monitor
+|-- qemu/
+|  # QEMU
++-- sdk/
+    # Tools, libraries, and example apps for building enclaves on Keystone        
+\end{lstlisting}
+
+\subsubsection{Guide to Keystone Demo Proof of concept}
+The designed solution has been developed starting from the officially \texttt{kestone-demo} repository available at this link: \url{https://github.com/keystone-enclave/keystone-demo}. The demo uses test keys and is not safe for production use.
+\begin{lstlisting}[frame=single]
+  + keystone-demo-poc/
+  |-- docs/
+  |  # Contains read-the-docs formatted and hosted documentation, such as this article.
+  |-- include/
+  |  # Contains shared files between eapp and client
+  |-- scripts/
+  |  # Contains a script for performing the attestation of sm and eapp
+  |-- server_eapp/
+  |  # small enclave server that is capable of remote attestation, secure channel creation, and performing a simple word-counting computation securely
+  |-- sodium_patches/
+  |  # Contains patch for libsodium that will run in the server eapp
+  +-- trusted_client/
+     # simple remote client that connects to the host, validates the enclave report, constructs a secure channel, and then can send messages to the host for computation.       
+  \end{lstlisting}
+
+\subsubsection{Relevant files of the demo}
+Below are explained relevant files that change from the official \texttt{kestone-demo} repository.
+
+\subsubsection{eh\_shared.h}
+This file is shared between the enclave and the untrusted host. It defines the following data structure for exchanging sealed (encrypted) data between the enclave and the untrusted host. 
+
+\begin{lstlisting}[language=C,frame=single]
+typedef struct stored_data_t{
+  unsigned short file_type;
+  unsigned char client_pk[crypto_kx_PUBLICKEYBYTES];
+  size_t c_len;  
+  unsigned char content[]; // Flexible member
+} stored_data_t;      
+\end{lstlisting}
+
+\subsubsection{messages.h}
+This file is shared between the client and the enclave and it defines the messages (request amd response) they exchange. 
+\begin{lstlisting}[language=C,frame=single]
+typedef struct request_message_t{
+  unsigned short request_type;
+  unsigned char secret[SECRET_LEN];
+  size_t len;
+  unsigned char payload[]; // Flexible member
+} request_message_t;
+
+typedef struct response_message_t{
+  unsigned short response_type;
+  size_t len;
+  unsigned char payload[]; // Flexible member
+} response_message_t;
+\end{lstlisting}
+
+
+\subsubsection{session\_context.c and session\_context.h}
+The session context is the structure that the client provides to the enclave to prove that is built by a trusted manufacturer. With the function \texttt{session\_context\_from\_buffer} the session context is extracted from the received buffer. 
+\begin{lstlisting}[language=C,frame=single]
+struct session_context_t {
+  unsigned char  dh_public_key[PUBLIC_KEY_SIZE];
+  unsigned char  challenge[CHALLENGE_SIZE];
+  unsigned char  data_signature[SIGNATURE_SIZE];
+  
+  unsigned char  client_public_key[PUBLIC_KEY_SIZE];
+  unsigned char  root_signature_of_client_pk[SIGNATURE_SIZE];
+};
+
+void session_context_from_buffer(struct session_context_t* session_context, unsigned char* buffer);
+\end{lstlisting}
+
+\noindent
+\texttt{int session\_context\_verify( ... );}\\
+\textit{Input}:\setlist{nolistsep}
+\begin{itemize}[noitemsep]
+  \item \texttt{struct session\_context\_t session\_context}, the session context to verify
+  \item \texttt{unsigned char* challange}, the challenge that the server has sent to the client
+  \item \texttt{const unsigned char* root\_public\_key}, the public key of the manufacturer
+\end{itemize}
+\textit{Output}: an \texttt{int} value, 1 if it is a valid session context, 0 if not.
+
+\subsubsection{service.c and service.h}
+\begin{lstlisting}[language=C,frame=single]
+   
+\end{lstlisting}
+
+
+\subsubsection{trusted\_client.c and trusted\_client.h}
+
+\begin{lstlisting}[language=C,frame=single]
+   
+\end{lstlisting}
