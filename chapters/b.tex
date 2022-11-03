@@ -1,3 +1,274 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
+\section{Developer manual}
+\subsection{Constrained and edge device comparison}
+\subsubsection{Test MbedTLS library}
+{\color{red} ToDo: spiegare come il progetto e' organizzato e file/funzioni rilevanti}
+\subsubsection{Test BBS\texttt{+} signatures scheme}
+For this subproject the most relevant files are:
+\begin{itemize}
+  \item \texttt{Cargo.toml} where dependencies are added, such as  
+  \texttt{bbs} and \texttt{rand}. 
+  \item \texttt{main.rs} where tests for BBS\texttt{+} key generation, signature and verification are defined. 
+  \begin{itemize} 
+    \item \texttt{fn key\_gen\_test(iterations: usize)}
+    \item \texttt{fn simple\_sign\_ver\_test(iterations: usize)}
+    % \item \texttt{fn pok\_sign\_ver\_test(iterations: usize)}
+  \end{itemize}
+\end{itemize}
+And the code is very simple, it launches the test for key generation and the test for signature and verification, operations are executed \texttt{iterations} times and the average is displayed on the output video. 
+\begin{lstlisting}[frame=single]
+fn main() {
+  let iterations: usize = 100;
+  key_gen_test(iterations);
+  simple_sign_ver_test(iterations);
+}
+\end{lstlisting}
+
+\subsection{Proof of concept}
+\subsection*{Guide to Keystone Components}
+The Keystone repository consists of several sub-components such as gitmodules or directories. This is a brief overview of them.
+\begin{lstlisting}[frame=single]
++ keystone/
+|-- patches/
+|  # required patches for submodules
+|-- bootrom/
+|  # Keystone bootROM for QEMU virt board, including trusted boot chain.
+|-- buildroot/
+|  # Linux buildroot. Builds a minimal working Linux image for our test platforms.
+|-- docs/
+|  # Contains read-the-docs formatted and hosted documentation, such as this article.
+|-- riscv-gnu-toolchain/
+|  # Unmodified toolchain for building riscv targets. Required to build all other components.
+|-- linux-keystone-driver/
+|  # A loadable kernel module for Keystone enclave.
+|-- linux/
+|  # Linux kernel
+|-- sm/
+|  # OpenSBI firmware + Keystone security monitor
+|-- qemu/
+|  # QEMU
++-- sdk/
+    # Tools, libraries, and example apps for building enclaves on Keystone        
+\end{lstlisting}
+
+\subsection*{Guide to Keystone Demo Proof of concept}
+The designed solution has been developed starting from the officially \texttt{kestone-demo} repository available at this link: \url{https://github.com/keystone-enclave/keystone-demo}. The demo uses test keys and is not safe for production use.
+\begin{lstlisting}[frame=single]
+  + keystone-demo-poc/
+  |-- docs/
+  |  # Contains read-the-docs formatted and hosted documentation, such as this article.
+  |-- include/
+  |  # Contains shared files between eapp and client
+  |-- scripts/
+  |  # Contains a script for performing the attestation of sm and eapp
+  |-- server_eapp/
+  |  # small enclave server that is capable of remote attestation, secure channel creation, and performing a simple word-counting computation securely
+  |-- sodium_patches/
+  |  # Contains patch for libsodium that will run in the server eapp
+  +-- trusted_client/
+     # simple remote client that connects to the host, validates the enclave report, constructs a secure channel, and then can send messages to the host for computation.       
+  \end{lstlisting}
+
+\subsection*{Relevant files of the demo}
+Below are explained relevant files that change from the official \texttt{kestone-demo} repository.
+
+\subsubsection{include/eh\_shared.h}
+This file is shared between the enclave and the untrusted host. It defines the following data structure for exchanging sealed (encrypted) data between the enclave and the untrusted host. 
+
+\begin{lstlisting}[language=C,frame=single]
+typedef struct stored_data_t{
+  unsigned short file_type;
+  unsigned char client_pk[crypto_kx_PUBLICKEYBYTES];
+  size_t c_len;  
+  unsigned char content[]; // Flexible member
+} stored_data_t;      
+\end{lstlisting}
+
+\subsubsection{include/messages.h}
+This file is shared between the client and the enclave and it defines the messages (request amd response) they exchange. 
+\begin{lstlisting}[language=C,frame=single]
+typedef struct request_message_t{
+  unsigned short request_type;
+  unsigned char secret[SECRET_LEN];
+  size_t len;
+  unsigned char payload[]; // Flexible member
+} request_message_t;
+
+typedef struct response_message_t{
+  unsigned short response_type;
+  size_t len;
+  unsigned char payload[]; // Flexible member
+} response_message_t;
+\end{lstlisting}
+
+
+\subsubsection{include/session\_context.c and include/session\_context.h}
+The session context is the structure that the client provides to the enclave to prove that is built by a trusted manufacturer. With the function \texttt{session\_context\_from\_buffer} the session context is extracted from the received buffer. 
+\begin{lstlisting}[language=C,frame=single]
+struct session_context_t {
+  unsigned char  dh_public_key[PUBLIC_KEY_SIZE];
+  unsigned char  challenge[CHALLENGE_SIZE];
+  unsigned char  data_signature[SIGNATURE_SIZE];
+  
+  unsigned char  client_public_key[PUBLIC_KEY_SIZE];
+  unsigned char  root_signature_of_client_pk[SIGNATURE_SIZE];
+};
+
+void session_context_from_buffer(struct session_context_t* session_context, unsigned char* buffer);
+\end{lstlisting}
+
+\noindent
+\texttt{int session\_context\_verify( ... );}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{struct session\_context\_t session\_context}, the session context to verify
+  \item \texttt{unsigned char* challange}, the challenge that the server has sent to the client
+  \item \texttt{const unsigned char* root\_public\_key}, the public key of the manufacturer
+\end{itemize}
+\textit{Output}: an \texttt{int} value, 1 if it is a valid session context, 0 if not.
+
+\subsubsection{server\_eapp/service.c and server\_eapp/service.h}
+The file \texttt{service.h} just exposes the function that processes the request received by the client.  
+\begin{lstlisting}[language=C,frame=single]
+response_message_t *process_request(request_message_t *request, size_t *pt_finalsize) {
+
+  struct sealing_key sealing_material;
+  int ret = 0;
+
+  /* Derive the sealing key */
+  ret = get_sealing_key(&sealing_material, sizeof(sealing_material),
+                        (void *)request->secret, SECRET_LEN);
+
+  if (ret) {
+    ocall_print_buffer("Sealing key derivation failed!\n");
+    EAPP_RETURN(-1);
+  }
+
+  switch (request->request_type) {
+  case SERVICE_GEN_KEYS:
+    return generate_public_keys(pt_finalsize, sealing_material, (int)*request->payload - '0');
+    break;
+  case SERVICE_STORE_VC:
+    return store_verifiable_credential(pt_finalsize, sealing_material, request->payload, request->len);
+    break;
+  case SERVICE_GET_VP:
+    return get_verifiable_presentation(pt_finalsize, sealing_material, request->payload, request->len);
+    break;
+  }
+  return NULL;
+}
+\end{lstlisting}
+{\color{red} ToDo: esplicitare cosa indicano i valori in input e qual e' l'output}\\
+\noindent
+\texttt{void store\_data ( ... );}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{unsigned char* buffer}
+  \item \texttt{size\_t len}
+  \item \texttt{unsigned short file\_type}
+\end{itemize}
+\textit{Output}: 
+
+\noindent
+\texttt{void seal\_data\_and\_sign ( ... );}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{unsigned char* data}
+  \item \texttt{size\_t data\_len}
+  \item \texttt{unsigned char** ciphertext}
+  \item \texttt{size\_t* ciphertext\_len}
+  \item \texttt{unsigned char** sign}
+  \item \texttt{size\_t* sign\_len}
+  \item \texttt{struct sealing\_key sealing\_material}
+\end{itemize}
+\textit{Output}: 
+
+
+\noindent
+\texttt{response\_message\_t* build\_response ( ... );}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+\item \texttt{size\_t* pt\_finalsize}
+\item \texttt{unsigned char *buffer}
+\item \texttt{size\_t len}
+\end{itemize}
+\textit{Output}: 
+
+
+\noindent
+\texttt{response\_message\_t* generate\_public\_keys ( ... );}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+\item \texttt{size\_t* pt\_finalsize}
+\item \texttt{struct sealing\_key sealing\_material}
+\item \texttt{int key\_type}
+\end{itemize}
+\textit{Output}: 
+
+\noindent
+\texttt{response\_message\_t* store\_verifiable\_credential ( ... );
+}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{size\_t* pt\_finalsize}
+  \item \texttt{struct sealing\_key sealing\_material}
+  \item \texttt{unsigned char* vc}
+  \item \texttt{size\_t vc\_len}
+\end{itemize}
+\textit{Output}: 
+
+\noindent
+\texttt{response\_message\_t* get\_verifiable\_presentation ( ... );
+}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{size\_t* pt\_finalsize}
+  \item \texttt{struct sealing\_key sealing\_material}
+  \item \texttt{unsigned char* nonce}
+  \item \texttt{size\_t nonce\_len}
+\end{itemize}
+\textit{Output}: 
+
+\subsubsection{server\_eapp/server\_eapp.c}
+In this file the important functions to mention are:
+\begin{itemize}
+  %\item \texttt{void validate\_session\_context(void* buffer, unsigned char* challange)}
+  \item \texttt{void attest\_and\_establish\_channel()}
+  \item \texttt{void handle\_requests()}
+\end{itemize}
+{\color{red} ToDo: spiegare queste funzioni}\\
+
+\subsubsection{trusted\_client/trusted\_client.c and trusted\_client/trusted\_client.h}
+In this file the important functions to mention are:
+\begin{itemize}[noitemsep,nolistsep]
+  % \item \texttt{}
+  \item \texttt{void gen\_session\_context(byte* buffer)} 
+  \begin{itemize}[noitemsep]
+    \item \textit{Input:}
+    \item \textit{Output:}
+  \end{itemize}
+
+  \item \texttt{request\_message\_t* generate\_message(char* buffer, size\_t buffer\_len, size\_t* finalsize)}
+  \begin{itemize}[noitemsep]
+    \item \textit{Input:}
+    \item \textit{Output:}
+  \end{itemize}
+  \item \texttt{request\_message\_t* generate\_exit\_message(size\_t* finalsize)}
+  \begin{itemize}[noitemsep]
+    \item \textit{Input:}
+    \item \textit{Output:}
+  \end{itemize}
+\end{itemize}
+% \begin{lstlisting}[language=C,frame=single]
+   
+% \end{lstlisting}
+
+% \noindent
+% \texttt{}\\
+% \textit{Input}:\setlist{nolistsep}
+% \begin{itemize}[noitemsep]
+%   \item 
+% \end{itemize}
+% \textit{Output}: 

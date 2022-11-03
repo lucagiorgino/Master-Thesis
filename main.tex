@@ -66,6 +66,13 @@
   comment=[l]{:},
   commentstyle=\color{black},
 }
+\lstdefinestyle{DOS}{
+  backgroundcolor=\color{black},
+  basicstyle=\color{white}\ttfamily
+}
+
+\makeatletter
+\def\lst@visiblespace{\lst@ttfamily{\phantom{\char32}}{\phantom{\textvisiblespace}}}
 \begin{document}
 \selectlanguage{english}
 
@@ -168,7 +175,9 @@
 
 \sommario
 
-Digital identity makes IoT objects unique and distinguishes them from each other. Self-Sovereign Identity aims to provide a digital identity that is both verified and verifiable to IoT objects while building a digital ecosystem for secure interactions between heterogeneous objects. However, in many real-world use cases, IoT devices are constrained and cannot run natively a full Self-Sovereign Identity stack implementation. For this reason, an edge device has been designed with the capability of supporting a constrained device to create and manage its own self-sovereign identity and it has been developed using Keystone, an open-source framework for building Trusted Execution Environments, providing trust in the system that handles offloaded operations. Such a solution has the advantage to increase the number of devices that can interact in a secure digital ecosystem of this kind and defines a new paradigm called Self-Sovereign Identity as a Service. 
+% Digital identity makes IoT objects unique and distinguishes them from each other. Self-Sovereign Identity aims to provide a digital identity that is both verified and verifiable to IoT objects while building a digital ecosystem for secure interactions between heterogeneous objects. However, in many real-world use cases, IoT devices are constrained and cannot run natively a full Self-Sovereign Identity stack implementation. For this reason, an edge device has been designed with the capability of supporting a constrained device to create and manage its own self-sovereign identity and it has been developed using Keystone, an open-source framework for building Trusted Execution Environments, providing trust in the system that handles offloaded operations. Such a solution has the advantage to increase the number of devices that can interact in a secure digital ecosystem of this kind and defines a new paradigm called Self-Sovereign Identity as a Service. 
+
+Digital identity makes IoT objects unique and distinguishes them from each other. Self-Sovereign Identity (SSI) aims to provide a digital identity that is both verified and verifiable to IoT objects while building a digital ecosystem for secure interactions between heterogeneous objects. However, in many real-world use cases, IoT devices cannot run natively a full self-sovereign identity stack implementation, due to hardware and software constraints. For this reason, an edge device has been designed with the capability of securely aiding constrained devices to create and manage their own identity according to the SSI paradigm. The software has been developed using Keystone, an open-source framework for building Trusted Execution Environments, for establishing a trusted communication channel between the IoT device and the edge device that handles offloaded operations. By defining a new paradigm called Self-Sovereign Identity as a Service, constrained devices can exploit the full SSI stack on demand. Such a solution has the advantage to increase the number of devices that can interact in a secure digital ecosystem of this kind by shifting the computational operations onto more powerful edge devices. 
 
 \ringraziamenti
 
@@ -208,15 +217,19 @@ This chapter provides an overview of the Self-Sovereign-Identity ecosystem and K
 \label{chap:5}
 \input{chapters/chapter5-conclusion.tex}
 
+\appendix
+%This chapters describes how the solution has been implemented and how to use it. 
+%to configure the environment used for testing the proposed solution.
+
+\chapter{User Manual}
+\input{chapters/a.tex}
+\chapter{Developer manual}
+\input{chapters/b.tex}
+
 % bibliografia scritta "a mano"
 %\input{other/biblio.tex}
 
 % se la bibliografia ? stata scritta (usando Bibtex) nel file biblio.bib allora commentare la riga precedente e scommentare le due righe seguenti
 \bibliographystyle{other/torsec}
 \bibliography{other/biblio}
-
-% \appendix
-% \chapter{User Manual}
-% \chapter{Developer manual}
-
 \end{document}

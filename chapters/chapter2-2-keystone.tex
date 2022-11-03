@@ -7,7 +7,7 @@ To adequately address these challenges, Trusted Execution Environments have been
 A Trusted Execution Environment (TEE) is a safe area within a CPU. It runs in an isolated environment and in parallel with the operating system.
 It ensures that the confidentiality and integrity of the code and data loaded in the TEE are preserved. 
 Trusted applications running on TEE have access to the full capabilities of a device's main processor and memory, while hardware isolation shields these components from user-installed apps running in the main operating system. The various included trusted applications are protected from one another by software and cryptographic isolations within the TEE \cite{IntroTEE}.
-The two most common TEE implementations at the moment are ARM TrustZone and Intel SGX. All these TEEs make design decisions based on either the target applications or threat models and these choices are fixed since they are strictly hardware related. They were not designed to have flexibility or extensibility for enclave developers.  If the hardware changes or has a new feature, the enclave developer has to redesign the TEE.
+The two most common TEE implementations at the moment are ARM TrustZone and Intel SGX. All these TEEs make design decisions based on either the target applications or threat models and these choices are fixed since they are strictly hardware related. They were not designed to have flexibility or extensibility for enclave developers. If the hardware changes or has a new feature, the enclave developer has to redesign the TEE.
 All TEE platforms aim to reduce the enclave's Trusted computing Base, yet they have managed to achieve different degrees of success \cite{keysyone-blog-1}. The Trusted Computing Base (TCB) is a section of the system, it could include hardware, firmware and software, which is responsible for enforcing the security policy of the system \cite{tcb-def}. Additionally, closed-source hardware and microcode implementations make it impossible for a third party to evaluate the security of TEEs.
 
 \subsubsection{Customizable Trusted Execution Environment}
@@ -58,23 +58,100 @@ Trusted Hardware is a CPU package built by an honest manufacturer that must encl
 \subsubsection{Security Monitor}
 Security Monitor (SM) is a trusted software that runs in M-mode and works as the small trusted computing base (TCB) in the Keystone system. Before the security monitor can be considered trusted, first it must be verified by the hardware root of trust. After the root of trust measures the SM, it generates a keypair for remote attestation, signs the public key, and then continues booting. The SM manages the isolation boundary between the enclaves and the untrusted OS, therefore it implements the majority of Keystone's security guarantees.  It serves as an interface for managing the enclave's lifecycle and utilising platform-specific features. The OS and enclaves may call SM functions using the Supervisor Binary Interface (SBI). Specifically, the SM provides the following functionality:
 \begin{itemize}
-    \item \textbf{Memory Isolation using RISC-V PMP}
-        In Keystone, developers refer to the memory section that an enclave uses as a region and each region is defined by a PMP entry.
-
-         {\color{red} ToDo: espandere questo}
-
-    \item Remote Attestation (signatures and measurement)  {\color{red} ToDo: spiegare gerarchia chiavi}
-    \item And other features, such as System PMP Synchronization, Enclave Thread Management and Side-Channel Defenses  
+    \item \textit{memory isolation} using RISC-V PMP
+    \item \textit{remote attestation} (signatures and measurement): the goal is to demonstrate to a remote client that the enclave contains the expected application, and is running on trusted hardware
+    \item and other features, such as system PMP synchronization, enclave thread management and side-channel defences  
 \end{itemize}
 
 \subsubsection{Runtime}
-Runtime is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
+Runtime (RT) is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
 \subsubsection{Enclave}
-An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone. The enclaave lifecycle can be seen in figure \ref{enclave-lifecycle}. 
-{\color{red} ToDo: spiegare lifecycle}
+An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone. The enclave lifecycle can be seen in figure \ref{enclave-lifecycle}. The main phases are:
+\begin{itemize}
+    \item \textit{creation}: when an enclave is started it has a contiguous range of physical memory that is called Enclave Private Memory (EPM). In the beginning, the EPM is allocated by the untrusted host, which initialises it with the enclave's page table, the runtime and the enclave application. When the untrusted host class the SM to create an enclave, the SM isolates and secures the EPM using a PMP entry, and then the PMP status is propagated throughout all of the system's cores. Subsequently, before the enclave execution, the enclave's initial state is measured and verified by the SM.
+    \item \textit{execution}: the SM enters the enclave on one of the cores as soon as the untrusted asks for it. The PMP permission is enabled to the core by the SM, and the core starts running the eapp. The RT can exit or re-enter the enclave at any time. The PMP permissions are switched to keep the isolation each time a core exits or enters the enclave.
+    \item \textit{destruction}: the untrusted host may want to destroy the enclave at any moment, when it happens, the EPM is cleared by the SM and the PMP entry is freed. The untrusted host then definitely reclaims the released memory.
+\end{itemize}
+
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.45]{./chapters/images/Enclave lifecycle.png}
     \caption{Enclave Lifecycle \cite{keystone-doc}.}
     \label{enclave-lifecycle}
 \end{figure}
+
+\subsection{Memory Isolation using RISC-V PMP}
+In Keystone, developers refer to the memory section that an enclave uses as a \textit{region} and each region is defined by a PMP entry. Currently, the SM employs two PMP registers for internal purposes (i.e., security monitor memory and untrusted memory). One active enclave may use one of the remaining PMP entries each. RISC-V PMP has several properties, the most relevant are: 
+\begin{itemize}
+    \item prioritization by index: the index of PMP entries statically determines the priority. Indices goes from \texttt{0} to \texttt{N}, where \texttt{N} depends upon the platform. \texttt{0} is the highest priority,whereas \texttt{N} is the lowest. 
+    \item default deny: if no PMP entry matches with an address, the memory access will be rejected by default.
+\end{itemize}
+For simplicity, in the following explanation PMP entries are denoted as \texttt{pmp[i]} where \texttt{i} is an index. At the start of the boot process, physical memory is not accessible by U- or S-modes. \\
+
+\begin{lstlisting}[frame=single,showspaces=true,caption={Memory state when booting start \cite{keystone-doc}},captionpos=b,label={sm-pmp-1}]
+-: inaccessible (NO_PERM), =: accessible (ALL_PERM)
+
+pmp[1:N]    |                                       | : undefined
+net result  |---------------------------------------|   
+\end{lstlisting}
+\noindent
+The SM sets the highest priority PMP entry to cover the address range containing itself and sets all permission bits to 0. Suddenly, the SM sets the lowest priority PMP entry to cover the full memory and sets all permission bits to 1, this will allow the OS to access the remaining memory and start booting. The result can be seen below in listing \ref{sm-pmp-2}. \\
+
+\begin{lstlisting}[frame=single,showspaces=true,caption={Memory state just after booting \cite{keystone-doc}},captionpos=b,label={sm-pmp-2}]
+-: inaccessible (NO_PERM), =: accessible (ALL_PERM)
+
+pmp[0]       |-------|                              | : SM memory
+pmp[others]  |                                      | : undefined
+pmp[N]       |======================================| : OS memory
+net result   |-------|==============================|
+\end{lstlisting}
+\noindent
+Each time the SM creates an enclave, it will select a PMP entry for the enclave to defend its memory from other U-/S-mode software. This can be seen below in listing \ref{sm-pmp-3}. \\
+\begin{lstlisting}[frame=single,showspaces=true,caption={Memory accessible by the untrusted host \cite{keystone-doc}},captionpos=b,label={sm-pmp-3}]
+-: inaccessible (NO_PERM), =: accessible (ALL_PERM)
+
+pmp[0]       |-------|                              | : SM memory
+pmp[1]       |              |---------|             | : enclave 
+                                                        memory
+pmp[others]  |                                      | : undefined
+pmp[N]       |======================================| : OS memory
+net result   |-------|======|---------|=============|
+\end{lstlisting}
+\noindent
+When the SM enters the enclave and executes the eapp, it flips the permission bits of the enclave's PMP entry and the last PMP entry. Untrusted shared buffer is the term for the contiguous memory region that Keystone enables the OS to allocate in the OS memory space in order to use it as an enclave's communication buffer. This is shown below in listing \ref{sm-pmp-4}.
+The SM just flips the permission bits back when it leaves the enclave. When an enclave is destroyed by the SM, the PMP entry is made available for usage by other enclaves. \\
+\begin{lstlisting}[frame=single,showspaces=true,caption={Memory accessible by a running enclave \cite{keystone-doc}},captionpos=b,label={sm-pmp-4}]
+-: inaccessible (NO_PERM), =: accessible (ALL_PERM)
+
+pmp[0]       |-------|                              | : SM memory
+pmp[1]       |              |=========|             | : enclave 
+                                                        memory
+pmp[others]  |                                      | : undefined
+pmp[N]       |                                |==|  | : untrusted 
+                                                        shared 
+                                                        buffer
+net result   |-------|------|=========|-------|==|--|
+\end{lstlisting}
+
+
+\subsection{Keystone Key-Hierarchy}
+Figure \ref{keystone-key-hierarchy} shows the key hierarchy of Keystone. The root of the key hierarchy is the asymmetric processor key pair (\texttt{SK\_D} and  \texttt{PK\_D}). The asymmetric security monitor key pair (\texttt{SK\_SK} and \texttt{PK\_SM}) is derived from the measurement of the security monitor (\texttt{H\_SM}) and the private processor key (\texttt{SK\_D}) \cite{keystone-doc}.
+As a result, the computed security monitor key pair is bound to the processor and to the identity of the security monitor itself.
+
+\begin{figure}[h!]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.60]{./chapters/images/Keystone key hierarchy.svg}
+    \caption{The key hierarchy of Keystone \cite{keystone-doc}.}
+    \label{keystone-key-hierarchy}
+\end{figure}
+\subsubsection{Sealing-Key Derivation}
+In figure \ref{keystone-key-hierarchy} is also visible how sealing-keys are derived. An enclave can generate a key for data encryption using the data-sealing capability, enabling it to store data in untrusted non-volatile memory outside the enclave. This key is tied to the identity of the processor, the security monitor, and the enclave. As a result, only the same enclave using the same processor and security monitor can generate the same key. Data can be encrypted using this key and stored in unsecured, non-volatile memory. After an enclave restart, it can generate the same key once more, retrieve the encrypted data from the untrusted storage, and then use the derived key to decrypt it \cite{keystone-doc}.
+A sealing key is computed starting from three inputs:
+\begin{itemize}
+    \item the private security monitor key (\texttt{SK\_SM})
+    \item the hash of the enclave (\texttt{H\_SM})
+    \item a key identifier
+\end{itemize}
+The key identifier is an extra input for the key derivation function selectable by the enclave. A single enclave can generate several keys by giving the key identifier various values.
+
+
