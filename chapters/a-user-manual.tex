@@ -78,12 +78,19 @@ $ make
 \end{mybox}
 
 \subsubsection{Build the demo}
-Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document.
-{\color{red}TODO: spiegare come generare SM\_HASH}
+Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document. The \texttt{riscv-musl-toolchain} has been used for building the \texttt{server\_eapp}, which can be set wich the \texttt{./quick-setup.sh} script. Then, the \texttt{./quick-start.sh} will build the demo, the script will create two files: \texttt{demo-server.ke} and \texttt{trusted\_client.riscv}. 
 \begin{lstlisting}[frame=single]
-$ cd keystone-demo
-$ SM_HASH=../sm/tools/sm_expected_hash.h ./quick-start.sh
+$ cd keystone-demo-poc
+$ ./quick-setup.sh  
+$ source ./quick-setup.sh
+$ SM_HASH=<path/to/sm_expected_hash.h> ./quick-start.sh
 \end{lstlisting}
+
+\begin{mybox}
+  If the \texttt{sm\_expected\_hash.h} is not present in the \texttt{include} folder, can be generated for the first time following the instruction in the \texttt{README.md} file of the SM repository available at the following url \url{https://github.com/keystone-enclave/sm.git}. Then, if the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory: \texttt{KEYSTONE\_BUILD\_DIR=<path/to/keystone/build\ path> ./scripts/get\_attestation\_modified.sh ./include}.
+\end{mybox}
+
+
 Then once the demo is built, the binaries need to be copied into the keystone build folder.
 
 \begin{lstlisting}[frame=single]
