@@ -78,31 +78,38 @@ Below are explained relevant files that change from the official \texttt{kestone
 This file is shared between the enclave and the untrusted host. It defines the following data structure for exchanging sealed (encrypted) data between the enclave and the untrusted host. 
 
 \begin{lstlisting}[language=C,frame=single]
+#define FILE_CLIENT_KEYS_SIGNATURE 1
+#define FILE_CLIENT_VC_SIGNATURE 2
+
 typedef struct stored_data_t{
   unsigned short file_type;
   unsigned char client_pk[crypto_kx_PUBLICKEYBYTES];
-  size_t c_len;  
+  size_t c_len; // content len 
   unsigned char content[]; // Flexible member
-} stored_data_t;      
+} stored_data_t;    
 \end{lstlisting}
 
 \subsubsection{include/messages.h}
 This file is shared between the client and the enclave and it defines the messages (request amd response) they exchange. 
 \begin{lstlisting}[language=C,frame=single]
-typedef struct request_message_t{
+#define SERVICE_GEN_KEYS 1
+#define SERVICE_STORE_VC 2
+#define SERVICE_GET_VP 3
+#define MSG_EXIT 4
+
+typedef struct request_message_t {
   unsigned short request_type;
   unsigned char secret[SECRET_LEN];
   size_t len;
   unsigned char payload[]; // Flexible member
 } request_message_t;
 
-typedef struct response_message_t{
+typedef struct response_message_t {
   unsigned short response_type;
   size_t len;
   unsigned char payload[]; // Flexible member
 } response_message_t;
 \end{lstlisting}
-
 
 \subsubsection{include/session\_context.c and include/session\_context.h}
 The session context is the structure that the client provides to the enclave to prove that is built by a trusted manufacturer. With the function \texttt{session\_context\_from\_buffer} the session context is extracted from the received buffer. 
@@ -120,7 +127,7 @@ void session_context_from_buffer(struct session_context_t* session_context, unsi
 \end{lstlisting}
 
 \noindent
-\texttt{int session\_context\_verify( ... );}\\
+\texttt{int session\_context\_verify( ... )}\\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
   \item \texttt{struct session\_context\_t session\_context}, the session context to verify
@@ -132,29 +139,19 @@ void session_context_from_buffer(struct session_context_t* session_context, unsi
 \subsubsection{server\_eapp/service.c and server\_eapp/service.h}
 The file \texttt{service.h} just exposes the function that processes the request received by the client.  
 \begin{lstlisting}[language=C,frame=single]
-response_message_t *process_request(request_message_t *request, size_t *pt_finalsize) {
+response_message_t* process_request(request_message_t *request, size_t *pt_finalsize) {
 
-  struct sealing_key sealing_material;
-  int ret = 0;
-
-  /* Derive the sealing key */
-  ret = get_sealing_key(&sealing_material, sizeof(sealing_material),
-                        (void *)request->secret, SECRET_LEN);
-
-  if (ret) {
-    ocall_print_buffer("Sealing key derivation failed!\n");
-    EAPP_RETURN(-1);
-  }
+  setup_sealing_material(request->secret);
 
   switch (request->request_type) {
   case SERVICE_GEN_KEYS:
-    return generate_public_keys(pt_finalsize, sealing_material, (int)*request->payload - '0');
+    return generate_public_keys(pt_finalsize, EdDSA);
     break;
   case SERVICE_STORE_VC:
-    return store_verifiable_credential(pt_finalsize, sealing_material, request->payload, request->len);
+    return store_verifiable_credential(pt_finalsize, request->payload, request->len);
     break;
   case SERVICE_GET_VP:
-    return get_verifiable_presentation(pt_finalsize, sealing_material, request->payload, request->len);
+    return get_verifiable_presentation(pt_finalsize, request->payload, request->len, EdDSA);
     break;
   }
   return NULL;
@@ -162,72 +159,68 @@ response_message_t *process_request(request_message_t *request, size_t *pt_final
 \end{lstlisting}
 {\color{red} ToDo: esplicitare cosa indicano i valori in input e qual e' l'output}\\
 \noindent
-\texttt{void store\_data ( ... );}\\
+\texttt{void store\_data ( ... )}\\
+It saves the sealed data in untrusted non-volatile memory. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
-  \item \texttt{unsigned char* buffer}
-  \item \texttt{size\_t len}
-  \item \texttt{unsigned short file\_type}
+  \item \texttt{unsigned char* buffer}, data to save
+  \item \texttt{size\_t len}, lenght of the data to save
+  \item \texttt{unsigned short file\_type}, type of the data to save (possible values: \texttt{FILE\_CLI\-ENT\_KEYS\_SIGNATURE} or \texttt{FILE\_CLIENT\_VC\_SIGNATURE}\)
 \end{itemize}
-\textit{Output}: 
+\textit{Output}: none
 
 \noindent
-\texttt{void seal\_data\_and\_sign ( ... );}\\
+\texttt{unsigned char* seal\_data\_and\_sign ( ... )}\\
+It encrypts and signs the data to save in untrusted non-volatile memory. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
-  \item \texttt{unsigned char* data}
-  \item \texttt{size\_t data\_len}
-  \item \texttt{unsigned char** ciphertext}
-  \item \texttt{size\_t* ciphertext\_len}
-  \item \texttt{unsigned char** sign}
-  \item \texttt{size\_t* sign\_len}
-  \item \texttt{struct sealing\_key sealing\_material}
+  \item \texttt{unsigned char* data}, data to encrypt and sign
+  \item \texttt{size\_t data\_len}, length of the data to encrypt and sign
+  \item \texttt{size\_t* sign\_len}, pointer to store the actual length of the signed message
 \end{itemize}
-\textit{Output}: 
+\textit{Output}: the signed message, which includes the signature plus an unaltered copy of the message. 
 
 
 \noindent
-\texttt{response\_message\_t* build\_response ( ... );}\\
+\texttt{response\_message\_t* build\_response ( ... )}\\
+It builds the response to sand back to the client. \\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+\item \texttt{size\_t* pt\_finalsize}, pointer to store the final length of the response
+\item \texttt{unsigned short response\_type}, type of the response (possible values: \texttt{SERVICE\_\-GEN\_KEYS}, \texttt{SERVICE\_STORE\_VC}, \texttt{SERVICE\_GET\_VP}, \texttt{MSG\_EXIT})
+\item \texttt{unsigned char *buffer}, response to send back to the client
+\item \texttt{size\_t len}, length of the response
+\end{itemize}
+\textit{Output}: the built response 
+
+
+\noindent
+\texttt{response\_message\_t* generate\_public\_keys ( ... )}\\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
 \item \texttt{size\_t* pt\_finalsize}
-\item \texttt{unsigned char *buffer}
-\item \texttt{size\_t len}
-\end{itemize}
-\textit{Output}: 
-
-
-\noindent
-\texttt{response\_message\_t* generate\_public\_keys ( ... );}\\
-\textit{Input}:
-\begin{itemize}[noitemsep,nolistsep]
-\item \texttt{size\_t* pt\_finalsize}
-\item \texttt{struct sealing\_key sealing\_material}
 \item \texttt{int key\_type}
 \end{itemize}
 \textit{Output}: 
 
 \noindent
-\texttt{response\_message\_t* store\_verifiable\_credential ( ... );
-}\\
+\texttt{response\_message\_t* store\_verifiable\_credential ( ... )}\\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
   \item \texttt{size\_t* pt\_finalsize}
-  \item \texttt{struct sealing\_key sealing\_material}
   \item \texttt{unsigned char* vc}
   \item \texttt{size\_t vc\_len}
 \end{itemize}
 \textit{Output}: 
 
 \noindent
-\texttt{response\_message\_t* get\_verifiable\_presentation ( ... );
-}\\
+\texttt{response\_message\_t* get\_verifiable\_presentation ( ... )}\\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
   \item \texttt{size\_t* pt\_finalsize}
-  \item \texttt{struct sealing\_key sealing\_material}
   \item \texttt{unsigned char* nonce}
   \item \texttt{size\_t nonce\_len}
+  \item \texttt{int key\_type}
 \end{itemize}
 \textit{Output}: 
 
@@ -242,25 +235,39 @@ In this file the important functions to mention are:
 
 \subsubsection{trusted\_client/trusted\_client.c and trusted\_client/trusted\_client.h}
 In this file the important functions to mention are:
-\begin{itemize}[noitemsep,nolistsep]
-  % \item \texttt{}
-  \item \texttt{void gen\_session\_context(byte* buffer)} 
-  \begin{itemize}[noitemsep]
-    \item \textit{Input:}
-    \item \textit{Output:}
-  \end{itemize}
 
-  \item \texttt{request\_message\_t* generate\_message(char* buffer, size\_t buffer\_len, size\_t* finalsize)}
-  \begin{itemize}[noitemsep]
-    \item \textit{Input:}
-    \item \textit{Output:}
-  \end{itemize}
-  \item \texttt{request\_message\_t* generate\_exit\_message(size\_t* finalsize)}
-  \begin{itemize}[noitemsep]
-    \item \textit{Input:}
-    \item \textit{Output:}
-  \end{itemize}
+\noindent
+\texttt{void gen\_session\_context( ... )}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{byte* buffer}
 \end{itemize}
+\textit{Output}: 
+
+
+\noindent
+\texttt{request\_message\_t* generate\_request\_message( ... )}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{char* buffer}
+  \item \texttt{size\_t buffer\_len}
+  \item \texttt{size\_t* finalsize}
+  \item \texttt{unsigned char* secret}
+  \item \texttt{unsigned short request\_type}
+\end{itemize}
+\textit{Output}: 
+
+
+\noindent
+\texttt{request\_message\_t* generate\_exit\_message( ... )}\\
+\textit{Input}:
+\begin{itemize}[noitemsep,nolistsep]
+  \item \texttt{size\_t* finalsize}
+\end{itemize}
+\textit{Output}: 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \begin{lstlisting}[language=C,frame=single]
    
 % \end{lstlisting}
