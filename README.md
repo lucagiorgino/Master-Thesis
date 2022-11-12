@@ -1,3 +1,5 @@
 # Master-Thesis
 
-set out folder if building ./out
+if building it is suggested to set as output folder `./out`
+
+the pdf is in the `./out` folder
