@@ -3,3 +3,4 @@ svg-inkscape/
 cache/_minted-main
 _minted-main/
 .vscode/
+!out/main.pdf

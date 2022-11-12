@@ -80,11 +80,16 @@ An Enclave is an environment isolated from the untrusted OS and other enclaves. 
     \label{enclave-lifecycle}
 \end{figure}
 
-\subsection{Memory Isolation using RISC-V PMP}
+\subsubsection{Edge Calls}
+Function calls that enter or exit the enclave are known as \textit{edge calls} in Keystone, as in other enclave systems. For instance, if an enclave wants to send a network packet, it must use an edge call to deliver the data to an untrusted host process. The current version of Keystone allows \textit{enclave} $\rightarrow$ \textit{untrusted host} calls, also known internally as \textit{ocalls} (outbound calls, names under discussion). In the current version of Keystone, all ocall wrapping code uses shared memory regions to transfer data. When referencing data in these regions virtual address pointers are never used, instead, only offsets into the region are used. 
+
+
+
+\subsection{Memory isolation using RISC-V PMP}
 In Keystone, developers refer to the memory section that an enclave uses as a \textit{region} and each region is defined by a PMP entry. Currently, the SM employs two PMP registers for internal purposes (i.e., security monitor memory and untrusted memory). One active enclave may use one of the remaining PMP entries each. RISC-V PMP has several properties, the most relevant are: 
 \begin{itemize}
-    \item prioritization by index: the index of PMP entries statically determines the priority. Indices goes from \texttt{0} to \texttt{N}, where \texttt{N} depends upon the platform. \texttt{0} is the highest priority,whereas \texttt{N} is the lowest. 
-    \item default deny: if no PMP entry matches with an address, the memory access will be rejected by default.
+    \item prioritization by index: the index of PMP entries statically determines the priority. Indices go from \texttt{0} to \texttt{N}, where \texttt{N} depends upon the platform. \texttt{0} is the highest priority,whereas \texttt{N} is the lowest. 
+    \item default denies: if no PMP entry matches with an address, the memory access will be rejected by default.
 \end{itemize}
 For simplicity, in the following explanation PMP entries are denoted as \texttt{pmp[i]} where \texttt{i} is an index. At the start of the boot process, physical memory is not accessible by U- or S-modes. \\
 
@@ -134,7 +139,7 @@ net result   |-------|------|=========|-------|==|--|
 \end{lstlisting}
 
 
-\subsection{Keystone Key-Hierarchy}
+\subsection{Keystone key-hierarchy}
 Figure \ref{keystone-key-hierarchy} shows the key hierarchy of Keystone. The root of the key hierarchy is the asymmetric processor key pair (\texttt{SK\_D} and  \texttt{PK\_D}). The asymmetric security monitor key pair (\texttt{SK\_SK} and \texttt{PK\_SM}) is derived from the measurement of the security monitor (\texttt{H\_SM}) and the private processor key (\texttt{SK\_D}) \cite{keystone-doc}.
 As a result, the computed security monitor key pair is bound to the processor and to the identity of the security monitor itself.
 

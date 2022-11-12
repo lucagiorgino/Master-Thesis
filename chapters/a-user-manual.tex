@@ -3,11 +3,89 @@
 
 \section{User manual}
 \subsection{Constrained and edge device comparison}
-This section describes how to install and execute the code used for testing the cryptographic capabilities of constrained and non-constrained devices.  
-\subsubsection{Test MbedTLS library}
-Mbed TLS \cite{mbed-tls} is a C library and it was used for testing RSA and ECDSA, cryptographic primitives. 
-{\color{red} ToDo: spiegare installazione su board a su ubuntu}
-\subsubsection{Test BBS\texttt{+} signatures scheme}
+This section describes how to install and execute the code used for testing the cryptographic capabilities of constrained and non-constrained devices.
+\subsection*{Test MbedTLS library}
+Mbed TLS \cite{mbed-tls} is a C library and it was used for testing RSA and ECDSA, cryptographic primitives. The version used is \texttt{mbedtls-3.1.0}, available from this repository: \url{https://github.com/Mbed-TLS/mbedtls}. 
+
+\subsubsection{Test on non-constrained device}
+First, MbedTLS needs to be installed on the chosen system. 
+\begin{lstlisting}[frame=single]
+$ wget 
+ https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v3.1.0.zip
+$ unzip v3.1.0.zip
+$ cd mbedtls-3.1.0/
+$ sudo make install
+\end{lstlisting}
+
+Once the library has been installed, enter the Mbed TLS test directory and compile the program.  
+\begin{lstlisting}[frame=single]
+$ cd mbedtls-test
+$ gcc -o test main.c mytest.c -lmbedtls -lmbedx509 -lmbedcrypto
+\end{lstlisting}
+
+Then tests can be launched and the results can be stored on a file with the following command. 
+\begin{lstlisting}[frame=single]
+$ ./test > results.txt
+\end{lstlisting}
+
+The output should be similar to the following shown in the listing \ref{l-mbedtls-1}. 
+\begin{lstlisting}[caption={Example of MbedTLS tests output on non-constrained device},captionpos=b,label={l-mbedtls-1},style=DOS,frame=single]
+Seeding the random number generator... ok
+
+Test: ECDSA key gen
+p256
+0.000266988,
+0.000238424,
+...
+Test: ECDSA sign-gen
+p256 key gen time: 0.000260937
+0.000004468,0.000309109,0.001057424, # (hash, sign, ver) times
+0.000003286,0.000296264,0.001026635,
+...
+
+Test: RSA 2048 key gen
+0.133808741,
+0.087886941,
+...
+
+Test: RSA sign-ver
+rsa2048 key gen time: 0.065950689
+0.000003988,0.002522734,0.000039014 # (hash, sign, ver) times
+0.000003206,0.001853610,0.000038684
+...
+\end{lstlisting}
+
+\subsubsection{Test on constrained device}
+STM32CubeIDE \cite{cube-ide} has been used (version \texttt{1.9.0}) for developing and flashing the binaries onto the STM32L4+ board \cite{stm32-board-product}.
+
+For simplicity, the complete project is provided and it just needs to be imported into STM32CubeIDE as an existing project. Click \texttt{File > Import > Existing projects into Workspace}, then select the archive file \texttt{mbedtlsv1-stm32.zip} from the file system, select the project \texttt{Test1} and click \texttt{Finish}. Then plug the board into a USB port and click \texttt{Project > Build Project}. The code will be compiled. When it's done (and 0 errors appear in the console panel at the bottom), click \texttt{Run}. 
+
+The output on the board is very similar to the previous one, for debug messages the output of the \texttt{printf} function is redirected to one \texttt{UART} and it can be read with a terminal emulator that supports serial port, such as \texttt{Teraterm} or \texttt{Putty}, by reading the \texttt{COM} that correspond to the \texttt{STM32} debugger. 
+The output should be similar to the following shown in the listing \ref{l-mbedtls-2}. \\
+
+\begin{lstlisting}[caption={Example of MbedTLS tests output on constrained device},captionpos=b,label={l-mbedtls-2},style=DOS,frame=single]
+Seeding the random number generator... ok
+Test: ECDSA key gen, sign-gen
+p256
+318,
+316,
+...
+key gen time: 319
+5;357;1257 # (hash, sign, ver) times
+5;361;1264
+\end{lstlisting}
+
+%Since it is just a test and some of them take a long time, it is suggested to choose and execute one test at a time by manually comment/uncomment the code in the file \texttt{mytest.c}. 
+
+% \begin{lstlisting}[language=C,frame=single]
+% printf("Test: ECDSA key gen, sign-gen\n");
+% printf("p256\n");
+% test_ECDSA_keygen(MBEDTLS_ECP_DP_SECP256R1, &ctr_drbg, iterations);
+% test_ECDSA(MBEDTLS_ECP_DP_SECP256R1, MBEDTLS_MD_SHA256, &ctr_drbg, iterations);
+% \end{lstlisting}
+
+
+\subsection*{Test BBS\texttt{+} signatures scheme}
 BBS\texttt{+} rust library was used for testing BBS\texttt{+} signatures that can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs. In these tests, only simple single-message signing and verification were tested.
 
 Before starting, we need to install Rust. The installation of Rust is through a tool called Rustup, which is a Rust installer and version management tool. The way to install Rustup differs by platform, on Unix, run the next command in the shell. This downloads and runs \texttt{rustup-init.sh}, which in turn downloads and runs the correct version of the \texttt{rustup-init} executable for your platform. For other platforms check the Rust documentation \cite{rust-install}. 
@@ -23,8 +101,9 @@ To launch the test and take executions times of BBS\texttt{+} signatures and ver
 \begin{lstlisting}[frame=single]
 $ cargo run
 \end{lstlisting}
-The output should look something like this:
-\begin{lstlisting}[style=DOS,frame=single]
+
+The output should be similar to the following shown in the listing \ref{l-bbs}. 
+\begin{lstlisting}[caption={Example of BBS\texttt{+} tests output},captionpos=b,label={l-bbs},style=DOS,frame=single]
   AVG Time elapsed in key generation() is: 25 ms
   AVG Time elapsed in sign() is: 18 ms
   AVG Time elapsed in ver() is: 102 ms
@@ -78,19 +157,12 @@ $ make
 \end{mybox}
 
 \subsubsection{Build the demo}
-Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document. The \texttt{riscv-musl-toolchain} has been used for building the \texttt{server\_eapp}, which can be set wich the \texttt{./quick-setup.sh} script. Then, the \texttt{./quick-start.sh} will build the demo, the script will create two files: \texttt{demo-server.ke} and \texttt{trusted\_client.riscv}. 
+Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document. The \texttt{riscv-musl-toolchain} has been used for building the \texttt{server\_eapp}, which can be set with the \texttt{./setup\_musl.sh} script. Then, the \texttt{./quick-start.sh} will build the demo, the script will create two files: \texttt{demo-server.ke} and \texttt{trusted\_client.riscv}. 
 \begin{lstlisting}[frame=single]
 $ cd keystone-demo-poc
-$ ./quick-setup.sh  
-$ source ./quick-setup.sh
-$ SM_HASH=<path/to/sm_expected_hash.h> ./quick-start.sh
+$ source ./setup_musl.sh
+$ SM_HASH=./include/sm_expected_hash.h ./quick-start.sh
 \end{lstlisting}
-
-\begin{mybox}
-  If the \texttt{sm\_expected\_hash.h} is not present in the \texttt{include} folder, can be generated for the first time following the instruction in the \texttt{README.md} file of the SM repository available at the following url \url{https://github.com/keystone-enclave/sm.git}. Then, if the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory: \texttt{KEYSTONE\_BUILD\_DIR=<path/to/keystone/build\ path> ./scripts/get\_attestation\_modified.sh ./include}.
-\end{mybox}
-
-
 Then once the demo is built, the binaries need to be copied into the keystone build folder.
 
 \begin{lstlisting}[frame=single]
@@ -127,7 +199,7 @@ On the server side run:
 \end{lstlisting}
 On the client side run:
 \begin{lstlisting}[frame=single]
-> ./trusted_client.riscv         
+> ./trusted_client.riscv 127.0.0.1        
 \end{lstlisting}
 The client will connect to the enclave and perform the remote attestation. If the attestation is successful, the client can send back the session context and if server checks go right the communication can start and the client can request operation to the server. 
 
@@ -136,4 +208,106 @@ If the enclave server app will be modified, the expected hash values have to be 
 \begin{lstlisting}[frame=single]
   > ./trusted_client.riscv 127.0.0.1 --ignore-valid        
 \end{lstlisting}
-{\color{red} ToDo: esempio di esecuzione/output da aggiungere}
+
+\subsubsection{Expected output}
+The output of the client and the server should be similar to the following listings \ref{l-demo-c} and \ref{l-demo-s} . 
+\begin{lstlisting}[caption={Example of output at client side},captionpos=b,style=DOS,label={l-demo-c},frame=single]
+              === Security Monitor ===
+Hash: e51749130b6036fe85b27409a4ea3e1c078fe4dcb76eb697e7e3cdc5ff
+313144628a1ec10558cea5ad94641de7fb31fda759758115caf1144b2c49603f
+42db3a
+Pubkey: cd98f4a28a8523ba8ecd31175aa0e2330b2f46e7034545254660126a
+9f3b8cb9
+Signature: e738f4e708f73ffa4a0d3dc2199c9e0ac119bf14b32da33afe842
+66803c9ae0766eb6d9f83e6d3b2511cbe8443996feb0bf8714f35c0c678aa593
+90846a8d50a
+              === Enclave Application ===
+Hash: 11ff35526c90c469ca6878dc22494703c554db65406dcc9942417be2d9
+010722843d1bda7115604f518fabd47ec3ba79cd89a560847bb5b810c314201e
+2217d6
+Signature: 58ca380c6b4476ed7b27143d92dec14fff2858ffef8ed6ef40156
+515d36da50a220e494d936cafedd23558b8d16ce66c6d5f00bdb7ec973ee46ec
+f7a48c6fa0d
+Enclave Data: b07dfd3047fb5213b8af9b76594a06891c893001c6c4be448a
+d8b13f7eb02a19b27d0263bfd9aa8941345f837788159897a8aea2ecb33da926
+b8d4747328eaace08a34d55fcdc41e2938838da173900485e99bcc1fb9eb7b00
+dac1e2fe5a5174
+                -- Device pubkey --
+0faad4ff01178583baa588966f7c1ff32564dd17d7dc2b46cb50a84a69270b4c
+[TC] Attestation signature and enclave hash are valid
+[TC] Session keys established
+
+        Available services
+1. generate keys
+2. store verifiable credential
+3. get verifiable presentation
+ . everything else to quit 
+Type the service to request:
+> 1
+\end{lstlisting}
+\leavevmode\newline
+
+\begin{lstlisting}[caption={Example of output at server side},captionpos=b,label={l-demo-s},style=DOS,frame=single]
+Verifying archive integrity... All good.
+Uncompressing Keystone Enclave Package
+[EH] Got connection from remote client
+[SE] NOT USING REAL RANDOMNESS: TEST ONLY
+[SE] Stub certificate signature is valid
+[SE] [C] Successfully generated session keys.
+[EH] Got an encrypted message:
+3e5d0575e8bccf73 eb5255dad244eee1 93fcae78f5ad0459 ...
+
+[SE] Sealing key derivation successful!
+generate_public_keys
+
+EdDSA_keys_t:  [192]
+07FAC4B1522F06D916C55D321BB839F23AEF95AA48E051E53DB2AF284D7845...
+
+Ciphertext  [208]
+AB35E2D0F9C3ADFDD10E448D4ABD7A42E00ED87CE569C4AC3809785CC9A028...
+
+Sign  [272]
+FA72997814FA1F16D111DA0189D0440F0F245EB606BACACD0566DEB0767D44...
+[EH] Saving sealed data
+[EH] Filename: /root/075CFECFC6617F ... 26A116B1611_keys_sign
+Response payload:  [64]
+8E120A739BA94B7E9AE2F590166682170570D7AFCB70026B513405E56E90C1...
+\end{lstlisting}
+
+\subsubsection{Tools for updating enclave and sm hashes}
+If the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory. The demo must be recompiled and the QEMU image rebuilt before and after this command is executed. 
+
+\begin{lstlisting}[frame=single]
+# build the demo
+# copy the binaries and build qemu image
+$ KEYSTONE\_BUILD\_DIR=<path/to/keystone/build path> ./scripts/get\_attestation\_modified.sh ./include
+# build the demo
+# copy the binaries and build qemu image
+\end{lstlisting}
+
+If the \texttt{sm\_expected\_hash.h} is not present in the \texttt{include} folder, can be generated for the first time following the instruction in the \texttt{README.md} file of the SM repository available at the following url: \url{https://github.com/keystone-enclave/sm.git}. 
+
+\subsubsection{Tools for provisioning}
+
+The file \texttt{provision} can be used to generate a new \texttt{test\_client\_key.h}, which will contain the root key pair, the client key pair and the signature of the client public key made by the system administrator with its secrey key. 
+
+It could be modified to meet your purposes (for example to generate more client key pairs and signatures or to use a fixed root key).
+The program uses \texttt{libsodium} to generate an Ed25519 key pair for the system administrator. Then will generate another Ed25519 key pair for the client and the public part will be signed with the system administrator key pair. The server will use the system administrator public key to authenticate that the client is part of the system administrator network.
+ 
+Once \texttt{libsodium}  has been installed, compile \texttt{provision.c}, run it and redirect the output to a file with the name \texttt{test\_client\_key.h}. 
+The file \texttt{test\_client\_key.h} is already present in the \texttt{include} folder, but it may be necessary to generate a new one and it can be done with the following commands. \\
+
+\begin{lstlisting}[frame=single]
+$ git clone https://github.com/jedisct1/libsodium.git
+$ cd libsodium
+$ git checkout 4917510626c55c1f199ef7383ae164cf96044aea
+$ ./configure
+$ make && make check
+$ sudo make install
+$ sudo ldconfig
+
+$ cd keystone-demo/provisioning
+$ gcc -o provision provision.c -lsodium
+
+$ ./provision > ../include/test_client_key.h
+\end{lstlisting}
