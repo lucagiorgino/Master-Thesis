@@ -1,10 +1,10 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-\section{Self-Sovereign-Identity as a Service}
+%\section{Self-Sovereign-Identity as a Service}
 The idea of a Self-Sovereign-Identity as a Service is to support a constrained device to create and manage its self-sovereign-identity. Since IoT devices cannot run natively the complete SSI stack there is a need to design and develop an edge device capable of providing such an identity to constraint devices as a service.  Such a solution has the advantage of increasing the number of devices that can interact in such a secure digital ecosystem.
 
-\subsection{Use case analysis}
+\section{Use case analysis}
 The first step is to analyse and identify critical cryptographic operations involved in self-sovereign-identity management.The examples in figures \ref{usecase-did}, \ref{usecase-issuer} and \ref{usecase-verifier} illustrate in an high-level way how to create and use verifiable credentials. 
 \begin{figure}[!h]
     \centering
@@ -13,8 +13,9 @@ The first step is to analyse and identify critical cryptographic operations invo
     \label{usecase-did}
 \end{figure}
 
+\subsection{Creation of a DID}
 Independently from the chosen registry when a holder creates a DID, he uniquely binds cryptographic proofs with the DID identifier, typically using public-private key pairs, so he will need to generate them before generating the DID document. The order of operations can be seen in figure \ref{usecase-did}. 
-
+\subsection{Verifiable Credential Issuance}
 \begin{figure}[!h]
     \centering
     \includesvg[inkscapelatex=false, scale=0.80]{./chapters/images/use-case-credential_creation.svg}
@@ -22,7 +23,7 @@ Independently from the chosen registry when a holder creates a DID, he uniquely 
     \label{usecase-issuer}
 \end{figure}
 Next, a holder can get a verifiable credential from an issuer, that will verify the identity in some way, by examining the provided documentation, if the requirements are satisfied the issuer will generate a verifiable credential by linking her identity information to DID. The holder receiving the verifiable credential will verify its validity and save it in his personal credential repository. All of this is shown in figure \ref{usecase-issuer}. 
-
+\subsection{Verifiable Credential Verification}
 \begin{figure}[!h]
     \centering
     \includesvg[inkscapelatex=false, scale=0.80]{./chapters/images/use-case-credential_usage.svg}
@@ -31,6 +32,7 @@ Next, a holder can get a verifiable credential from an issuer, that will verify 
 \end{figure}
 
 Moreover, as can be seen in figure \ref{usecase-verifier}, once a holder has a DID and a verifiable credential, he can use them to access a service to a verifier. The holder will use the DID to prove to the requesting party that it is the controller of that DID through some sort of challenge-response. Then the holder, starting from one or more verifiable credentials will create a verifiable presentation. If possible it is recommended to the holder use selective disclosure, presenting proofs of claims without revealing the entire verifiable credential. Once created the verifiable presentation the holder can send it to the verifier and he will check its validity and authorize the holder if everything is fine.  
+\section{Performance analysis}
 After analysing the different use cases, as highlighted in figures \ref{usecase-did}, \ref{usecase-issuer} and \ref{usecase-verifier}, the cryptographic operations that could be  critical for a constrained device are:
 \begin{itemize}
     \item keys generation
@@ -39,7 +41,7 @@ After analysing the different use cases, as highlighted in figures \ref{usecase-
 \end{itemize}
 
 To understand how much critical these operations are on a constrained device it is necessary to analyse the differences between a non-constrained one by getting their execution times and comparing the result. 
-STM32L4+ Discovery kit IoT node\cite{stm32-board-product} has been used as a constrained device equipped with the \texttt{STM32L4S5 MCU @ 120 MHz}, 2 Mbytes of flash memory and 640 Kbytes of SRAM. While, as a non-constrained device, which has also been called \textit{edge device}, has been used a server with an \texttt{Intel Xeon Silver 4110 CPU @ 2.10GHz}. As a library that implements the operation for key generation and signature (generation and verification), Mbed TLS has been used. \textit{Mbed TLS} is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library which implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
+STM32L4+ Discovery kit IoT node\cite{stm32-board-product} has been used as a constrained device equipped with the \texttt{STM32L4S5 MCU @ 120 MHz}, 2 Mbytes of flash memory and 640 Kbytes of SRAM. While, as a non-constrained device, which has also been called \textit{edge device}, has been used a server with an \texttt{Intel Xeon Silver 4110 CPU @ 2.10GHz}. 
 
 \begin{figure}[h!]
     \centering
@@ -48,7 +50,9 @@ STM32L4+ Discovery kit IoT node\cite{stm32-board-product} has been used as a con
     \label{stm-board}
 \end{figure}
 
-\subsubsection*{Results}
+As a library that implements the operation for key generation and signature (generation and verification), Mbed TLS has been used. \textit{Mbed TLS} is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library which implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
+
+\section{Results}
 It is evident from the table \ref{time-table1} that RSA is usable on constrained devices in real-life applications only if the key generation is precomputed, otherwise is unusable. On the constrained device, RSA signing and verification are faster than ECDSA, but ECDSA provides the same level of security as RSA but it does so while using much shorter key lengths. In applications where it could be useful to generate a keypair on the fly, ECDSA is a must. On the edge device, the ECDSA signing operation is faster than RSA, while the RSA verification process is faster than ECDSA.  It can also be noted that the time difference between the constrained device and the edge device is huge, probably due to the frequency of operation of the MCU and the CPU.
 
 \begin{table}[!h]
@@ -96,7 +100,7 @@ Furthermore, in table \ref{time-table2} ECDSA signatures and BBS\texttt{+} signa
     \label{time-table2}
 \end{table}
 
-\subsection{Design and implementation choices}
+\section{Design and implementation choices}
 The obtained results suggest that a constrained device cannot use the BBS\texttt{+} signature scheme in real-world applications, since it can be supposed that execution times will be considerably high. In the Self-sovereign Identity as a Service (SSIaaS) paradigm, a new role is defined, called edge. The edge device interacts with a constrained IoT object and provides functionalities to create and support it in identity management, this can be seen in figure \ref{poc-design}. The identified and exposed operations by the edge device are:
 \begin{itemize}
     \item key pairs generation
@@ -104,13 +108,37 @@ The obtained results suggest that a constrained device cannot use the BBS\texttt
     \item generation of a verifiable presentation
 \end{itemize}
 
-{\color{red} ToDo: spiegare il design delle operazioni}
+\subsection{Self-Sovereign-Identity as a Service Ecosystem}
+
 \begin{figure}[!h]
     \centering
     \includesvg[inkscapelatex=false, scale=1]{./chapters/images/poc.svg}
     \caption{Basic components of Self-Sovereign-Identity as a Service}
     \label{poc-design}
 \end{figure}
+
+From now on, the focus is on the interaction between the edge device and the IoT-constrained node. The IoT device can request the edge node to generate key pairs that could later use to generate a verifiable presentation. The IoT device can store on the edge node a verifiable credential got from an issuer. If the IoT device what to interact with a verifier, it has to provide a verifiable presentation, which is generated by the edge device starting from the verifiable credential and signing the vc with a keypair previously generated for that specific IoT client. 
+Since these are security-critical operations because they handle the identity of the IoT node, it needs the guarantee that the data shared with the edge device and the executed code are protected with respect to confidentiality and integrity. Hence, a TEE has been implemented using the keystone framework.  Figures \ref{manufacturer-provisioning} and \ref{poc-architecture} show the architecture and the preliminary interactions between the IoT device and the edge device, before the constrained device can ask for services. Figures \ref{poc-gen-keys}, \ref{poc-store-vc} and \ref{poc-get-vp} show in a top-level way how the operations have been implemented. 
+
+\subsection{IoT Device Provisioning}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/manufacturer.svg}
+    \caption{Manufacturer provisions device with expected hashes, keys and signature of the public key}
+    \label{manufacturer-provisioning}
+\end{figure}
+
+\subsection{Demo Architecture}
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture3.svg}
+    \caption{Demo architecture}
+    \label{poc-architecture}
+\end{figure}
+
+\subsection{Offloaded Operations Design}
 
 \begin{figure}[!h]
     \centering
@@ -133,18 +161,3 @@ The obtained results suggest that a constrained device cannot use the BBS\texttt
     \label{poc-get-vp}
 \end{figure}
 
-\subsection{Architecture}
-{\color{red} ToDo: spiegare provisioning iniziale e architettura finale}
-\begin{figure}[!h]
-    \centering
-    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/manufacturer.svg}
-    \caption{Manufacturer provisions device with expected hashes, keys and signature of the public key}
-    \label{manufacturer-provisioning}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture3.svg}
-    \caption{Demo architecture}
-    \label{poc-architecture}
-\end{figure}

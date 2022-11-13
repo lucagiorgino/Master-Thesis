@@ -1,10 +1,9 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-\section{User manual}
-\subsection{Constrained and edge device comparison}
+\section{Constrained and edge device comparison}
 This section describes how to install and execute the code used for testing the cryptographic capabilities of constrained and non-constrained devices.
-\subsection*{Test MbedTLS library}
+\subsection{Test MbedTLS library}
 Mbed TLS \cite{mbed-tls} is a C library and it was used for testing RSA and ECDSA, cryptographic primitives. The version used is \texttt{mbedtls-3.1.0}, available from this repository: \url{https://github.com/Mbed-TLS/mbedtls}. 
 
 \subsubsection{Test on non-constrained device}
@@ -58,7 +57,7 @@ rsa2048 key gen time: 0.065950689
 \subsubsection{Test on constrained device}
 STM32CubeIDE \cite{cube-ide} has been used (version \texttt{1.9.0}) for developing and flashing the binaries onto the STM32L4+ board \cite{stm32-board-product}.
 
-For simplicity, the complete project is provided and it just needs to be imported into STM32CubeIDE as an existing project. Click \texttt{File > Import > Existing projects into Workspace}, then select the archive file \texttt{mbedtlsv1-stm32.zip} from the file system, select the project \texttt{Test1} and click \texttt{Finish}. Then plug the board into a USB port and click \texttt{Project > Build Project}. The code will be compiled. When it's done (and 0 errors appear in the console panel at the bottom), click \texttt{Run}. 
+For simplicity, the complete project is provided and it just needs to be imported into STM32CubeIDE as an existing project. Click \texttt{File > Import > Existing projects into Workspace}, then select the archive file \texttt{mbedtlsv1-stm32.zip} from the file system, select the project \texttt{Test1} and click \texttt{Finish}. Then plug the board into a USB port and click \texttt{Project > Build Project}. The code will be compiled. When it is done (and 0 errors appear in the console panel at the bottom), click \texttt{Run}. 
 
 The output on the board is very similar to the previous one, for debug messages the output of the \texttt{printf} function is redirected to one \texttt{UART} and it can be read with a terminal emulator that supports serial port, such as \texttt{Teraterm} or \texttt{Putty}, by reading the \texttt{COM} that correspond to the \texttt{STM32} debugger. 
 The output should be similar to the following shown in the listing \ref{l-mbedtls-2}. \\
@@ -85,7 +84,7 @@ key gen time: 319
 % \end{lstlisting}
 
 
-\subsection*{Test BBS\texttt{+} signatures scheme}
+\subsection{Test BBS\texttt{+} signatures scheme}
 BBS\texttt{+} rust library was used for testing BBS\texttt{+} signatures that can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs. In these tests, only simple single-message signing and verification were tested.
 
 Before starting, we need to install Rust. The installation of Rust is through a tool called Rustup, which is a Rust installer and version management tool. The way to install Rustup differs by platform, on Unix, run the next command in the shell. This downloads and runs \texttt{rustup-init.sh}, which in turn downloads and runs the correct version of the \texttt{rustup-init} executable for your platform. For other platforms check the Rust documentation \cite{rust-install}. 
@@ -109,11 +108,11 @@ The output should be similar to the following shown in the listing \ref{l-bbs}.
   AVG Time elapsed in ver() is: 102 ms
 \end{lstlisting}
 
-\subsection{Proof of concept}
+\section{Proof of concept}
 
 The proof of concept relies on the full Keystone SDK. The easiest way for building and try Keystone and the proof of concept is to use QEMU. QEMU is an open-source machine emulator, in this case, is used to emulate RISC-V architecture.
 The proof of concept has been tested with \texttt{Ubuntu 18.04}. 
-\subsubsection{Keystone installation and requirements}
+\subsection{Keystone installation and requirements}
 The following dependencies must be installed before installing Keystone.
 \begin{lstlisting}[frame=single]
 $ sudo apt update
@@ -156,7 +155,7 @@ $ make
 \faExclamation\enspace It has been noted that under \texttt{Windows Subsystem for Linux (WSL)} the build of the image can fail. To solve this issue just modify the \texttt{PATH} to not include \texttt{/mnt/c/*} folders.
 \end{mybox}
 
-\subsubsection{Build the demo}
+\subsection{Build the demo}
 Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document. The \texttt{riscv-musl-toolchain} has been used for building the \texttt{server\_eapp}, which can be set with the \texttt{./setup\_musl.sh} script. Then, the \texttt{./quick-start.sh} will build the demo, the script will create two files: \texttt{demo-server.ke} and \texttt{trusted\_client.riscv}. 
 \begin{lstlisting}[frame=single]
 $ cd keystone-demo-poc
@@ -175,7 +174,7 @@ $ cd keystone/build
 $ make image
 \end{lstlisting}
 
-\subsubsection{Run QEMU}
+\subsection{Run QEMU}
 The following script will run QEMU, and start executing from the emulated silicon root of trust. The root of trust then jumps to the SM, and the SM boots Linux. 
 \begin{lstlisting}[frame=single]
 $ cd keystone/build
@@ -187,7 +186,7 @@ $ ssh root@localhost -p <port number>
 \end{lstlisting}
 Login as \texttt{\color{RedOrange}root} with the password \texttt{\color{RedOrange}sifive}. You can exit QEMU by \texttt{\color{RedOrange}ctrl-a\ `+`\ x} or using  \texttt{\color{RedOrange}poweroff}  command
 
-\subsubsection{Run the demo}
+\subsection{Run the demo}
 Inside QEMU, run the following commands. The first one will load the keystone kernel module and the second one will set up the loopback device. 
 \begin{lstlisting}[frame=single]
 > insmod keystone-driver.ko 
@@ -209,7 +208,7 @@ If the enclave server app will be modified, the expected hash values have to be 
   > ./trusted_client.riscv 127.0.0.1 --ignore-valid        
 \end{lstlisting}
 
-\subsubsection{Expected output}
+\subsection{Expected output}
 The output of the client and the server should be similar to the following listings \ref{l-demo-c} and \ref{l-demo-s} . 
 \begin{lstlisting}[caption={Example of output at client side},captionpos=b,style=DOS,label={l-demo-c},frame=single]
               === Security Monitor ===
@@ -274,7 +273,7 @@ Response payload:  [64]
 8E120A739BA94B7E9AE2F590166682170570D7AFCB70026B513405E56E90C1...
 \end{lstlisting}
 
-\subsubsection{Tools for updating enclave and sm hashes}
+\subsection{Tools for updating enclave and sm hashes}
 If the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory. The demo must be recompiled and the QEMU image rebuilt before and after this command is executed. 
 
 \begin{lstlisting}[frame=single]
@@ -287,7 +286,7 @@ $ KEYSTONE\_BUILD\_DIR=<path/to/keystone/build path> ./scripts/get\_attestation\
 
 If the \texttt{sm\_expected\_hash.h} is not present in the \texttt{include} folder, can be generated for the first time following the instruction in the \texttt{README.md} file of the SM repository available at the following url: \url{https://github.com/keystone-enclave/sm.git}. 
 
-\subsubsection{Tools for provisioning}
+\subsection{Tools for provisioning}
 
 The file \texttt{provision} can be used to generate a new \texttt{test\_client\_key.h}, which will contain the root key pair, the client key pair and the signature of the client public key made by the system administrator with its secrey key. 
 

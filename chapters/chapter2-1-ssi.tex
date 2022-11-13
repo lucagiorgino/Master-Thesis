@@ -1,16 +1,16 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-\section{Self-Sovereign-Identity}
+%\section{Self-Sovereign-Identity}
 Self-Sovereign Identity (SSI) \cite{tobin2016inevitable} is a new model for digital identity. In the SSI ecosystem, a user can fully control his own identity and use it between any service. SSI is different from today's digital identities: it is anchored to distributed ledgers so is not controlled by any centralized services.
 One SSI innovation is the design and development of a common set of specifications: 
 Decentralized Identifiers (DIDs) \cite{didW3C} and Verifiable Credentials (VCs) \cite{vcW3C}, by doing this a user identity can be anchored to different distributed ledgers but it will be defined in the same standard way.
 
-\subsection{Decentralized Identifiers}  
+\section{Decentralized Identifiers}  
 DIDs \cite{didW3C} are identifiers referring to any subject determined by the controller of the DID.
 A DID's controller can demonstrate control over it thanks to the design without requesting permission from any other party allowing a verifiable, decentralized digital identity, that will be independent of identity providers, and certification authorities.
 
-\subsubsection*{Overview}
+\subsection*{Overview}
 
 In detail a DID is a type of URI \cite{berners2005uniform} scheme that links a DID subject with a DID document allowing trustable interactions associated with that subject. The subject of a DID is the entity identified by the DID and can be a person, a group or an organization. Typically the DID subject is also the controller, but a DID can have more than one. 
 
@@ -57,7 +57,7 @@ A DID URL expands the syntax of a DID with other standard components of URI such
     \label{didOverview}
 \end{figure}
 
-\subsection{Verifiable Credentials}
+\section{Verifiable Credentials}
 Verifiable Credential \cite{vcW3C} provides a standard method to express credentials on the internet in a way that is cryptographically safe, privacy-respecting, and machine-verifiable.
 In our daily lives a credential could consist of:
 \begin{itemize}
@@ -70,7 +70,7 @@ In our daily lives a credential could consist of:
 
 In verifiable credentials, the inclusion of digital signatures makes them more trustworthy and more tamper-evident against physical credentials allowing third-party verified machine-readable personal information usable on the Web for receiving services and benefits as in the physical world \cite{vcW3C}.
 
-\subsubsection*{Overview}
+\subsection*{Overview}
 
 Distinct actors can be identified in the verifiable credentials ecosystem, which defines the roles and the relationships between them. The separation of roles allows the standardization of interfaces and protocols. In detail the existing entities that determine the \textit{trust triangle} \cite{trustOverIP} are: 
 
@@ -152,7 +152,7 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
       }   
 \end{lstlisting}
 
-\subsection{Distributed Ledgers Technologies}
+\section{Distributed Ledgers Technologies}
 
 Distributed Ledger Technology (DLT)  is a new paradigm for collecting and sharing information between people. A distributed ledger is a database that is spread across several nodes or computing devices. An exact copy of the ledger is replicated and stored on each node. The revolutionary aspect of distributed ledger technology is that no single administrator or central authority is responsible for maintaining the ledger. Each network's participant node keeps its state updated by constructing and recording updates to the ledger independently. The nodes then vote on these adjustments to ensure that the majority agrees with the conclusion reached. This voting and agreement on the state of the ledger is called consensus and is conducted automatically via a consensus algorithm \cite{dlt-intro-1}. 
 The following criteria can be used to categorize DLTs: data structures, consensus algorithms, permissions, mining accessibility and so on. The main data structure types are blockchains and Directed Acyclic Graphs (DAGs). Although blockchains are the most popular and well-known DLT type,  DLTs based on Directed Acyclic Graph (DAG) data structures are becoming more popular because they reduce transaction data size and transaction fees, and increase transaction speeds \cite{dlt-intro-2}.
@@ -166,4 +166,4 @@ An Example of DAG DLT is the \textit{tangle} of IOTA \cite{popov2018tangle}, a c
     \label{tangleFigure}
 \end{figure}
 
-%parlare di come è immutabile una blockchain?
+%parlare di come e' immutabile una blockchain?

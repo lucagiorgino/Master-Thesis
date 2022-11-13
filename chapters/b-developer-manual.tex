@@ -1,9 +1,8 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-\section{Developer manual}
-\subsection{Constrained and edge device comparison}
-\subsection*{Test MbedTLS library}
+\section{Constrained and edge device comparison}
+\subsection{Test MbedTLS library}
 For this subproject, the most relevant file is \texttt{mytest.c}, which is equal for both non-constrained devices and the constrained device (STM32L4+ board \cite{stm32-board-product}). The only difference is the function used for measuring the elapsed time of a cryptographic primitive. The function \texttt{clock\_gettime()}, of the standard library \texttt{time.h}, is used on the non-constrained device, while on the STM32L4+ board is used the \texttt{HAL\_GetTick()}. The listing \ref{pseudo-algo} is described in a pseudo-language how to measure the elapsed time of a cryptographic primitive. 
 Then, the available tests are described. \\
 
@@ -68,7 +67,7 @@ It generates an ECDSA key pair, computes the ECDSA signature of a random hashed 
 % SUBSECTION
 % ===========================================================================
 
-\subsection*{Test BBS\texttt{+} signatures scheme}
+\subsection{Test BBS\texttt{+} signatures scheme}
 For this subproject, the most relevant files are:
 \begin{itemize}
   \item \texttt{Cargo.toml} where dependencies are added, such as  
@@ -94,8 +93,8 @@ fn main() {
 % SUBSECTION
 % ===========================================================================
 
-\subsection{Proof of concept}
-\subsection*{Guide to Keystone Components}
+\section{Proof of concept}
+\subsection{Guide to Keystone Components}
 The Keystone repository consists of several sub-components such as gitmodules or directories. This is a brief overview of them.
 \begin{lstlisting}[frame=single]
 + keystone/
@@ -121,7 +120,7 @@ The Keystone repository consists of several sub-components such as gitmodules or
     # Tools, libraries, and example apps for building enclaves on Keystone        
 \end{lstlisting}
 
-\subsection*{Guide to Keystone Demo Proof of concept}
+\subsection{Guide to Keystone Demo Proof of concept}
 The designed solution has been developed starting from the officially \texttt{kestone-demo} repository available at this link: \url{https://github.com/keystone-enclave/keystone-demo}, commit \texttt{8c6c0565e44f3d0e00bc3e4a6e77fc84c9e6d343}. The demo uses test keys and is not safe for production use.
 \begin{lstlisting}[frame=single]
   + keystone-demo-poc/
@@ -141,7 +140,7 @@ The designed solution has been developed starting from the officially \texttt{ke
      # simple remote client that connects to the host, validates the enclave report, constructs a secure channel, and then can send messages to the host for computation.       
   \end{lstlisting}
 
-\subsection*{Relevant files of the demo}
+\subsection{Relevant files of the demo}
 Below are explained relevant files that change from the official \texttt{kestone-demo} repository.
 
 \subsubsection{include/eh\_shared.h}

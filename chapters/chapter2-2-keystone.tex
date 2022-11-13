@@ -1,23 +1,26 @@
-\section{Keystone Enclave}
+%!TEX encoding = IsoLatin
+%!TEX main = ../../main.tex
+
+%\section{Keystone Enclave}
 %todo modificare questa intro
 Device manufacturers are now taking security concerns more seriously than they previously did as a result of the rise in the popularity of networked devices in recent years.
 To adequately address these challenges, Trusted Execution Environments have been developed that define a way to ensure the integrity and confidentiality of sensitive data in the device that implements the specification \cite{IntroTEE}. Keystone \cite{lee2020keystone} is an open-source framework for creating RISC-V hardware-based Trusted Execution Environments that are adaptable for use on a variety of platforms. 
 
-\subsection{Trusted Execution Environment}
+\section{Trusted Execution Environment}
 A Trusted Execution Environment (TEE) is a safe area within a CPU. It runs in an isolated environment and in parallel with the operating system.
 It ensures that the confidentiality and integrity of the code and data loaded in the TEE are preserved. 
 Trusted applications running on TEE have access to the full capabilities of a device's main processor and memory, while hardware isolation shields these components from user-installed apps running in the main operating system. The various included trusted applications are protected from one another by software and cryptographic isolations within the TEE \cite{IntroTEE}.
 The two most common TEE implementations at the moment are ARM TrustZone and Intel SGX. All these TEEs make design decisions based on either the target applications or threat models and these choices are fixed since they are strictly hardware related. They were not designed to have flexibility or extensibility for enclave developers. If the hardware changes or has a new feature, the enclave developer has to redesign the TEE.
 All TEE platforms aim to reduce the enclave's Trusted computing Base, yet they have managed to achieve different degrees of success \cite{keysyone-blog-1}. The Trusted Computing Base (TCB) is a section of the system, it could include hardware, firmware and software, which is responsible for enforcing the security policy of the system \cite{tcb-def}. Additionally, closed-source hardware and microcode implementations make it impossible for a third party to evaluate the security of TEEs.
 
-\subsubsection{Customizable Trusted Execution Environment}
+\subsection{Customizable Trusted Execution Environment}
 Customizable TEE is the solution to these problems. It has been designed to be flexible, and configurable and to have a small TCB. It has been designed with clear abstractions and a modular programming model which simplifies for others to extend and add features to the TEE. A customizable TEE is Keystone \cite{lee2020keystone}. Three logical actors, such as the manufacturer (who makes the hardware), the platform provider (runs the hardware, such as a cloud provider), and the enclave developer (who writes software that runs in the enclaves), were identified by keystone developers as being a part of the customizable TEE ecosystem. In a customizable TEE, as opposed to a standard TEE, decisions made by all 3 actors together determine the security guarantees offered and the functionalities enabled \cite{keysyone-blog-1}. 
 Keystone offers security primitives that can be joined together via the software framework rather than creating a single instance of TEE hardware. The TEE can be modified by the creator of the enclave and the platform provider to suit their threat models or platform configurations. The Keystone project offers a general and formally proven interface for a variety of devices to create an open standard for TEEs. 
 
-\subsection{RISC-V Background}
+\section{RISC-V Background}
 RISC-V offers several advantages, apart from being open-source, security-oriented primitives have been added that provide efficient isolation, the most notable being Physical Memory Protection (PMP). RISC-V is an evolving and community-driven Instruction Set Architecture (ISA). Keystone can be designed and developed using standard features and the ever-growing world of RISC-V gives Keystone a wide variety of potential platforms and different deployment scenarios to which it can adapt to. \cite{keysyone-blog-2}
 
-\subsubsection{RISC-V Privilieged ISA}
+\subsection{RISC-V Privilieged ISA}
 RISC-V \cite{risc-v-spec} has three software privilege levels (in increasing order of capability): user mode (U-mode), supervisor mode (S-mode), and machine mode (M-mode). Only one of the privilege modes can be active on the processor at once.
 The active privilege level determines what the software can do while it is running. These are typical applications for each level of privilege:
 \begin{itemize}
@@ -39,12 +42,12 @@ The following are some advantages of utilizing an M-mode software as the TCB:
     \item Verifiability: compared to hardware, the software is generally simpler to be formally verified.
 \end{itemize}
 
-\subsubsection{Physical Memory Protection}
+\subsection{Physical Memory Protection}
 Physical Memory Protection (PMP) is a strong standard primitive that enables M-mode to control the access to physical memory from lower privileges modes. Keystone requires PMP to implement memory isolation of enclaves.
 Only software in M-mode can configure the PMP, which is controlled by a series of control and status registers (CSR) that limit physical memory access to the U-mode and S-mode. Depending on the platform design, PMP entries number can change. 
 Since PMP exclusively works on physical addresses, S-mode can continue to support virtual addresses without affecting the security of the system. Even though each processor may implement PMP differently in hardware, the basic guarantees are part of the standard. PMP is used by Keystone Security Monitor to create memory isolation.
 
-\subsection{Keystone overview}
+\section{Keystone components}
 A Keystone-capable system is made up of different modules operating in various privilege modes as shown in figure \ref{keystoneComponents}.
 
 \begin{figure}[h!]
@@ -53,9 +56,9 @@ A Keystone-capable system is made up of different modules operating in various p
     \caption{Keystone system with host processes, untrusted OS, security monitor, and multiple enclaves (each with runtime and eapp) \cite{lee2020keystone}.}
     \label{keystoneComponents}
 \end{figure}
-\subsubsection{Trusted Hardware}
+\subsection*{Trusted Hardware}
 Trusted Hardware is a CPU package built by an honest manufacturer that must enclose standard RISC-V cores that are Keystone compatible and a root of trust. Optional features on the hardware could also include memory encryption, cache partitioning, a cryptographically safe source of randomness, etc. Platform-specific plug-ins are needed by the Security Monitor to support optional features.
-\subsubsection{Security Monitor}
+\subsection{Security Monitor}
 Security Monitor (SM) is a trusted software that runs in M-mode and works as the small trusted computing base (TCB) in the Keystone system. Before the security monitor can be considered trusted, first it must be verified by the hardware root of trust. After the root of trust measures the SM, it generates a keypair for remote attestation, signs the public key, and then continues booting. The SM manages the isolation boundary between the enclaves and the untrusted OS, therefore it implements the majority of Keystone's security guarantees.  It serves as an interface for managing the enclave's lifecycle and utilising platform-specific features. The OS and enclaves may call SM functions using the Supervisor Binary Interface (SBI). Specifically, the SM provides the following functionality:
 \begin{itemize}
     \item \textit{memory isolation} using RISC-V PMP
@@ -63,15 +66,8 @@ Security Monitor (SM) is a trusted software that runs in M-mode and works as the
     \item and other features, such as system PMP synchronization, enclave thread management and side-channel defences  
 \end{itemize}
 
-\subsubsection{Runtime}
+\subsection{Runtime}
 Runtime (RT) is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
-\subsubsection{Enclave}
-An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone. The enclave lifecycle can be seen in figure \ref{enclave-lifecycle}. The main phases are:
-\begin{itemize}
-    \item \textit{creation}: when an enclave is started it has a contiguous range of physical memory that is called Enclave Private Memory (EPM). In the beginning, the EPM is allocated by the untrusted host, which initialises it with the enclave's page table, the runtime and the enclave application. When the untrusted host class the SM to create an enclave, the SM isolates and secures the EPM using a PMP entry, and then the PMP status is propagated throughout all of the system's cores. Subsequently, before the enclave execution, the enclave's initial state is measured and verified by the SM.
-    \item \textit{execution}: the SM enters the enclave on one of the cores as soon as the untrusted asks for it. The PMP permission is enabled to the core by the SM, and the core starts running the eapp. The RT can exit or re-enter the enclave at any time. The PMP permissions are switched to keep the isolation each time a core exits or enters the enclave.
-    \item \textit{destruction}: the untrusted host may want to destroy the enclave at any moment, when it happens, the EPM is cleared by the SM and the PMP entry is freed. The untrusted host then definitely reclaims the released memory.
-\end{itemize}
 
 \begin{figure}[h!]
     \centering
@@ -80,12 +76,34 @@ An Enclave is an environment isolated from the untrusted OS and other enclaves. 
     \label{enclave-lifecycle}
 \end{figure}
 
-\subsubsection{Edge Calls}
-Function calls that enter or exit the enclave are known as \textit{edge calls} in Keystone, as in other enclave systems. For instance, if an enclave wants to send a network packet, it must use an edge call to deliver the data to an untrusted host process. The current version of Keystone allows \textit{enclave} $\rightarrow$ \textit{untrusted host} calls, also known internally as \textit{ocalls} (outbound calls, names under discussion). In the current version of Keystone, all ocall wrapping code uses shared memory regions to transfer data. When referencing data in these regions virtual address pointers are never used, instead, only offsets into the region are used. 
+\subsection{Enclave}
+An Enclave is an environment isolated from the untrusted OS and other enclaves. Each enclave is provided with a private physical memory region which is accessible by only the enclave and SM. Each enclave consists of a user-level enclave application called \textit{eapp} and a supervisor-level runtime. An eapp is a user-level application that executes in the enclave. A developer can create a custom eapp from scratch, or just execute an existing RISC-V binary in Keystone. The enclave lifecycle can be seen in figure \ref{enclave-lifecycle}. The main phases are:
+\begin{itemize}
+    \item \textit{creation}: when an enclave is started it has a contiguous range of physical memory that is called Enclave Private Memory (EPM). In the beginning, the EPM is allocated by the untrusted host, which initialises it with the enclave's page table, the runtime and the enclave application. When the untrusted host class the SM to create an enclave, the SM isolates and secures the EPM using a PMP entry, and then the PMP status is propagated throughout all of the system's cores. Subsequently, before the enclave execution, the enclave's initial state is measured and verified by the SM.
+    \item \textit{execution}: the SM enters the enclave on one of the cores as soon as the untrusted asks for it. The PMP permission is enabled to the core by the SM, and the core starts running the eapp. The RT can exit or re-enter the enclave at any time. The PMP permissions are switched to keep the isolation each time a core exits or enters the enclave.
+    \item \textit{destruction}: the untrusted host may want to destroy the enclave at any moment, when it happens, the EPM is cleared by the SM and the PMP entry is freed. The untrusted host then definitely reclaims the released memory.
+\end{itemize}
+
+\subsection{Edge Calls}
+Function calls that enter or exit the enclave are known as \textit{edge calls} in Keystone, as in other enclave systems. For instance, if an enclave wants to send a network packet, it must use an edge call to deliver the data to an untrusted host process. The current version of Keystone allows \textit{enclave} $\rightarrow$ \textit{untrusted host} calls, also known internally as \textit{ocalls} (outbound calls, names under discussion). In the current version of Keystone, all ocall wrapping code uses shared memory regions to transfer data. When referencing data in these regions virtual address pointers are never used, instead, only offsets into the region are used \cite{keystone-doc}. \\
+ 
+\begin{figure}[h!]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.55]{./chapters/images/ocall.svg}
+    \caption{Simplified example of an ocall lifecycle \cite{keystone-doc}.}
+    \label{ocall-lifecycle}
+\end{figure}
+
+\subsubsection{Edge Calls Lifecycle}
+Consider for example a generic \texttt{ocall\_do\_something}. This call transfers some values passed as arguments from the enclave to be processed by the host process. (It could be a value to be printed, a file to be stored and so on). The enclave application calls \texttt{ocall\_do\_something(...)}, which is an edge wrapper function.
+\texttt{ocall\_do\_something(...)} uses the system-call-like interface to the runtime to execute an \textit{ocalls} similar to \texttt{ocall(OCALL\_DO\_SOMETHING, \&input, sizeof(input), \&ouput,  sizeof(output))}. It passes a pointer to the value, the size of the argument, and any necessary return buffer information. 
+After allocating an \texttt{edge\_call} structure in the shared memory region, the runtime fills out the call type, copies the value into another part of the shared memory, and sets up the offset to the argument value. Note that in Keystone edge calls employ offset values in the shared memory area, rather than pointers.
+The runtime subsequently exits the enclave with an \texttt{SBI\_CALL}, i.e., \texttt{sbi\_stop\_enclave()}, passing a value indicating that the enclave is executing an \textit{ocalls} rather than shutting down. 
+After checking the enclave's exit state and noting a pending \textit{ocalls}, the Keystone kernel driver resumes execution before handing control to the userspace host process. 
+The registered \textit{ocalls} handler wrapper for \texttt{OCALL\_DO\_SOMETHING} is dispatched by the userspace host process, which also consumes the edge call. The wrapper generates a pointer to the argument value from the offset in the shared memory region and then calls \texttt{do\_something} with the value as an argument. The host wrapper determines whether any return values must be copied into the shared memory region upon return and returns the control to the driver after setting the edge call return status to \texttt{SUCCESS}. Through an \texttt{SBI\_CALL}, the driver rejoins the enclave runtime. The enclave \textit{ocalls} wrapper code is resumed once the runtime determines whether any return information has to be copied from the shared region into return buffers. Finally, the function that has called at the beginning \texttt{ocall\_do\_something} receives any return values from the \textit{ocalls} wrapper code \cite{keystone-doc}.
 
 
-
-\subsection{Memory isolation using RISC-V PMP}
+\section{Memory isolation using RISC-V PMP}
 In Keystone, developers refer to the memory section that an enclave uses as a \textit{region} and each region is defined by a PMP entry. Currently, the SM employs two PMP registers for internal purposes (i.e., security monitor memory and untrusted memory). One active enclave may use one of the remaining PMP entries each. RISC-V PMP has several properties, the most relevant are: 
 \begin{itemize}
     \item prioritization by index: the index of PMP entries statically determines the priority. Indices go from \texttt{0} to \texttt{N}, where \texttt{N} depends upon the platform. \texttt{0} is the highest priority,whereas \texttt{N} is the lowest. 
@@ -139,7 +157,7 @@ net result   |-------|------|=========|-------|==|--|
 \end{lstlisting}
 
 
-\subsection{Keystone key-hierarchy}
+\section{Keystone key-hierarchy}
 Figure \ref{keystone-key-hierarchy} shows the key hierarchy of Keystone. The root of the key hierarchy is the asymmetric processor key pair (\texttt{SK\_D} and  \texttt{PK\_D}). The asymmetric security monitor key pair (\texttt{SK\_SK} and \texttt{PK\_SM}) is derived from the measurement of the security monitor (\texttt{H\_SM}) and the private processor key (\texttt{SK\_D}) \cite{keystone-doc}.
 As a result, the computed security monitor key pair is bound to the processor and to the identity of the security monitor itself.
 
@@ -149,7 +167,7 @@ As a result, the computed security monitor key pair is bound to the processor an
     \caption{The key hierarchy of Keystone \cite{keystone-doc}.}
     \label{keystone-key-hierarchy}
 \end{figure}
-\subsubsection{Sealing-Key Derivation}
+\subsection{Sealing-Key Derivation}
 In figure \ref{keystone-key-hierarchy} is also visible how sealing-keys are derived. An enclave can generate a key for data encryption using the data-sealing capability, enabling it to store data in untrusted non-volatile memory outside the enclave. This key is tied to the identity of the processor, the security monitor, and the enclave. As a result, only the same enclave using the same processor and security monitor can generate the same key. Data can be encrypted using this key and stored in unsecured, non-volatile memory. After an enclave restart, it can generate the same key once more, retrieve the encrypted data from the untrusted storage, and then use the derived key to decrypt it \cite{keystone-doc}.
 A sealing key is computed starting from three inputs:
 \begin{itemize}
