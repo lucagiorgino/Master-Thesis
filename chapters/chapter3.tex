@@ -197,7 +197,8 @@ At the start, the client will connect to the enclave and perform the remote atte
 Upon exchanging the session context and the attestation report, they establish a secure channel and the enclave-host waits for messages.
 
 \subsection{Offloaded Operations}
-Once the edge node and the constrained devices have established a secure channel to communicate, the enclave waits for the client to request service. The specific \textit{ocall} is: \texttt{ocall\_wait\_for\_request(...)}.
+Once the edge node and the constrained devices have established a secure channel to communicate, the enclave waits for the client to request service. Once a message is received, the enclave authenticates and decrypts the message. If successful, it processes the message and passes the request to a specific \textit{ocall}, i.e, \texttt{ocall\_wait\_for\_request(...)}, which dispatches the requests proxied by the untrusted host coming from the client. By checking the request type, the enclave understands what service the client has requested. After processing the request, the enclave returns the result through the secure channel.
+
 \subsubsection{Generate public keys}
 \begin{figure}[!h]
     \centering
