@@ -48,6 +48,7 @@ Only software in M-mode can configure the PMP, which is controlled by a series o
 Since PMP exclusively works on physical addresses, S-mode can continue to support virtual addresses without affecting the security of the system. Even though each processor may implement PMP differently in hardware, the basic guarantees are part of the standard. PMP is used by Keystone Security Monitor to create memory isolation.
 
 \section{Keystone components}
+\label{keystone-components}
 A Keystone-capable system is made up of different modules operating in various privilege modes as shown in figure \ref{keystoneComponents}.
 
 \begin{figure}[h!]
