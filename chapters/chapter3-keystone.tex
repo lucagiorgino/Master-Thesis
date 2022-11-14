@@ -68,7 +68,7 @@ Security Monitor (SM) is a trusted software that runs in M-mode and works as the
 \end{itemize}
 
 \subsection{Runtime}
-Runtime (RT) is an S-mode software. It implements kernel-like functionality including system calls, trap handling, virtual memory management and so on.
+Keystone developers implemented the Runtime (RT) with the goal of minimal and flexible TCB. It is an S-mode software. As a result, enclave applications can use modular system-level abstraction (e.g., virtual memory management). It provides kernel-like functionality, such as system calls, trap handling, virtual memory management and so on. Although the RT functions similarly to a kernel inside an enclave, most kernel functionalities are not necessary for the enclave application. To allow enclave developers to include only the necessary functionality and minimize the TCB, keystone developers created an example of RT called Eyrie. It enables reusability since it is compatible with multiple-user programs. And by adding RT modules, they expand RT functionality without changing user applications or without complicating the SM.
 
 \begin{figure}[h!]
     \centering
