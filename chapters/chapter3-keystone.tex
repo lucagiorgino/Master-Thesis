@@ -45,7 +45,16 @@ The following are some advantages of utilizing an M-mode software as the TCB:
 \subsection{Physical Memory Protection}
 Physical Memory Protection (PMP) is a strong standard primitive that enables M-mode to control the access to physical memory from lower privileges modes. Keystone requires PMP to implement memory isolation of enclaves.
 Only software in M-mode can configure the PMP, which is controlled by a series of control and status registers (CSR) that limit physical memory access to the U-mode and S-mode. Depending on the platform design, PMP entries number can change. 
+
+\begin{figure}[h!]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.45]{./chapters/images/pmp-reg.svg}
+    \caption{Image representing PMP registers \cite{keystone-doc}.}
+    \label{pmp-img}
+\end{figure}
+
 Since PMP exclusively works on physical addresses, S-mode can continue to support virtual addresses without affecting the security of the system. Even though each processor may implement PMP differently in hardware, the basic guarantees are part of the standard. PMP is used by Keystone Security Monitor to create memory isolation.
+
 
 \section{Keystone components}
 \label{keystone-components}
@@ -69,6 +78,13 @@ Security Monitor (SM) is a trusted software that runs in M-mode and works as the
 
 \subsection{Runtime}
 Keystone developers implemented the Runtime (RT) with the goal of minimal and flexible TCB. It is an S-mode software. As a result, enclave applications can use modular system-level abstraction (e.g., virtual memory management). It provides kernel-like functionality, such as system calls, trap handling, virtual memory management and so on. Although the RT functions similarly to a kernel inside an enclave, most kernel functionalities are not necessary for the enclave application. To allow enclave developers to include only the necessary functionality and minimize the TCB, keystone developers created an example of RT called Eyrie. It enables reusability since it is compatible with multiple-user programs. And by adding RT modules, they expand RT functionality without changing user applications or without complicating the SM.
+
+\begin{figure}[h!]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.55]{./chapters/images/runtime.svg}
+    \caption{Example of runtime reusability on the left and its functionalities on the right \cite{keystone-doc}.}
+    \label{runtime-example}
+\end{figure}
 
 \begin{figure}[h!]
     \centering

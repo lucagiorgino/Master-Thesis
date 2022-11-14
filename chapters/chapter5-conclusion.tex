@@ -1,19 +1,7 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-In conclusion, this work allows IoT-constrained devices to establish a secure communication channel with the edge device and trusted SSI-related operations computation, which enables to access higher computational performances and more flexible hardware and software requirements. In the future, this opens up new scenarios employing additional cryptographic primitives for privacy-preserving credentials. 
-
-% \color{red}
-% Future Work:
-% \begin{itemize}
-%     \item Enhance the offloaded operations
-%     \item Multiple constrained clients (how to manage multiple enclaves with keystone?)
-%     \item what about TLS (how to correctly split TLS in untrusted host and enclave?)
-%     \item More Edge Nodes - DTCB (what about data sealing?)
-%     \item Integrity monitor of the untrusted host with TPM 
-% \end{itemize}
-% TODO: \\
-% Qui si inseriscono brevi conclusioni sul lavoro svolto, senza ripetere inutilmente il sommario.
-% Si possono evidenziare i punti di forza e quelli di debolezza, nonche i possibili sviluppi futuri o attivita da svolgere per migliorare i risultati.
-
-% \color{black}
+In conclusion, this work allows IoT-constrained devices to establish a secure communication channel with the edge device and trusted SSI-related operations computation, which enables to access higher computational performances and more flexible hardware and software requirements. In the future, this opens up new scenarios employing additional and more modern cryptographic primitives for privacy-preserving credentials, which are yet not implemented in the current solution. 
+Another future research topic could be to integrate a TLS connection between an external client and the enclave and how securely terminate TLS within the enclave, considering that the untrusted host proxies enclave messages. 
+Additionally, another enhancement of the edge device could be to monitor untrusted host integrity with a TPM.
+To conclude, this is just an introductory work to the Self-Sovereign Identity as a Service paradigm, which has only just begun being explored by the Cybersecurity team of LINKS Foundation.
