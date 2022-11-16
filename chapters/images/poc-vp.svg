@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="485px" preserveAspectRatio="none" style="width:878px;height:485px;background:#FFFFFF;" version="1.1" viewBox="0 0 878 485" width="878px" zoomAndPan="magnify"><defs/><g><rect fill="#FFFFFF" height="333.1953" style="stroke:#181818;stroke-width:1.0;" width="10" x="513.5" y="127.6953"/><rect fill="#DFFF00" height="277.9297" style="stroke:#181818;stroke-width:1.0;" width="10" x="518.5" y="182.9609"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="203" x2="203" y1="36.2969" y2="478.8906"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="295" x2="295" y1="36.2969" y2="478.8906"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="518" x2="518" y1="36.2969" y2="478.8906"/><rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="112" x="147" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="154" y="24.9951">TrustedClient</text><rect fill="#D3D3D3" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="53" x="269" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="39" x="276" y="24.9951">UApp</text><rect fill="#87CEFA" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="51" x="493" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37" x="500" y="24.9951">Eapp</text><rect fill="#FFFFFF" height="333.1953" style="stroke:#181818;stroke-width:1.0;" width="10" x="513.5" y="127.6953"/><rect fill="#DFFF00" height="277.9297" style="stroke:#181818;stroke-width:1.0;" width="10" x="518.5" y="182.9609"/><line style="stroke:#181818;stroke-width:1.0;" x1="518.5" x2="560.5" y1="67.4297" y2="67.4297"/><line style="stroke:#181818;stroke-width:1.0;" x1="560.5" x2="560.5" y1="67.4297" y2="80.4297"/><line style="stroke:#181818;stroke-width:1.0;" x1="519.5" x2="560.5" y1="80.4297" y2="80.4297"/><polygon fill="#181818" points="529.5,76.4297,519.5,80.4297,529.5,84.4297,525.5,80.4297" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="525.5" y="62.3638">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="175" x="538.5" y="62.3638">ocall_wait_for_request(req)</text><polygon fill="#181818" points="501.5,123.6953,511.5,127.6953,501.5,131.6953,505.5,127.6953" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="203" x2="507.5" y1="127.6953" y2="127.6953"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="210" y="122.6294">2</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="103" x="223" y="122.6294">request(get_vp)</text><path d="M5,93.4297 L5,148.4297 L198,148.4297 L198,103.4297 L188,93.4297 L5,93.4297 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M188,93.4297 L188,103.4297 L198,103.4297 L188,93.4297 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58" x="11" y="110.4966">Request:</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="156" x="27" y="125.6294">verifier_nonce (optional)</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="40" x="27" y="140.7622">secret</text><line style="stroke:#181818;stroke-width:1.0;" x1="523.5" x2="570.5" y1="169.9609" y2="169.9609"/><line style="stroke:#181818;stroke-width:1.0;" x1="570.5" x2="570.5" y1="169.9609" y2="182.9609"/><line style="stroke:#181818;stroke-width:1.0;" x1="529.5" x2="570.5" y1="182.9609" y2="182.9609"/><polygon fill="#181818" points="539.5,178.9609,529.5,182.9609,539.5,186.9609,535.5,182.9609" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="8" x="535.5" y="164.895">3</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="160" x="547.5" y="164.895">process_request(get_vp)</text><line style="stroke:#181818;stroke-width:1.0;" x1="528.5" x2="570.5" y1="217.0938" y2="217.0938"/><line style="stroke:#181818;stroke-width:1.0;" x1="570.5" x2="570.5" y1="217.0938" y2="230.0938"/><line style="stroke:#181818;stroke-width:1.0;" x1="529.5" x2="570.5" y1="230.0938" y2="230.0938"/><polygon fill="#181818" points="539.5,226.0938,529.5,230.0938,539.5,234.0938,535.5,230.0938" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="535.5" y="212.0278">4</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="323" x="548.5" y="212.0278">get_sealing_key(identifier: client_pub_key+secret)</text><path d="M236,204.4609 L236,229.4609 L508,229.4609 L508,214.4609 L498,204.4609 L236,204.4609 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M498,204.4609 L498,214.4609 L508,214.4609 L498,204.4609 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="251" x="242" y="221.5278">same key for the same related identity</text><polygon fill="#181818" points="306.5,265.793,296.5,269.793,306.5,273.793,302.5,269.793" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="506.5,265.793,516.5,269.793,506.5,273.793,510.5,269.793" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="300.5" x2="512.5" y1="269.793" y2="269.793"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="312.5" y="264.7271">5</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="181" x="325.5" y="264.7271">ocall_retrieve_sealed_data()</text><path d="M117,243.0938 L117,283.0938 L290,283.0938 L290,253.0938 L280,243.0938 L117,243.0938 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M280,243.0938 L280,253.0938 L290,253.0938 L280,243.0938 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="152" x="123" y="260.1606">&lt;client_pub_key&gt;_keys</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="137" x="123" y="275.2935">&lt;client_pub_key&gt;_vc</text><line style="stroke:#181818;stroke-width:1.0;" x1="528.5" x2="570.5" y1="309.4922" y2="309.4922"/><line style="stroke:#181818;stroke-width:1.0;" x1="570.5" x2="570.5" y1="309.4922" y2="322.4922"/><line style="stroke:#181818;stroke-width:1.0;" x1="529.5" x2="570.5" y1="322.4922" y2="322.4922"/><polygon fill="#181818" points="539.5,318.4922,529.5,322.4922,539.5,326.4922,535.5,322.4922" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="535.5" y="304.4263">6</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="222" x="548.5" y="304.4263">dec(keys,seal_key) and check sign</text><line style="stroke:#181818;stroke-width:1.0;" x1="528.5" x2="570.5" y1="351.625" y2="351.625"/><line style="stroke:#181818;stroke-width:1.0;" x1="570.5" x2="570.5" y1="351.625" y2="364.625"/><line style="stroke:#181818;stroke-width:1.0;" x1="529.5" x2="570.5" y1="364.625" y2="364.625"/><polygon fill="#181818" points="539.5,360.625,529.5,364.625,539.5,368.625,535.5,364.625" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="535.5" y="346.5591">7</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="207" x="548.5" y="346.5591">dec(vc,seal_key) and check sign</text><line style="stroke:#181818;stroke-width:1.0;" x1="528.5" x2="570.5" y1="393.7578" y2="393.7578"/><line style="stroke:#181818;stroke-width:1.0;" x1="570.5" x2="570.5" y1="393.7578" y2="406.7578"/><line style="stroke:#181818;stroke-width:1.0;" x1="529.5" x2="570.5" y1="406.7578" y2="406.7578"/><polygon fill="#181818" points="539.5,402.7578,529.5,406.7578,539.5,410.7578,535.5,406.7578" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="535.5" y="388.6919">8</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="175" x="548.5" y="388.6919">vp = sign(vc,assertion key)</text><polygon fill="#181818" points="214,456.8906,204,460.8906,214,464.8906,210,460.8906" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="208" x2="517.5" y1="460.8906" y2="460.8906"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="9" x="220" y="455.8247">9</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="65" x="233" y="455.8247">return(vp)</text><!--MD5=[8f74b3e38e9ecbf28f7519efb27b28b7]
+@startuml
+autonumber
+hide footbox
+participant TrustedClient as C
+participant UApp  as UH #d3d3d3
+participant Eapp as E 		#87cefa
+
+    'title Top-level Keystone SSI demo
+
+    E-> E: ocall_wait_for_request(req)
+    
+    '     C-> E: request(gen_keys)
+    '     activate E
+    '     note left
+    '     Request:
+    '         ' id
+    '        key type
+    '        secret
+    '     end note
+    '     E -> E: process_request(gen_keys)
+    '     activate E #DFFF00
+    '         E -> E: get_sealing_key(identifier: client_pub_key+secret)
+    '         E -> E: gen_keys(type)
+    '         E -> E: enc(keys,seal_key)
+    '         ' note right
+    '         '     AES-GCM o ChaCha20
+    '         ' end note
+    '         E -> E: sign with Enclave-signing-key
+    '         E -> UH: ocall_save_sealed_data(keys_sign)
+    '         note left
+    '             <client_pub_key>_keys
+    '         end note
+    '         ' note right
+    '         '     clean secret
+    '         ' end note
+    '           |||
+    '         E -> C: return(pub(keys))
+    '     deactivate E
+    ' deactivate E
+    
+    ' C-> E: request(store_vc)
+    ' activate E
+    ' note left
+    ' Request:
+    '     ' id
+    '     verifiable credential
+    '     secret
+    ' end note
+    ' E -> E: process_request(store_vc)
+    ' activate E #DFFF00
+    '     E -> E: get_sealing_key(identifier: client_pub_key+secret)
+    '     note left
+    '     same key for the same related identity
+    '     end note
+    '     E -> E: enc(vc,seal_key)
+    '     ' note right
+    '     '     AES-GCM o ChaCha20
+    '     ' end note
+    '     E -> E: sign with Enclave-signing-key
+    '     E -> UH: ocall_save_sealed_data(vc_sign)
+    '     ' note right
+    '     '     clean secret
+    '     ' end note
+    '     note left
+    '         <client_pub_key>_vc
+    '     end note
+    '     |||
+    '     E -> C: return(ok)
+    ' deactivate E
+    ' deactivate E
+
+    C-> E: request(get_vp)
+    activate E
+
+    note left
+    Request:
+        ' id
+        verifier_nonce (optional)
+        secret
+    end note
+    E -> E: process_request(get_vp)
+    activate E #DFFF00
+        E -> E: get_sealing_key(identifier: client_pub_key+secret)
+        note left
+        same key for the same related identity
+        end note
+        E <-> UH: ocall_retrieve_sealed_data()
+        ' note right
+        '     clean secret
+        ' end note
+        note left
+            <client_pub_key>_keys
+            <client_pub_key>_vc
+        end note
+        E -> E: dec(keys,seal_key) and check sign
+        E -> E: dec(vc,seal_key) and check sign
+        ' note right
+        '     AES-GCM o ChaCha20
+        ' end note
+        E -> E: vp = sign(vc,assertion key)
+        |||
+        E -> C: return(vp)
+    deactivate E
+    deactivate E
+@enduml
+
+@startuml
+autonumber
+hide footbox
+participant TrustedClient as C
+participant UApp  as UH #d3d3d3
+participant Eapp as E 		#87cefa
+
+
+    E-> E: ocall_wait_for_request(req)
+    
+    
+
+    C-> E: request(get_vp)
+    activate E
+
+    note left
+    Request:
+        verifier_nonce (optional)
+        secret
+    end note
+    E -> E: process_request(get_vp)
+    activate E #DFFF00
+        E -> E: get_sealing_key(identifier: client_pub_key+secret)
+        note left
+        same key for the same related identity
+        end note
+        E <-> UH: ocall_retrieve_sealed_data()
+        note left
+            <client_pub_key>_keys
+            <client_pub_key>_vc
+        end note
+        E -> E: dec(keys,seal_key) and check sign
+        E -> E: dec(vc,seal_key) and check sign
+        E -> E: vp = sign(vc,assertion key)
+        |||
+        E -> C: return(vp)
+    deactivate E
+    deactivate E
+@enduml
+
+PlantUML version 1.2022.13beta8(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
