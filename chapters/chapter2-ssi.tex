@@ -4,7 +4,7 @@
 %\section{Self-Sovereign-Identity}
 Self-Sovereign Identity (SSI) \cite{tobin2016inevitable} is a new model for digital identity. In the SSI ecosystem, a user can fully control his own identity and use it between any service. SSI is different from today's digital identities: it is anchored to distributed ledgers so is not controlled by any centralized services.
 One SSI innovation is the design and development of a common set of specifications: 
-Decentralized Identifiers (DIDs) \cite{didW3C} and Verifiable Credentials (VCs) \cite{vcW3C}, by doing this a user identity can be anchored to different distributed ledgers but it will be defined in the same standard way.
+Decentralized Identifiers (DIDs) \cite{didW3C} and Verifiable Credentials (VCs) \cite{vcW3C}. By doing this, user identity can be anchored to different distributed ledgers, but it will also be defined in the same standard way.
 
 \section{Decentralized Identifiers}  
 DIDs \cite{didW3C} are identifiers referring to any subject determined by the controller of the DID.
@@ -30,7 +30,7 @@ Specifically, a DID is a simple text string, as shown in the figure \ref{didExam
 
 A DID resolves to a DID document, a DID document contains information about a DID subject and cryptographic material that will be used to prove control of that DID. DID documents can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format, as can be seen in the listing \ref{didDocExample}. Only the controller of the DID has the right to make changes to the related DID document. 
 
-DIDs are generally stored in some underlying system or network for resolution to DID documents. A verifiable data registry is a system that enables the recording of DIDs and the return of the data required to produce DID documents. Distributed ledgers, decentralized file systems, all types of databases, peer-to-peer networks, and other trusted data storage methods are some examples. The operations to create, resolve, update, and deactivate a DID and the related DID document are defined by DID methods and their specifications, which are generally coupled with a distinct verifiable data registry \cite{didW3C}. 
+DIDs are generally stored in some underlying system or network for the resolution to DID documents. A verifiable data registry is a system that enables the recording of DIDs and the return of the data required to produce DID documents. Distributed ledgers, decentralized file systems, all types of databases, peer-to-peer networks, and other trusted data storage methods are some examples. The operations to create, resolve, update, and deactivate a DID and the related DID document are defined by DID methods and their specifications, which are generally coupled with a distinct verifiable data registry \cite{didW3C}. 
 A DID URL expands the syntax of a DID with other standard components of URI such as path, query, and fragment to find a specific resource, such as a cryptographic public key in a DID document or a resource outside the DID document. \\
 
 \begin{lstlisting}[caption={Example of a simple DID document from \cite{didW3C}.},captionpos=b,style=json, label={didDocExample},frame=single]
@@ -87,7 +87,7 @@ Distinct actors can be identified in the verifiable credentials ecosystem, which
     \label{vcEcosystem}
 \end{figure}
 
-To use verifiable credentials a holder has to generate verifiable presentations by enclosing them and signing before presenting them to a verifier, by doing this a holder demonstrates the possession of the verifiable credential. The fact that a credential is verifiable by the verifier does not mean that the claims it contains are true. Another aspect that variable credentials enhance is privacy. The usage of machine-readable credentials allows malicious actors to collect and correlate data, compromising holders' privacy. Variable credentials specification draft how to deal with these issues, by using privacy-enhancing technologies, such as \textit{zero-knowledge proofs} \cite{zkp-survey}. 
+To use verifiable credentials a holder has to generate verifiable presentations by enclosing them and signing before presenting them to a verifier, by doing this a holder demonstrates the possession of the verifiable credential. The fact that a credential is verifiable by the verifier does not mean that the claims it contains are true. Another aspect that variable credentials enhance is privacy. The usage of machine-readable credentials allows malicious actors to collect and correlate data, compromising holders' privacy. Variable credentials specification draft how to deal with these issues, by using privacy-enhancing technologies, such as \textit{zero-knowledge proof} \cite{zkp-survey}. 
 
 \begin{figure}[h!]
     \centering
