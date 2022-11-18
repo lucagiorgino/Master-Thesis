@@ -4,10 +4,10 @@
 \section{Constrained and edge device comparison}
 This section describes how to install and execute the code used for testing the cryptographic capabilities of constrained and non-constrained devices.
 \subsection{Test MbedTLS library}
-Mbed TLS \cite{mbed-tls} is a C library and it was used for testing RSA and ECDSA, cryptographic primitives. The version used is \texttt{mbedtls-3.1.0}, available from this repository: \url{https://github.com/Mbed-TLS/mbedtls}. 
+Mbed TLS \cite{mbed-tls} is a C library and it was used for testing RSA and ECDSA cryptographic primitives. The version used is \texttt{mbedtls-3.1.0}, available from this repository: \url{https://github.com/Mbed-TLS/mbedtls}. 
 
 \subsubsection{Test on non-constrained device}
-First, MbedTLS needs to be installed on the chosen system. 
+First, MbedTLS needs to be installed on the chosen system. \\
 \begin{lstlisting}[frame=single]
 $ wget 
  https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v3.1.0.zip
@@ -15,19 +15,16 @@ $ unzip v3.1.0.zip
 $ cd mbedtls-3.1.0/
 $ sudo make install
 \end{lstlisting}
-
-Once the library has been installed, enter the Mbed TLS test directory and compile the program.  
+Once the library has been installed, enter the Mbed TLS test directory and compile the program.  \\
 \begin{lstlisting}[frame=single]
 $ cd mbedtls-test
 $ gcc -o test main.c mytest.c -lmbedtls -lmbedx509 -lmbedcrypto
 \end{lstlisting}
-
-Then tests can be launched and the results can be stored on a file with the following command. 
+Then tests can be launched and the results can be stored on a file with the following command. \\
 \begin{lstlisting}[frame=single]
 $ ./test > results.txt
 \end{lstlisting}
-
-The output should be similar to the following shown in the listing \ref{l-mbedtls-1}. 
+The output should be similar to the following shown in the listing \ref{l-mbedtls-1}. \\
 \begin{lstlisting}[caption={Example of MbedTLS tests output on non-constrained device},captionpos=b,label={l-mbedtls-1},style=DOS,frame=single]
 Seeding the random number generator... ok
 
@@ -87,21 +84,20 @@ key gen time: 319
 \subsection{Test BBS\texttt{+} signatures scheme}
 BBS\texttt{+} rust library was used for testing BBS\texttt{+} signatures that can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs. In these tests, only simple single-message signing and verification were tested.
 
-Before starting, we need to install Rust. The installation of Rust is through a tool called Rustup, which is a Rust installer and version management tool. The way to install Rustup differs by platform, on Unix, run the next command in the shell. This downloads and runs \texttt{rustup-init.sh}, which in turn downloads and runs the correct version of the \texttt{rustup-init} executable for your platform. For other platforms check the Rust documentation \cite{rust-install}. 
+Before starting, we need to install Rust. The installation of Rust is through a tool called Rustup, which is a Rust installer and version management tool. The way to install Rustup differs by platform, on Unix, run the next command in the shell. This downloads and runs \texttt{rustup-init.sh}, which in turn downloads and runs the correct version of the \texttt{rustup-init} executable for your platform. For other platforms check the Rust documentation \cite{rust-install}. \\
 \begin{lstlisting}[frame=single]
 $ curl https://sh.rustup.rs -sSf | sh
 \end{lstlisting}
-When Rustup is installed, it will also add the latest stable version of the Rust build tool and package manager, also known as Cargo. The following commands will install dependencies and build the project. 
+When Rustup is installed, it will also add the latest stable version of the Rust build tool and package manager, also known as Cargo. The following commands will install dependencies and build the project. \\
 \begin{lstlisting}[frame=single]
 $ cd bbs-test
 $ cargo build
 \end{lstlisting}
-To launch the test and take executions times of BBS\texttt{+} signatures and verification, run:  
+To launch the test and take executions times of BBS\texttt{+} signatures and verification, run:  \\
 \begin{lstlisting}[frame=single]
 $ cargo run
 \end{lstlisting}
-
-The output should be similar to the following shown in the listing \ref{l-bbs}. 
+The output should be similar to the following shown in the listing \ref{l-bbs}. \\
 \begin{lstlisting}[caption={Example of BBS\texttt{+} tests output},captionpos=b,label={l-bbs},style=DOS,frame=single]
   AVG Time elapsed in key generation() is: 25 ms
   AVG Time elapsed in sign() is: 18 ms
@@ -113,7 +109,7 @@ The output should be similar to the following shown in the listing \ref{l-bbs}.
 The proof of concept relies on the full Keystone SDK. The easiest way for building and try Keystone and the proof of concept is to use QEMU. QEMU is an open-source machine emulator, in this case, is used to emulate RISC-V architecture.
 The proof of concept has been tested with \texttt{Ubuntu 18.04}. 
 \subsection{Keystone installation and requirements}
-The following dependencies must be installed before installing Keystone.
+The following dependencies must be installed before installing Keystone. \\
 \begin{lstlisting}[frame=single]
 $ sudo apt update
 $ sudo apt install autoconf automake autotools-dev bc \
@@ -124,27 +120,25 @@ $ sudo apt install autoconf automake autotools-dev bc \
   libssl-dev screen device-tree-compiler expect makeself \
   unzip cpio rsync cmake p7zip-full
 \end{lstlisting}
-Then check out the keystone repository and install everything with the quick setup script, it will install the RISC-V toolchain and if \texttt{KEYSTONE\_SDK\_DIR} environment variable is not set, it will also install Keystone SDK. 
-
+Then check out the keystone repository and install everything with the quick setup script, it will install the RISC-V toolchain and if \texttt{KEYSTONE\_SDK\_DIR} environment variable is not set, it will also install Keystone SDK. \\
 \begin{lstlisting}[frame=single]
 $ git clone https://github.com/keystone-enclave/keystone.git
 $ cd keystone
 $ ./fast-setup.sh
 \end{lstlisting}
-If everything goes right, the following message is shown: 
-
+If everything goes right, the following message is shown: \\
 \begin{lstlisting}[frame=single]
     RISC-V toolchain and Keystone SDK have been fully setup
 \end{lstlisting}
-After running \texttt{fast-setup.sh}, run the following command to temporarily set in the current shell relevant environment variables: 
+After running \texttt{fast-setup.sh}, run the following command to temporarily set in the current shell relevant environment variables: \\
 \begin{lstlisting}[frame=single]
 $ source source.sh
 \end{lstlisting}
-Otherwise for permanently store the environment variables, if bash is used this command will add the lines in \texttt{source.sh} to the shell's startup file: 
+Otherwise for permanently store the environment variables, if bash is used this command will add the lines in \texttt{source.sh} to the shell's startup file: \\
 \begin{lstlisting}[frame=single]
 $ cat source.sh >> $HOME/.bashrc
 \end{lstlisting}
-CMake \cite{cmake} is used as a build system. As \texttt{<build directory>} the name \texttt{build} has been chosen. Then all components can be built, beware that this will take a while. 
+CMake \cite{cmake} is used as a build system. As \texttt{<build directory>} the name \texttt{build} has been chosen. Then all components can be built, beware that this will take a while. \\
 \begin{lstlisting}[frame=single]
 $ mkdir build
 $ cd build
@@ -156,18 +150,18 @@ $ make
 \end{mybox}
 
 \subsection{Build the demo}
-Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document. The \texttt{riscv-musl-toolchain} has been used for building the \texttt{server\_eapp}, which can be set with the \texttt{./setup\_musl.sh} script. Then, the \texttt{./quick-start.sh} will build the demo, the script will create two files: \texttt{demo-server.ke} and \texttt{trusted\_client.riscv}. 
+Extract the provided zip file that contains the demo of the proof of concept. The extracted folder should contain the developed code explained in this document. The \texttt{riscv-musl-toolchain} has been used for building the \texttt{server\_eapp}, which can be set with the \texttt{./setup\_musl.sh} script. Then, the \texttt{./quick-start.sh} will build the demo, the script will create two files: \texttt{demo-server.ke} and \texttt{trusted\_client.riscv}. \\
 \begin{lstlisting}[frame=single]
 $ cd keystone-demo-poc
 $ source ./setup_musl.sh
 $ SM_HASH=./include/sm_expected_hash.h ./quick-start.sh
 \end{lstlisting}
-Then once the demo is built, the binaries need to be copied into the keystone build folder.
+Then once the demo is built, the binaries need to be copied into the keystone build folder. \\
 
 \begin{lstlisting}[frame=single]
 $ cp ./build/demo-server.ke ./build/trusted_client.riscv ../keystone/build/overlay/root/
 \end{lstlisting}
-Now the QEMU image can be re-generated.
+Now the QEMU image can be re-generated. \\
 
 \begin{lstlisting}[frame=single]
 $ cd keystone/build
@@ -175,41 +169,41 @@ $ make image
 \end{lstlisting}
 
 \subsection{Run QEMU}
-The following script will run QEMU, and start executing from the emulated silicon root of trust. The root of trust then jumps to the SM, and the SM boots Linux. 
+The following script will run QEMU, and start executing from the emulated silicon root of trust. The root of trust then jumps to the SM, and the SM boots Linux. \\
 \begin{lstlisting}[frame=single]
 $ cd keystone/build
 $ ./scripts/run-qemu.sh
 \end{lstlisting}
-The script will start ssh on a random forwarded localhost port, which allows multiple test runs on the same development machine. The script will print what port it has forwarded ssh to on start. For example, to start a new shell in another window the next command can be used, and it is useful to run the client and the server in two different terminal windows. 
+The script will start ssh on a random forwarded localhost port, which allows multiple test runs on the same development machine. The script will print what port it has forwarded ssh to on start. For example, to start a new shell in another window the next command can be used, and it is useful to run the client and the server in two different terminal windows. \\
 \begin{lstlisting}[frame=single]
 $ ssh root@localhost -p <port number>
 \end{lstlisting}
-Login as \texttt{\color{RedOrange}root} with the password \texttt{\color{RedOrange}sifive}. You can exit QEMU by \texttt{\color{RedOrange}ctrl-a\ `+`\ x} or using  \texttt{\color{RedOrange}poweroff}  command
+Login as \texttt{\color{RedOrange}root} with the password \texttt{\color{RedOrange}sifive}. You can exit QEMU by \texttt{\color{RedOrange}ctrl-a\ `+`\ x} or using  \texttt{\color{RedOrange}poweroff}  command.
 
 \subsection{Run the demo}
-Inside QEMU, run the following commands. The first one will load the keystone kernel module and the second one will set up the loopback device. 
+Inside QEMU, run the following commands. The first one will load the keystone kernel module and the second one will set up the loopback device. \\
 \begin{lstlisting}[frame=single]
 > insmod keystone-driver.ko 
 > ifdown lo && ifup lo           
 \end{lstlisting}
-On the server side run: 
+On the server side run: \\
 \begin{lstlisting}[frame=single]
 > ./demo-server.ke         
 \end{lstlisting}
-On the client side run:
+On the client side run: \\
 \begin{lstlisting}[frame=single]
 > ./trusted_client.riscv 127.0.0.1        
 \end{lstlisting}
-The client will connect to the enclave and perform the remote attestation. If the attestation is successful, the client can send back the session context and if server checks go right the communication can start and the client can request operation to the server. 
+The client will connect to the enclave and perform the remote attestation. If the attestation is successful, the client can send back the session context. Then, if server checks go right, the communication can start and the client can request operation to the server. 
 
-If the enclave server app will be modified, the expected hash values have to be regenerated, otherwise, it can be tested with an option that will ignore the validation of the attestation report (it will still print the status of the validation). 
+If the enclave server app will be modified, the expected hash values have to be regenerated, otherwise, it can be tested with an option that will ignore the validation of the attestation report (it will still print the status of the validation). \\
 
 \begin{lstlisting}[frame=single]
   > ./trusted_client.riscv 127.0.0.1 --ignore-valid        
 \end{lstlisting}
 
 \subsection{Expected output}
-The output of the client and the server should be similar to the following listings \ref{l-demo-c} and \ref{l-demo-s} . 
+The output of the client and the server should be similar to the following listings \ref{l-demo-c} and \ref{l-demo-s}. \\
 \begin{lstlisting}[caption={Example of output at client side},captionpos=b,style=DOS,label={l-demo-c},frame=single]
               === Security Monitor ===
 Hash: e51749130b6036fe85b27409a4ea3e1c078fe4dcb76eb697e7e3cdc5ff
@@ -274,7 +268,7 @@ Response payload:  [64]
 \end{lstlisting}
 
 \subsection{Tools for updating enclave and sm hashes}
-If the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory. The demo must be recompiled and the QEMU image rebuilt before and after this command is executed. 
+If the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory. The demo must be recompiled and the QEMU image rebuilt before and after this command is executed. \\
 
 \begin{lstlisting}[frame=single]
 # build the demo

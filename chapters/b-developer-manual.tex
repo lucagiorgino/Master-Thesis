@@ -3,7 +3,7 @@
 
 \section{Constrained and edge device comparison}
 \subsection{Test MbedTLS library}
-For this subproject, the most relevant file is \texttt{mytest.c}, which is equal for both non-constrained devices and the constrained device (STM32L4+ board \cite{stm32-board-product}). The only difference is the function used for measuring the elapsed time of a cryptographic primitive. The function \texttt{clock\_gettime()}, of the standard library \texttt{time.h}, is used on the non-constrained device, while on the STM32L4+ board is used the \texttt{HAL\_GetTick()}. The listing \ref{pseudo-algo} is described in a pseudo-language how to measure the elapsed time of a cryptographic primitive. 
+\texttt{mytest.c} is the most relevant file for this subproject. It is equal for both non-constrained devices and the constrained device (STM32L4+ board \cite{stm32-board-product}). The only difference is the function used for measuring the elapsed time of a cryptographic primitive. The function \texttt{clock\_gettime()}, of the standard library \texttt{time.h}, is used on the non-constrained device, while on the STM32L4+ board is used the \texttt{HAL\_GetTick()}. The listing \ref{pseudo-algo} is described in a pseudo-language how to measure the elapsed time of a cryptographic primitive. 
 Then, the available tests are described. \\
 
 \begin{lstlisting}[caption={Pseudo algorithm for measuring the elapsed time},captionpos=b,label={pseudo-algo},language=C,frame=single]
@@ -14,11 +14,11 @@ Then, the available tests are described. \\
 \end{lstlisting}
 
 \noindent
-\texttt{int test\_RSA\_keygen( ... )}\\
+\texttt{int test\_RSA\_keygen(\dots)}\\
 It generates \texttt{N} RSA key pair and prints the elapsed for each generation in a CSV format. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
-  \item \texttt{int key\_size }, size of the generated key (possible values: \texttt{2048}, \texttt{3072} or \texttt{4096})
+  \item \texttt{int key\_size}, size of the generated key (possible values: \texttt{2048}, \texttt{3072} or \texttt{4096})
   \item \texttt{mbedtls\_ctr\_drbg\_context *ctr\_drbg}, reference to \texttt{CTR\_DRBG} context structure for random number generation
   \item \texttt{int iterations}, number of times that the test will be executed
 \end{itemize}
@@ -26,7 +26,7 @@ It generates \texttt{N} RSA key pair and prints the elapsed for each generation 
 
 
 \noindent
-\texttt{int test\_RSA( ... )}\\
+\texttt{int test\_RSA(\dots)}\\
 It generates an RSA key pair, computes the RSA signature of a random hashed message (of 1024 bytes) and verifies the generated signature. Then, it prints the elapsed for each signature and verification in a CSV format. (Everything is repeated \texttt{N} times). \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -39,7 +39,7 @@ It generates an RSA key pair, computes the RSA signature of a random hashed mess
 
 
 \noindent
-\texttt{int test\_ECDSA\_keygen( ... )}\\
+\texttt{int test\_ECDSA\_keygen(\dots)}\\
 It generates \texttt{N} EDSA key pair and prints the elapsed for each generation in a CSV format. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -52,7 +52,7 @@ It generates \texttt{N} EDSA key pair and prints the elapsed for each generation
 
 
 \noindent
-\texttt{int test\_ECDSA( ... )}\\
+\texttt{int test\_ECDSA(\dots)}\\
 It generates an ECDSA key pair, computes the ECDSA signature of a random hashed message (of 1024 bytes) and verifies the generated signature. Then, it prints the elapsed for each signature and verification in a CSV format. (Everything is repeated \texttt{N} times). \\ \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -79,7 +79,7 @@ For this subproject, the most relevant files are:
     % \item \texttt{fn pok\_sign\_ver\_test(iterations: usize)}
   \end{itemize}
 \end{itemize}
-And the code is very simple, it launches the test for key generation and the test for signature and verification, operations are executed \texttt{iterations} times and the average is displayed on the output video. 
+And the code is very simple, it launches the test for key generation and the test for signature and verification, operations are executed \texttt{iterations} times and the average is displayed on the output video.  \\
 \begin{lstlisting}[frame=single]
 fn main() {
   let iterations: usize = 100;
@@ -95,7 +95,7 @@ fn main() {
 
 \section{Proof of concept}
 \subsection{Guide to Keystone Components}
-The Keystone repository consists of several sub-components such as gitmodules or directories. This is a brief overview of them.
+The Keystone repository consists of several sub-components such as gitmodules or directories. This is a brief overview of them. \\
 \begin{lstlisting}[frame=single]
 + keystone/
 |-- patches/
@@ -121,7 +121,7 @@ The Keystone repository consists of several sub-components such as gitmodules or
 \end{lstlisting}
 
 \subsection{Guide to Keystone Demo Proof of concept}
-The designed solution has been developed starting from the officially \texttt{kestone-demo} repository available at this link: \url{https://github.com/keystone-enclave/keystone-demo}, commit \texttt{8c6c0565e44f3d0e00bc3e4a6e77fc84c9e6d343}. The demo uses test keys and is not safe for production use.
+The designed solution has been developed starting from the officially \texttt{kestone-demo} repository available at this link: \url{https://github.com/keystone-enclave/keystone-demo}, commit \texttt{8c6c0565e44f3d0e00bc3e4a6e77fc84c9e6d343}. The demo uses test keys and is not safe for production use. \\
 \begin{lstlisting}[frame=single]
   + keystone-demo-poc/
   |-- docs/
@@ -144,7 +144,7 @@ The designed solution has been developed starting from the officially \texttt{ke
 Below are explained relevant files that change from the official \texttt{kestone-demo} repository.
 
 \subsubsection{include/eh\_shared.h}
-This file is shared between the enclave and the untrusted host. It defines the following data structure for exchanging sealed (encrypted) data between the enclave and the untrusted host. 
+This file is shared between the enclave and the untrusted host. It defines the following data structure for exchanging sealed (encrypted) data between the enclave and the untrusted host. \\
 
 \begin{lstlisting}[language=C,frame=single]
 typedef struct stored_data_t{
@@ -156,7 +156,7 @@ typedef struct stored_data_t{
 \end{lstlisting}
 
 \subsubsection{include/messages.h}
-This file is shared between the client and the enclave and it defines the messages (request amd response) they exchange. 
+This file is shared between the client and the enclave and it defines the messages (request amd response) they exchange. \\
 \begin{lstlisting}[language=C,frame=single]
 typedef struct request_message_t {
   unsigned short request_type;
@@ -173,7 +173,7 @@ typedef struct response_message_t {
 \end{lstlisting}
 
 \subsubsection{include/session\_context.c and include/session\_context.h}
-The session context is the structure that the client provides to the enclave to prove that is built by a trusted manufacturer. With the function \texttt{session\_context\_from\_buffer} the session context is extracted from the received buffer. 
+The session context is the structure that the client provides to the enclave to prove that is built by a trusted manufacturer. With the function \texttt{session\_context\_from\_buffer} the session context is extracted from the received buffer. \\
 \begin{lstlisting}[language=C,frame=single]
 struct session_context_t {
   unsigned char  dh_public_key[PUBLIC_KEY_SIZE];
@@ -188,7 +188,7 @@ void session_context_from_buffer(struct session_context_t* session_context, unsi
 \end{lstlisting}
 
 \noindent
-\texttt{int session\_context\_verify( ... )}\\
+\texttt{int session\_context\_verify(\dots)}\\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
   \item \texttt{struct session\_context\_t session\_context}, the session context to verify
@@ -198,7 +198,7 @@ void session_context_from_buffer(struct session_context_t* session_context, unsi
 \textit{Output}: an \texttt{int} value, 1 if it is a valid session context, 0 if not.
 
 \subsubsection{server\_eapp/service.c and server\_eapp/service.h}
-The file \texttt{service.h} just exposes the function that processes the request received by the client.  
+The file \texttt{service.h} just exposes the function that processes the request received by the client. \\   
 \begin{lstlisting}[language=C,frame=single]
 response_message_t* process_request(request_message_t *request, size_t *pt_finalsize) {
 
@@ -220,7 +220,7 @@ response_message_t* process_request(request_message_t *request, size_t *pt_final
 \end{lstlisting}
 
 \noindent
-\texttt{void store\_data ( ... )}\\
+\texttt{void store\_data (\dots)}\\
 It saves the sealed data in untrusted non-volatile memory. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -231,7 +231,7 @@ It saves the sealed data in untrusted non-volatile memory. \\
 \textit{Output}: none
 
 \noindent
-\texttt{unsigned char* seal\_data\_and\_sign ( ... )}\\
+\texttt{unsigned char* seal\_data\_and\_sign (\dots)}\\
 It encrypts and signs the data to save in untrusted non-volatile memory. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -243,7 +243,7 @@ It encrypts and signs the data to save in untrusted non-volatile memory. \\
 
 
 \noindent
-\texttt{response\_message\_t* build\_response ( ... )}\\
+\texttt{response\_message\_t* build\_response (\dots)}\\
 It builds the response to sand back to the client. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -256,7 +256,7 @@ It builds the response to sand back to the client. \\
 
 
 \noindent
-\texttt{response\_message\_t* generate\_public\_keys ( ... )}\\
+\texttt{response\_message\_t* generate\_public\_keys (\dots)}\\
 It handles the request of the client to generate two key pairs. It saves the key pairs sealed in the untrusted non-volatile memory and sends back to the client only the public part. \\ 
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -266,7 +266,7 @@ It handles the request of the client to generate two key pairs. It saves the key
 \textit{Output}: the built response 
 
 \noindent
-\texttt{response\_message\_t* store\_verifiable\_credential ( ... )}\\
+\texttt{response\_message\_t* store\_verifiable\_credential (\dots)}\\
 It handles the request of the client to store a verifiable credential that the client obtained from an issuer. It saves the verifiable credential sealed in the untrusted non-volatile memory and sends back to the client a \texttt{0} if everything goes right. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -277,7 +277,7 @@ It handles the request of the client to store a verifiable credential that the c
 \textit{Output}: the built response 
 
 \noindent
-\texttt{response\_message\_t* get\_verifiable\_presentation ( ... )}\\
+\texttt{response\_message\_t* get\_verifiable\_presentation (\dots)}\\
 It handles the request of the client to generate a verifiable presentation to use when interacting with a verifier. It retrieves from the untrusted non-volatile memory the previously stored verifiable credential and key pairs and sends back to the client the sign of the verifiable credential with one using an assertion key of the type that the client chose. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -292,7 +292,7 @@ It handles the request of the client to generate a verifiable presentation to us
 In this file, the important functions to mention are:
 \begin{itemize}
   %\item \texttt{void validate\_session\_context(void* buffer, unsigned char* challange)}
-  \item \texttt{void attest\_and\_establish\_channel()}: in this function, the server once has sent its report to the client, it waits for the session context of the client, and once received it validates the session context and established the channel with the client
+  \item \texttt{void attest\_and\_establish\_channel()}: in this function, the server once has sent its report to the client and it waits for the session context of the client. Once received, it validates the session context and established the channel with the client
   \item \texttt{void handle\_requests()}: in this function, the server will wait for client requests, will processes the request (and interacts with the enclave host for data sealing) and send back the response to the client 
 \end{itemize}
  
@@ -300,7 +300,7 @@ In this file, the important functions to mention are:
 In this file, the important functions to mention are:
 
 \noindent
-\texttt{void gen\_session\_context( ... )}\\
+\texttt{void gen\_session\_context(\dots)}\\
 It generates the client session context that will contain a data part and the signature of the client's public key made by the system administrator at the provisioning phase. The data part is composed of a key for the Diffie Hellam key exchange protocol and the challenge sent by the server, all the data part is signed by the client's public key. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -310,7 +310,7 @@ It generates the client session context that will contain a data part and the si
 
 
 \noindent
-\texttt{request\_message\_t* generate\_request\_message( ... )}\\
+\texttt{request\_message\_t* generate\_request\_message(\dots)}\\
 It builds the request message to request a service to the server. \\
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
@@ -324,7 +324,7 @@ It builds the request message to request a service to the server. \\
 
 
 \noindent
-\texttt{request\_message\_t* generate\_exit\_message( ... )}\\
+\texttt{request\_message\_t* generate\_exit\_message(\dots)}\\
 It builds the request message to close the connection with the server.
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
