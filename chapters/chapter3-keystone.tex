@@ -126,18 +126,21 @@ In Keystone, developers refer to the memory section that an enclave uses as a \t
     \item prioritization by index: the index of PMP entries statically determines the priority. Indices go from \texttt{0} to \texttt{N}, where \texttt{N} depends upon the platform. \texttt{0} is the highest priority, whereas \texttt{N} is the lowest 
     \item default denies: if no PMP entry matches with an address, the memory access will be rejected by default.
 \end{itemize}
-For simplicity, in the following explanation PMP entries are denoted as \texttt{pmp[i]} where \texttt{i} is an index. At the start of the boot process, physical memory is not accessible by U- or S-modes. \\
+For simplicity, in the following explanation PMP entries are denoted as \texttt{pmp[i]} where \texttt{i} is an index. At the start of the boot process, physical memory is not accessible by U- or S-modes.
 
-\begin{lstlisting}[frame=single,showspaces=true,caption={Memory state when booting start \cite{keystone-doc}},captionpos=b,label={sm-pmp-1}]
+\begin{figure}[h!]
+\begin{lstlisting}[frame=single,showspaces=true]
 -: inaccessible (NO_PERM), =: accessible (ALL_PERM)
 
 pmp[1:N]    |                                       | : undefined
 net result  |---------------------------------------|   
 \end{lstlisting}
+\caption{Memory state when booting start \cite{keystone-doc}. \label{sm-pmp-1}}
+\end{figure}
 \noindent
-The SM sets the highest priority PMP entry to cover the address range containing itself and sets all permission bits to 0. Suddenly, the SM sets the lowest priority PMP entry to cover the full memory and sets all permission bits to 1, this will allow the OS to access the remaining memory and start booting. The result can be seen below in listing \ref{sm-pmp-2}. \\
-
-\begin{lstlisting}[frame=single,showspaces=true,caption={Memory state just after booting \cite{keystone-doc}},captionpos=b,label={sm-pmp-2}]
+The SM sets the highest priority PMP entry to cover the address range containing itself and sets all permission bits to 0. Suddenly, the SM sets the lowest priority PMP entry to cover the full memory and sets all permission bits to 1, this will allow the OS to access the remaining memory and start booting. The result can be seen below in figure \ref{sm-pmp-2}.
+\begin{figure}[H]
+\begin{lstlisting}[frame=single,showspaces=true]
 -: inaccessible (NO_PERM), =: accessible (ALL_PERM)
 
 pmp[0]       |-------|                              | : SM memory
@@ -145,9 +148,12 @@ pmp[others]  |                                      | : undefined
 pmp[N]       |======================================| : OS memory
 net result   |-------|==============================|
 \end{lstlisting}
+\caption{Memory state just after booting \cite{keystone-doc}. \label{sm-pmp-2}}
+\end{figure}
 \noindent
-Each time the SM creates an enclave, it will select a PMP entry for the enclave to defend its memory from other U-/S-mode software. This can be seen below in listing \ref{sm-pmp-3}. \\
-\begin{lstlisting}[frame=single,showspaces=true,caption={Memory accessible by the untrusted host \cite{keystone-doc}},captionpos=b,label={sm-pmp-3}]
+Each time the SM creates an enclave, it will select a PMP entry for the enclave to defend its memory from other U-/S-mode software. This can be seen below in figure \ref{sm-pmp-3}.
+\begin{figure}[H]
+\begin{lstlisting}[frame=single,showspaces=true]
 -: inaccessible (NO_PERM), =: accessible (ALL_PERM)
 
 pmp[0]       |-------|                              | : SM memory
@@ -157,10 +163,13 @@ pmp[others]  |                                      | : undefined
 pmp[N]       |======================================| : OS memory
 net result   |-------|======|---------|=============|
 \end{lstlisting}
+\caption{Memory accessible by the untrusted host \cite{keystone-doc}. \label{sm-pmp-3}}
+\end{figure}
 \noindent
-When the SM enters the enclave and executes the eapp, it flips the permission bits of the enclave's PMP entry and the last PMP entry. Untrusted shared buffer is the term for the contiguous memory region that Keystone enables the OS to allocate in the OS memory space in order to use it as an enclave's communication buffer. This is shown below in listing \ref{sm-pmp-4}.
-The SM just flips the permission bits back when it leaves the enclave. When an enclave is destroyed by the SM, the PMP entry is made available for usage by other enclaves. \\
-\begin{lstlisting}[frame=single,showspaces=true,caption={Memory accessible by a running enclave \cite{keystone-doc}},captionpos=b,label={sm-pmp-4}]
+When the SM enters the enclave and executes the eapp, it flips the permission bits of the enclave's PMP entry and the last PMP entry. Untrusted shared buffer is the term for the contiguous memory region that Keystone enables the OS to allocate in the OS memory space in order to use it as an enclave's communication buffer. This is shown below in figure \ref{sm-pmp-4}.
+The SM just flips the permission bits back when it leaves the enclave. When an enclave is destroyed by the SM, the PMP entry is made available for usage by other enclaves.
+\begin{figure}[H]
+\begin{lstlisting}[frame=single,showspaces=true]
 -: inaccessible (NO_PERM), =: accessible (ALL_PERM)
 
 pmp[0]       |-------|                              | : SM memory
@@ -172,6 +181,8 @@ pmp[N]       |                                |==|  | : untrusted
                                                         buffer
 net result   |-------|------|=========|-------|==|--|
 \end{lstlisting}
+\caption{Memory accessible by a running enclave \cite{keystone-doc}. \label{sm-pmp-4}}
+\end{figure}
 
 
 \section{Keystone key-hierarchy}

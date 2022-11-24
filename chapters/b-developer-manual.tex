@@ -3,15 +3,17 @@
 
 \section{Constrained and edge device comparison}
 \subsection{Test MbedTLS library}
-\texttt{mytest.c} is the most relevant file for this subproject. It is equal for both non-constrained devices and the constrained device (STM32L4+ board \cite{stm32-board-product}). The only difference is the function used for measuring the elapsed time of a cryptographic primitive. The function \texttt{clock\_gettime()}, of the standard library \texttt{time.h}, is used on the non-constrained device, while on the STM32L4+ board is used the \texttt{HAL\_GetTick()}. The listing \ref{pseudo-algo} is described in a pseudo-language how to measure the elapsed time of a cryptographic primitive. 
+\texttt{mytest.c} is the most relevant file for this subproject. It is equal for both non-constrained devices and the constrained device (STM32L4+ board \cite{stm32-board-product}). The only difference is the function used for measuring the elapsed time of a cryptographic primitive. The function \texttt{clock\_gettime()}, of the standard library \texttt{time.h}, is used on the non-constrained device, while on the STM32L4+ board is used the \texttt{HAL\_GetTick()}. Figure \ref{pseudo-algo} describes in a pseudo-language how to measure the elapsed time of a cryptographic primitive. 
 Then, the available tests are described. \\
-
-\begin{lstlisting}[caption={Pseudo algorithm for measuring the elapsed time},captionpos=b,label={pseudo-algo},language=C,frame=single]
+\begin{figure}[H]
+\begin{lstlisting}[language=C,frame=single]
   start = clock_gettime( ) or HAL_GetTick()
   // mbedtls cryptographic primitive
   end = clock_gettime( ) or  HAL_GetTick()
   print ( end - start ) // in ms
 \end{lstlisting}
+\caption{Pseudo algorithm for measuring the elapsed time. \label{pseudo-algo}}
+\end{figure}
 
 \noindent
 \texttt{int test\_RSA\_keygen(\dots)}\\

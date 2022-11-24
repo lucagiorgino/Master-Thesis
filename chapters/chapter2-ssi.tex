@@ -28,12 +28,30 @@ Specifically, a DID is a simple text string, as shown in the figure \ref{didExam
     \label{didExample}
 \end{figure}
 
-A DID resolves to a DID document, a DID document contains information about a DID subject and cryptographic material that will be used to prove control of that DID. DID documents can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format, as can be seen in the listing \ref{didDocExample}. Only the controller of the DID has the right to make changes to the related DID document. 
+A DID resolves to a DID document, a DID document contains information about a DID subject and cryptographic material that will be used to prove control of that DID. DID documents can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format, as can be seen in the figure \ref{didDocExample}. Only the controller of the DID has the right to make changes to the related DID document. 
 
 DIDs are generally stored in some underlying system or network for the resolution to DID documents. A verifiable data registry is a system that enables the recording of DIDs and the return of the data required to produce DID documents. Distributed ledgers, decentralized file systems, all types of databases, peer-to-peer networks, and other trusted data storage methods are some examples. The operations to create, resolve, update, and deactivate a DID and the related DID document are defined by DID methods and their specifications, which are generally coupled with a distinct verifiable data registry \cite{didW3C}. 
 A DID URL expands the syntax of a DID with other standard components of URI such as path, query, and fragment to find a specific resource, such as a cryptographic public key in a DID document or a resource outside the DID document. \\
 
-\begin{lstlisting}[caption={Example of a simple DID document from \cite{didW3C}.},captionpos=b,style=json, label={didDocExample},frame=single]
+% \begin{lstlisting}[caption={Example of a simple DID document from \cite{didW3C}.},captionpos=b,style=json, label={didDocExample},frame=single]
+% {
+%     "@context": [
+%         "https://www.w3.org/ns/did/v1",
+%         "https://w3id.org/security/suites/ed25519-2020/v1"
+%     ]
+%     "id": "did:example:123456789abcdefghi",
+%     "authentication": [{
+
+%         "id": "did:example:123456789abcdefghi#keys-1",
+%         "type": "Ed25519VerificationKey2020",
+%         "controller": "did:example:123456789abcdefghi",
+%         "publicKeyMultibase": "zH3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+%     }]
+% }
+% \end{lstlisting}
+
+\begin{figure}[h!]
+\begin{lstlisting}[style=json,frame=single]
 {
     "@context": [
         "https://www.w3.org/ns/did/v1",
@@ -49,6 +67,8 @@ A DID URL expands the syntax of a DID with other standard components of URI such
     }]
 }
 \end{lstlisting}
+\caption{Example of a simple DID document from \cite{didW3C}. \label{didDocExample}}
+\end{figure}
 
 \begin{figure}[h!]
     \centering
@@ -98,9 +118,10 @@ To use verifiable credentials a holder has to generate verifiable presentations 
     \label{vc-vp-topview}
 \end{figure}
 
-Verifiable credentials and verifiable presentations can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format as can be seen in listings \ref{vcExample} and \ref{vpExample}. \\
+Verifiable credentials and verifiable presentations can be represented in JSON \cite{json-rfc3986} or JSON-LD \cite{json-ld} format as can be seen in figures \ref{vcExample} and \ref{vpExample}. \\
 
-\begin{lstlisting}[caption={A simple example of a verifiable credential \cite{vcW3C}.},captionpos=b,style=json, label={vcExample},breaklines=true,frame=single]
+\begin{figure}[h!]
+\begin{lstlisting}[style=json, breaklines=true,frame=single]
 {
     "@context": [
         "https://www.w3.org/2018/credentials/v1",
@@ -129,29 +150,57 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
         }
 }
 \end{lstlisting}
+\caption{A simple example of a verifiable credential \cite{vcW3C}. \label{vcExample}}
+\end{figure}
 
-\begin{lstlisting}[caption={A simple example of a verifiable presentation \cite{vcW3C}.},captionpos=b,style=json, label={vpExample},breaklines=true,frame=single]
-    {
-        "@context": [
-          "https://www.w3.org/2018/credentials/v1",
-          "https://www.w3.org/2018/credentials/examples/v1"
-        ],
-        "type": "VerifiablePresentation",
-        "verifiableCredential": [{
-            ...
-        }],
-        "proof": {
-          "type": "RsaSignature2018",
-          "created": "2018-09-14T21:19:10Z",
-          "proofPurpose": "authentication",
-          "verificationMethod": "did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1",
-          "challenge": "1f44d55f-f161-4938-a659-f8026467f126",
-          "domain": "4jt78h47fh47",
-          "proofValue": "Qy72IFLN25DYuNzVBAh4vGHSrQyHUGlc..."
-        }
-      }   
+% \begin{lstlisting}[caption={A simple example of a verifiable presentation \cite{vcW3C}.},captionpos=b,style=json, label={vpExample},breaklines=true,frame=single]
+%     {
+%         "@context": [
+%           "https://www.w3.org/2018/credentials/v1",
+%           "https://www.w3.org/2018/credentials/examples/v1"
+%         ],
+%         "type": "VerifiablePresentation",
+%         "verifiableCredential": [{
+%             ...
+%         }],
+%         "proof": {
+%           "type": "RsaSignature2018",
+%           "created": "2018-09-14T21:19:10Z",
+%           "proofPurpose": "authentication",
+%           "verificationMethod": "did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1",
+%           "challenge": "1f44d55f-f161-4938-a659-f8026467f126",
+%           "domain": "4jt78h47fh47",
+%           "proofValue": "Qy72IFLN25DYuNzVBAh4vGHSrQyHUGlc..."
+%         }
+%       }   
+% \end{lstlisting}
+
+
+\begin{figure}[h!]
+\begin{lstlisting}[style=json, breaklines=true,frame=single]
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/2018/credentials/examples/v1"
+    ],
+    "type": "VerifiablePresentation",
+    "verifiableCredential": [{
+        ...
+    }],
+    "proof": {
+        "type": "RsaSignature2018",
+        "created": "2018-09-14T21:19:10Z",
+        "proofPurpose": "authentication",
+        "verificationMethod": "did:example:ebfeb1f712ebc6f1c276e12ec21#keys-1",
+        "challenge": "1f44d55f-f161-4938-a659-f8026467f126",
+        "domain": "4jt78h47fh47",
+        "proofValue": "Qy72IFLN25DYuNzVBAh4vGHSrQyHUGlc..."
+    }
+}   
 \end{lstlisting}
-
+\caption{A simple example of a verifiable presentation \cite{vcW3C}. \label{vpExample}}
+\end{figure}
+\FloatBarrier   
 \section{Distributed Ledgers Technologies}
 
 Distributed Ledger Technology (DLT)  is a new paradigm for collecting and sharing information between people. A distributed ledger is a database that is spread across several nodes or computing devices. An exact copy of the ledger is replicated and stored on each node. The revolutionary aspect of distributed ledger technology is that no single administrator or central authority is responsible for maintaining the ledger. Each network's participant node keeps its state updated by constructing and recording updates to the ledger independently. The nodes then vote on these adjustments to ensure that the majority agrees with the conclusion reached. This voting and agreement on the state of the ledger is called consensus and is conducted automatically via a consensus algorithm \cite{dlt-intro-1}. 

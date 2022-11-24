@@ -24,8 +24,9 @@ Then tests can be launched and the results can be stored on a file with the foll
 \begin{lstlisting}[frame=single]
 $ ./test > results.txt
 \end{lstlisting}
-The output should be similar to the following shown in the listing \ref{l-mbedtls-1}. \\
-\begin{lstlisting}[caption={Example of MbedTLS tests output on non-constrained device},captionpos=b,label={l-mbedtls-1},style=DOS,frame=single]
+The output should be similar to the following shown in figure \ref{l-mbedtls-1}. \\
+\begin{figure}[H]
+\begin{lstlisting}[frame=single]
 Seeding the random number generator... ok
 
 Test: ECDSA key gen
@@ -50,16 +51,17 @@ rsa2048 key gen time: 0.065950689
 0.000003206,0.001853610,0.000038684
 ...
 \end{lstlisting}
-
+\caption{Example of MbedTLS tests output on a non-constrained device. \label{l-mbedtls-1}}
+\end{figure}
 \subsubsection{Test on constrained device}
 STM32CubeIDE \cite{cube-ide} has been used (version \texttt{1.9.0}) for developing and flashing the binaries onto the STM32L4+ board \cite{stm32-board-product}.
 
 For simplicity, the complete project is provided and it just needs to be imported into STM32CubeIDE as an existing project. Click \texttt{File > Import > Existing projects into Workspace}, then select the archive file \texttt{mbedtlsv1-stm32.zip} from the file system, select the project \texttt{Test1} and click \texttt{Finish}. Then plug the board into a USB port and click \texttt{Project > Build Project}. The code will be compiled. When it is done (and 0 errors appear in the console panel at the bottom), click \texttt{Run}. 
 
 The output on the board is very similar to the previous one, for debug messages the output of the \texttt{printf} function is redirected to one \texttt{UART} and it can be read with a terminal emulator that supports serial port, such as \texttt{Teraterm} or \texttt{Putty}, by reading the \texttt{COM} that correspond to the \texttt{STM32} debugger. 
-The output should be similar to the following shown in the listing \ref{l-mbedtls-2}. \\
-
-\begin{lstlisting}[caption={Example of MbedTLS tests output on constrained device},captionpos=b,label={l-mbedtls-2},style=DOS,frame=single]
+The output should be similar to the following shown in figure \ref{l-mbedtls-2}. \\
+\begin{figure}[H]
+\begin{lstlisting}[frame=single]
 Seeding the random number generator... ok
 Test: ECDSA key gen, sign-gen
 p256
@@ -70,6 +72,8 @@ key gen time: 319
 5;357;1257 # (hash, sign, ver) times
 5;361;1264
 \end{lstlisting}
+\caption{Example of MbedTLS tests output on a constrained device. \label{l-mbedtls-2}}
+\end{figure}
 
 %Since it is just a test and some of them take a long time, it is suggested to choose and execute one test at a time by manually comment/uncomment the code in the file \texttt{mytest.c}. 
 
@@ -97,12 +101,15 @@ To launch the test and take executions times of BBS\texttt{+} signatures and ver
 \begin{lstlisting}[frame=single]
 $ cargo run
 \end{lstlisting}
-The output should be similar to the following shown in the listing \ref{l-bbs}. \\
-\begin{lstlisting}[caption={Example of BBS\texttt{+} tests output},captionpos=b,label={l-bbs},style=DOS,frame=single]
-  AVG Time elapsed in key generation() is: 25 ms
-  AVG Time elapsed in sign() is: 18 ms
-  AVG Time elapsed in ver() is: 102 ms
+The output should be similar to the following shown in figure \ref{l-bbs}. \\
+\begin{figure}[H]
+\begin{lstlisting}[frame=single]
+AVG Time elapsed in key generation() is: 25 ms
+AVG Time elapsed in sign() is: 18 ms
+AVG Time elapsed in ver() is: 102 ms
 \end{lstlisting}
+\caption{Example of BBS\texttt{+} tests output. \label{l-bbs}}
+\end{figure}
 
 \section{Proof of concept}
 
@@ -203,8 +210,9 @@ If the enclave server app will be modified, the expected hash values have to be 
 \end{lstlisting}
 
 \subsection{Expected output}
-The output of the client and the server should be similar to the following listings \ref{l-demo-c} and \ref{l-demo-s}. \\
-\begin{lstlisting}[caption={Example of output at client side},captionpos=b,style=DOS,label={l-demo-c},frame=single]
+The output of the client and the server should be similar to the following figures \ref{l-demo-c} and \ref{l-demo-s}.
+\begin{figure}[H]
+\begin{lstlisting}[frame=single]
               === Security Monitor ===
 Hash: e51749130b6036fe85b27409a4ea3e1c078fe4dcb76eb697e7e3cdc5ff
 313144628a1ec10558cea5ad94641de7fb31fda759758115caf1144b2c49603f
@@ -238,9 +246,12 @@ dac1e2fe5a5174
 Type the service to request:
 > 1
 \end{lstlisting}
-\leavevmode\newline
+\caption{Example of output at client side. \label{l-demo-c}}
+\end{figure}
+%\leavevmode\newline
 
-\begin{lstlisting}[caption={Example of output at server side},captionpos=b,label={l-demo-s},style=DOS,frame=single]
+\begin{figure}[H]
+\begin{lstlisting}[frame=single]
 Verifying archive integrity... All good.
 Uncompressing Keystone Enclave Package
 [EH] Got connection from remote client
@@ -266,6 +277,8 @@ FA72997814FA1F16D111DA0189D0440F0F245EB606BACACD0566DEB0767D44...
 Response payload:  [64]
 8E120A739BA94B7E9AE2F590166682170570D7AFCB70026B513405E56E90C1...
 \end{lstlisting}
+\caption{Example of output at server side. \label{l-demo-s}}
+\end{figure}
 
 \subsection{Tools for updating enclave and sm hashes}
 If the SM or the eapp will be modified, the expected hashes need to be modified to generate a valid report for the client. The next command will create the necessary files in the \texttt{include} directory. The demo must be recompiled and the QEMU image rebuilt before and after this command is executed. \\
