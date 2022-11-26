@@ -61,6 +61,7 @@
 \usepackage{tcolorbox}
 \usepackage{placeins}
 \usepackage{float}
+\usepackage{lmodern}
 \newtcolorbox{mybox}{colback=red!5!white,colframe=red!75!black}
 \lstdefinestyle{json}{
   string=[s]{"}{"},
@@ -72,7 +73,10 @@
   backgroundcolor=\color{black},
   basicstyle=\color{white}\ttfamily
 }
-
+\lstdefinestyle{terminal}{
+  % literate=
+  % {\$ }{{{\color{blue}{\$ }}}}{2}
+}
 \makeatletter
 \def\lst@visiblespace{\lst@ttfamily{\phantom{\char32}}{\phantom{\textvisiblespace}}}
 \begin{document}

@@ -216,7 +216,7 @@ memcpy(enc_key, sealing_material.key, crypto_aead_chacha20poly1305_KEYBYTES);
 \end{lstlisting}
 \caption{Setup of the encryption key and ed25519 keypair. \label{setup-seal-material}}
 \end{figure}
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-keys.svg}
     \caption{Key pairs generation operation (pseudo-code)}
@@ -232,7 +232,7 @@ Finally, the enclave sends back to the client the response, which will contain o
 Consider the service of storing a verifiable credential. The client sends this request along with the verifiable credential and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. (The sealing key will be equal for the same client). Then, it encrypts the received verifiable credential with the obtained sealing key and signs the obtained ciphertext with an enclave signing key. Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall(OCALL\_SAVE\_SEALED\_DATA, buffer, len, 0, 0)}. This call exports the buffer, containing the ciphertext and the signature of the verifiable credential, from the enclave to be stored in the untrusted non-volatile memory by the host process. The file name is composed of the public key of the client and the type of data saved, in this case a verifiable credential. Hence, the file name will be \texttt{<client\_pub\_key>\_vc}. The host saves the data obtained from the enclave and returns the control. 
 Finally, the enclave sends back to the client the response, which will contain in this case only a \texttt{SUCCESS} flag. \\
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-vc.svg}
     \caption{Storage of a verifiable credential operation (pseudo-code)}
@@ -244,7 +244,7 @@ The function will be executed for retrieving from the untrusted non-volatile mem
 The enclave will check the validity of signatures and decrypt the sealed data.  
 Finally, the enclave using the retrieved keys signs the verifiable credential with the nonce received from the client and sends back the response, which will contain a freshly generated verifiable presentation. \\
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-vp.svg}
     \caption{Generation of a verifiable presentation operation (pseudo-code)}

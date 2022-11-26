@@ -72,7 +72,7 @@ A DID URL expands the syntax of a DID with other standard components of URI such
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=10cm]{./chapters/images/did-overview.png}
+    \includegraphics[width=12cm]{./chapters/images/did-overview.png}
     \caption{DID architecture overview and relationships between components \cite{didW3C}.}
     \label{didOverview}
 \end{figure}
@@ -122,11 +122,7 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
 
 \begin{figure}[h!]
 \begin{lstlisting}[style=json, breaklines=true,frame=single]
-{
-    "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        "https://www.w3.org/2018/credentials/examples/v1"
-    ],
+{   "@context": ["https://www.w3.org/2018/credentials/v1"],
     "id": "http://example.edu/credentials/1872",
     "type": ["VerifiableCredential", "AlumniCredential"],
     "issuer": "https://example.edu/issuers/565049",
@@ -147,7 +143,7 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
         "proofPurpose": "assertionMethod",
         "verificationMethod": "https://example.edu/issuers/565049#key-1",
         "proofValue": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsI..."
-        }
+    }
 }
 \end{lstlisting}
 \caption{A simple example of a verifiable credential \cite{vcW3C}. \label{vcExample}}
@@ -178,11 +174,7 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
 
 \begin{figure}[h!]
 \begin{lstlisting}[style=json, breaklines=true,frame=single]
-{
-    "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        "https://www.w3.org/2018/credentials/examples/v1"
-    ],
+{   "@context": ["https://www.w3.org/2018/credentials/v1"],
     "type": "VerifiablePresentation",
     "verifiableCredential": [{
         ...
@@ -200,7 +192,7 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
 \end{lstlisting}
 \caption{A simple example of a verifiable presentation \cite{vcW3C}. \label{vpExample}}
 \end{figure}
-\FloatBarrier   
+% \FloatBarrier   
 \section{Distributed Ledgers Technologies}
 
 Distributed Ledger Technology (DLT)  is a new paradigm for collecting and sharing information between people. A distributed ledger is a database that is spread across several nodes or computing devices. An exact copy of the ledger is replicated and stored on each node. The revolutionary aspect of distributed ledger technology is that no single administrator or central authority is responsible for maintaining the ledger. Each network's participant node keeps its state updated by constructing and recording updates to the ledger independently. The nodes then vote on these adjustments to ensure that the majority agrees with the conclusion reached. This voting and agreement on the state of the ledger is called consensus and is conducted automatically via a consensus algorithm \cite{dlt-intro-1}. 
