@@ -81,7 +81,26 @@ For this subproject, the most relevant files are:
     % \item \texttt{fn pok\_sign\_ver\_test(iterations: usize)}
   \end{itemize}
 \end{itemize}
-And the code is very simple, it launches the test for key generation and the test for signature and verification, operations are executed \texttt{iterations} times and the average is displayed on the output video.  \\
+
+Figure \ref{bbs-pseudo-algo} describes in Rust language how to measure the elapsed time of a cryptographic primitive. \\
+\begin{figure}[H]
+\begin{lstlisting}[frame=single]
+fn <primitive>_test(iterations: usize) {
+  let mut sum: u128 = 0;
+  for i in 0..iterations {
+      let start = Instant::now();
+      // bbs+ cryptographic primitive
+      let duration = start.elapsed().as_millis();
+      sum += duration;
+  };
+  println!("AVG Time elapsed is: {:?}", sum/iterations as u128);
+}
+    
+\end{lstlisting}
+\caption{Pseudo algorithm for measuring the elapsed time.}
+\label{bbs-pseudo-algo}
+\end{figure}
+The program does the following, it launches the test for key generation and the test for signature and verification, operations are executed \texttt{iterations} times and the average is displayed on the output video.  \\
 \begin{lstlisting}[frame=single]
 fn main() {
   let iterations: usize = 100;
@@ -144,7 +163,7 @@ The designed solution has been developed starting from the officially \texttt{ke
 
 \subsection{Relevant files of the demo}
 Below are explained relevant files that change from the official \texttt{kestone-demo} repository.
-
+Functions, types and variables not mentioned here can be deepened in the official \texttt{kestone-demo} repository and Keystone documentation.
 \subsubsection{include/eh\_shared.h}
 This file is shared between the enclave and the untrusted host. It defines the following data structure for exchanging sealed (encrypted) data between the enclave and the untrusted host. \\
 
@@ -158,7 +177,7 @@ typedef struct stored_data_t{
 \end{lstlisting}
 
 \subsubsection{include/messages.h}
-This file is shared between the client and the enclave and it defines the messages (request amd response) they exchange. \\
+This file is shared between the client and the enclave and it defines the messages (request and response) they exchange. \\
 \begin{lstlisting}[language=C,frame=single]
 typedef struct request_message_t {
   unsigned short request_type;
@@ -205,6 +224,7 @@ void session_context_from_buffer(struct session_context_t* session_context, unsi
 % ===========================================================================
 
 \subsubsection{server\_eapp/service.c and server\_eapp/service.h}
+\label{service.c}
 The file \texttt{service.h} just exposes the function that processes the request received by the client. \\   
 \begin{lstlisting}[language=C,frame=single]
 response_message_t* process_request(request_message_t *request, size_t *pt_finalsize) {
@@ -227,7 +247,7 @@ response_message_t* process_request(request_message_t *request, size_t *pt_final
   return NULL;
 }
 \end{lstlisting}
-\leavevmode\newline
+% \leavevmode\newline
 
 \noindent
 \texttt{\bfseries int store\_data (\dots)}\\
@@ -308,11 +328,58 @@ In this file, the important functions to mention are:
 
 \noindent
 \texttt{\bfseries void attest\_and\_establish\_channel()}\\
-In this function, the server once has sent its report to the client and it waits for the session context of the client. Once received, it validates the session context and established the channel with the client.
+In this function, as explained in \autoref{chap:SSIaaS}, the enclave sends its report to the client and waits for the session context of the client. Once received, it validates the session context and established the channel with the client. If some error occurs, the program terminates. 
+
+\begin{lstlisting}[language=C,frame=single]
+void attest_and_establish_channel() {
+  // ...  
+  randombytes_buf(challenge, CHALLENGE_SIZE);
+  // ...  
+  ocall_send_report(buffer, MAX_REPORT_SIZE);
+
+  unsigned char session_ctx_buffer[SESSION_CTX_SIZE];
+  ocall_wait_for_client_session_ctx(session_ctx_buffer, SESSION_CTX_SIZE);
+  // signatures validity check
+  validate_session_context(session_ctx_buffer, challenge); 
+
+  channel_establish(); // Ask libsodium to generate session keys based on the received pk
+} 
+\end{lstlisting}
+\leavevmode\newline
 
 \noindent
 \texttt{\bfseries void handle\_requests()}\\
-in this function, the server will wait for client requests, will processes the request (and interacts with the enclave host for data sealing) and send back the response to the client.
+In this function, as explained in \autoref{chap:SSIaaS} and in \autoref{service.c}, the enclave will wait for client requests. Whenever a request arrives, the enclave copies the request from the shared region, processes the request (interacting with the enclave host for data sealing), and sends the response back to the client. If some error occurs, the program terminates. \\
+
+\begin{lstlisting}[language=C,frame=single]
+void handle_requests() {
+  struct edge_data msg;
+  while(1){
+    ocall_wait_for_request(&msg);
+    // ...
+    copy_from_shared(request, msg.offset, msg.size);
+    // ...
+    switch (request->request_type) {
+      case MSG_EXIT:
+        ocall_print_buffer("Received exit, exiting\n");
+        EAPP_RETURN(0);
+      break;
+      default:
+        response = process_request(request, &r_size);
+      break;
+    }
+    if (response == NULL) {
+      ocall_print_buffer("Response handling error\n");
+      EAPP_RETURN(0);
+    }
+    // ...
+    channel_send((unsigned char*) response, r_size, boxed_buffer);
+    ocall_send_reply(boxed_buffer, boxed_size);
+    // ... 
+  }
+}
+\end{lstlisting}
+    
 
 %\item \texttt{void validate\_session\_context(void* buffer, unsigned char* challange)}
 

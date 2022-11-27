@@ -62,6 +62,7 @@
 \usepackage{placeins}
 \usepackage{float}
 \usepackage{lmodern}
+\usepackage{hyperref}
 \newtcolorbox{mybox}{colback=red!5!white,colframe=red!75!black}
 \lstdefinestyle{json}{
   string=[s]{"}{"},
@@ -204,16 +205,23 @@ I thank my family, who sustained me throughout my university career. In particul
 \mainmatter
 
 \chapter{Introduction}
+\label{chap:Intro}
 \input{chapters/chapter1-introduction.tex}
 
 \chapter{Self-Sovereign Identity}
+\label{chap:SSI}
 \input{chapters/chapter2-ssi.tex}
+
 \chapter{Kestone Enclave}
+\label{chap:Keystone}
 \input{chapters/chapter3-keystone.tex}
 
 \chapter{Self-Sovereign Identity as a Service}
+\label{chap:SSIaaS}
 \input{chapters/chapter4.tex}
+
 \chapter{Conclusion and Future Work}
+\label{chap:Conclusion}
 \input{chapters/chapter5-conclusion.tex}
 
 
