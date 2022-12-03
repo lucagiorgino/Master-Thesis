@@ -50,11 +50,11 @@ The employed non-constrained device is instead more powerful and is equipped wit
     \label{stm-board}
 \end{figure}
 
-Mbed TLS \cite{mbed-tls} has been used as a library that implements the operation for key generation and signature (generation and verification). Mbed TLS is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library which implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
+Mbed TLS \cite{mbed-tls} has been used as a library that implements the operation for key generation and signature (generation and verification). Mbed TLS is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library that implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
 
 \section{Results}
 \label{sec-results}
-It is evident from the Table \ref{time-table1} that RSA is usable on constrained devices in real-life applications only if the key generation is precomputed, otherwise is unusable. On the constrained device, RSA signing and verification are faster than ECDSA, but ECDSA provides the same level of security as RSA but it does so while using much shorter key lengths. In applications where it could be useful to generate a keypair on the fly, ECDSA is a must. On the edge device, the ECDSA signing operation is faster than RSA, while the RSA verification process is faster than ECDSA.  It can also be noted that the time difference between the constrained device and the edge device is extensive, due to the frequency of operation of the MCU and the CPU.
+It is evident from Table \ref{time-table1} that RSA is usable on constrained devices in real-life applications only if the key generation is precomputed, otherwise is unusable. On the constrained device, RSA signing and verification are faster than ECDSA, but ECDSA provides the same level of security as RSA but it does so while using much shorter key lengths. In applications where it could be useful to generate a keypair on the fly, ECDSA is a must. On the edge device, the ECDSA signing operation is faster than RSA, while the RSA verification process is faster than ECDSA.  It can also be noted that the time difference between the constrained device and the edge device is extensive, due to the frequency of operation of the MCU and the CPU.
 
 \begin{table}[!h]
     \centering
@@ -116,25 +116,31 @@ The results obtained in Sect. \ref{sec-results} suggest that a constrained devic
 \label{sec:SSIaaS-ecosystem}
 %The edge device interacts with constrained IoT devices and provides them with identity management functionalities 
 %The edge device interacts with a constrained IoT object and provides functionalities to create and support it in identity management. 
-The edge device interacts with IoT-constrained devices and provides functionalities to create and support them in identity management. As shown in Fig. \ref{poc-design}, the exposed operations by the edge device are:
+The edge device interacts with IoT-constrained devices and provides functionalities to create and support them in identity management. As represented in Fig. \ref{poc-design}, the exposed operations by the edge device are:
 \begin{itemize}
-    \item key pairs generation
-    \item storage of a verifiable credential
-    \item generation of a verifiable presentation
+    \item \textit{key pairs generation}: the IoT device can request the edge node to generate key pairs that could later use to generate a verifiable presentation
+    \item \textit{storage of a verifiable credential}: the IoT device can store on the edge node a verifiable credential got from an issuer
+    \item \textit{generation of a verifiable presentation}: if the IoT device wants to interact with a verifier, it has to provide a verifiable presentation, which is generated by the edge device starting from the verifiable credential and signing the verifiable credential with a keypair previously generated for that specific IoT client
 \end{itemize}
-
-% From now on, the focus is on the interaction between the edge device and the IoT-constrained node. 
-The IoT device can request the edge node to generate key pairs that could later use to generate a verifiable presentation. The IoT device can store on the edge node a verifiable credential got from an issuer. If the IoT device wants to interact with a verifier, it has to provide a verifiable presentation, which is generated by the edge device starting from the verifiable credential and signing the verifiable credential with a keypair previously generated for that specific IoT client. 
-Since these are security-critical operations because they handle the identity of the IoT node, it needs the guarantee that the data shared with the edge device and the executed code are protected with respect to confidentiality and integrity. Hence, a TEE has been implemented using the Keystone framework. Figs. \ref{manufacturer-provisioning} and \ref{poc-architecture} show the architecture and the preliminary interactions between the IoT device and the edge device before the constrained device can ask for services. 
 
 \begin{figure}[H]
     \centering
-    \includesvg[inkscapelatex=false, scale=1]{./chapters/images/des2.svg}
-    \caption{Basic components of Self-Sovereign-Identity as a Service}
+    \includesvg[inkscapelatex=false, scale=0.8]{./chapters/images/poc-33.svg}
+    \caption{Edge exposed operations and basic components of SSIaaS}
     \label{poc-design}
 \end{figure}
 
+% From now on, the focus is on the interaction between the edge device and the IoT-constrained node. 
+Since these are security-critical operations because they handle the identity of an IoT node, it needs the guarantee that the data shared with the edge device and the executed code are protected with respect to confidentiality and integrity. 
+Hence, TEEs are a solution to address these challenges. To implement TEE on the edge device, the Keystone framework has been used. 
+
+In consideration of the architecture reported in Fig. \ref{poc-design} this work focuses on the interactions between the edge device and the IoT-constrained node. 
+Sect. \ref{sect:provisioning} and Sect. \ref{sect:demo-architecture} explain the architecture and the preliminary interactions between the IoT device and the edge device before the constrained device can request SSI-related services. 
+
+
+
 \subsection{IoT Device Provisioning}
+\label{sect:provisioning}
 Before deploying an IoT device in the network, it needs to be configured and initialised to be able to communicate and establish a trust relationship with the edge device. This operation is named \textit{provisioning}. 
 After the provisioning, the IoT device can be authenticable by the edge device and can communicate with it. 
 In the implemented solution, a trustworthy system administrator provisions the client, i.e. the constrained device, with: 
@@ -151,7 +157,7 @@ In the implemented solution, a trustworthy system administrator provisions the c
     \label{manufacturer-provisioning}
 \end{figure}
 
-Then, the system administrator signs the public key of the IoT client and saves the signature. The signature is verifiable with the public key of the system administrator. It proves that the device with access to the client's secret belongs to a recognised IoT network group. This rest on the assumption of a pre-existent trust relationship between the system administrator and the edge device. The client authentication method just described was chosen because the edge device only needs to retain in memory the system administrator's public key, rather than keeping track of all the clients' public keys in a database, to determine whether a client is authorized to access edge SSI services on-demand.
+Then, the system administrator signs the public key of the IoT client and saves the signature. The signature is verifiable with the public key of the system administrator. It proves that the device with access to the client's secret belongs to a recognised IoT network group. This rest on the assumption of a pre-existent trust relationship between the system administrator and the edge device. The client authentication method just described has been chosen because the edge device only needs to retain in memory the system administrator's public key, rather than keeping track of all the clients' public keys in a database, to determine whether a client is authorized to access edge SSI services on-demand.
 
 \subsection{Attestation Report and Session Context}
 Keystone supports a basic attestation mechanism, as introduced in Sect. \ref{keystone-components} and uses ed25519 signatures \cite{bernstein2012high} for computing hashes of the security monitor and enclave content. Once an enclave has started the execution, it requests the SM to generate a signed enclave report and a signed SM report. The SM Report contains a hash of the security monitor and the attestation public key, all signed by the device root key. The enclave report consists of a hash of the enclave at initialization and a data block from the enclave of up to 1Kbytes, all signed with the attestation public key of the SM. 
@@ -176,7 +182,6 @@ A client will verify the signatures and values contained in the attestation repo
 \caption{Example of an attestation report generated by the enclave. \label{attestation-report}}
 \end{figure}
 When designing the demo, the session context has been introduced to authenticate the client on the server side. The session context includes two sections: the stub certificate and the homonym session context. The first section contains the client's public key and the signature of the client's public key, made at the provisioning phase by the system administrator and verifiable with the public root key. The enclosed session context contains a data block, all signed by the client public key. 
-
 The edge node will verify the signatures of this structure by using the root public key of the system administrator. An example of a session context is shown in Fig. \ref{session-context}. \\
 \begin{figure}[H]
 \begin{lstlisting}[captionpos=b,style=json, frame=single]
@@ -196,25 +201,33 @@ The edge node will verify the signatures of this structure by using the root pub
 In the demo implementation, the data part of the session context and the attestation report are both used for the Diffie-Hellman key exchange protocol so that the two parties can securely compute a shared key for creating a secure encrypted channel. 
 
 \subsection{Demo Architecture}
+\label{sect:demo-architecture}
 To ease the development of a first demonstration application, the architecture described in Sect. \ref{sec:SSIaaS-ecosystem} has been simplified. In the presented implementation a single instance of edge device can handle requests only from one IoT node at a time. The developed application demonstrates how a remote-constrained device can request on-demand SSI services, by offloading computations to be performed on an untrusted edge server using an enclave. It has to be pointed out that the developed application code contains test keys, which are not safe and should not be used in production. 
 
-The demo architecture consists of:
+As represented in Fig. \ref{poc-architecture-s}, the demo architecture consists of:
 \begin{itemize}
     \item a server enclave application and an untrusted host application hosted on a RISC-V processor
     \item an IoT client provisioned by the system administrator  
 \end{itemize} 
+
+\begin{figure}[!h]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/demo-s.svg}
+    \caption{Execution flow and architecture of the demo (high-level view) }
+    \label{poc-architecture-s}
+\end{figure}
 
 The demo enclave application has essential enclave capabilities (attestation report generation, data sealing, etc.). It uses Libsodium \cite{libsodium} for establishing a secure channel between the IoT client and the edge server. It exposes the three SSI-related services, as presented in the Sect. \ref{sec:Design}. The untrusted enclave host serves a few functions: starting the enclave, proxying network packets from and to the client and storing sealed data. The remote client establishes a connection with the untrusted host, verifies the enclave report, transmits the session context, and creates a secure channel before being able to communicate with the host to request offloaded SSI-related computations. 
 
 \begin{figure}[!h]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture3.svg}
-    \caption{Demo architecture}
+    \caption{Execution flow and architecture of the demo}
     \label{poc-architecture}
 \end{figure}
 
-\subsubsection{Running the demo}
-At the start, the client will connect to the enclave and perform the remote attestation. Expected hashes in the attestation report will be used by the trusted client to verify that the enclave is created with the right application and initialized by the known version of the security monitor. If the attestation is successful, the client can send its attestation, also called session context. The server will check the signature validity provided by the client verifying it with the public key of the system administrator (\texttt{root\_pk}). On the other hand, if the edge device attestation report is invalid, the client will close the connection for security reasons, i.e. it is not the known edge device.
+\subsubsection{Execution flow of the demo}
+As can been seen in Fig. \ref{poc-architecture}, at the start, the client will connect to the enclave and perform the remote attestation. Expected hashes in the attestation report will be used by the trusted client to verify that the enclave is created with the right application and initialized by the known version of the security monitor. If the attestation is successful, the client can send its attestation, also called session context. The server will check the signature validity provided by the client verifying it with the public key of the system administrator (\texttt{root\_pk}). On the other hand, if the edge device attestation report is invalid, the client will close the connection for security reasons, i.e. it is not the known edge device.
 Upon exchanging the session context and the attestation report, they establish a secure channel and the enclave-host waits for service requests.
 
 \subsection{Offloaded Operations}
