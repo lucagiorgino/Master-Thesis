@@ -24,7 +24,7 @@ Then tests can be launched and the results can be stored on a file with the foll
 \begin{lstlisting}[style=terminal,frame=single]
 $ ./test > results.txt
 \end{lstlisting}
-The output should be similar to the following shown in figure \ref{l-mbedtls-1}. \\
+The output should be similar to the following shown in Fig. \ref{l-mbedtls-1}. \\
 \begin{figure}[H]
 \begin{lstlisting}[frame=single]
 Seeding the random number generator... ok
@@ -59,7 +59,7 @@ STM32CubeIDE \cite{cube-ide} has been used (version \texttt{1.9.0}) for developi
 For simplicity, the complete project is provided and it just needs to be imported into STM32CubeIDE as an existing project. Click \texttt{File > Import > Existing projects into Workspace}, then select the archive file \texttt{mbedtlsv1-stm32.zip} from the file system, select the project \texttt{Test1} and click \texttt{Finish}. Then plug the board into a USB port and click \texttt{Project > Build Project}. The code will be compiled. When it is done (and 0 errors appear in the console panel at the bottom), click \texttt{Run}. 
 
 The output on the board is very similar to the previous one, for debug messages the output of the \texttt{printf} function is redirected to one \texttt{UART} and it can be read with a terminal emulator that supports serial port, such as \texttt{Teraterm} or \texttt{Putty}, by reading the \texttt{COM} that correspond to the \texttt{STM32} debugger. 
-The output should be similar to the following shown in figure \ref{l-mbedtls-2}. \\
+The output should be similar to the following shown in Fig. \ref{l-mbedtls-2}. \\
 \begin{figure}[H]
 \begin{lstlisting}[frame=single]
 Seeding the random number generator... ok
@@ -101,7 +101,7 @@ To launch the test and take executions times of BBS\texttt{+} signatures and ver
 \begin{lstlisting}[style=terminal,frame=single]
 $ cargo run
 \end{lstlisting}
-The output should be similar to the following shown in figure \ref{l-bbs}. \\
+The output should be similar to the following shown in Fig. \ref{l-bbs}. \\
 \begin{figure}[H]
 \begin{lstlisting}[frame=single]
 AVG Time elapsed in key generation() is: 25 ms
@@ -210,7 +210,7 @@ If the enclave server app will be modified, the expected hash values have to be 
 \end{lstlisting}
 
 \subsection{Expected output}
-The output of the client and the server should be similar to the following figures \ref{l-demo-c} and \ref{l-demo-s}.
+The output of the client and the server should be similar to the following Figs. \ref{l-demo-c} and \ref{l-demo-s}.
 \begin{figure}[H]
 \begin{lstlisting}[frame=single]
               === Security Monitor ===
