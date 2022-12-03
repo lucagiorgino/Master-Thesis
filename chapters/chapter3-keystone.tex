@@ -114,7 +114,7 @@ Function calls that enter or exit the enclave are known as \textit{edge calls} i
 \end{figure}
 
 \subsubsection{Edge Calls Lifecycle}
-Consider for example a generic \texttt{ocall\_do\_something}, as represented in \autoref{ocall-lifecycle}. This call transfers some values passed as arguments from the enclave to be processed by the host process (it could be a value to be printed, a file to be stored and so on). The enclave application calls \texttt{ocall\_do\_something(...)}, which is an edge wrapper function.
+Consider for example a generic \texttt{ocall\_do\_something}, as represented in Fig. \ref{ocall-lifecycle}. This call transfers some values passed as arguments from the enclave to be processed by the host process (it could be a value to be printed, a file to be stored and so on). The enclave application calls \texttt{ocall\_do\_something(...)}, which is an edge wrapper function.
 \texttt{ocall\_do\_something(...)} uses the system-call-like interface to the runtime to execute an \textit{ocalls} similar to \texttt{ocall(OCALL\_DO\_SOMETHING, \&input, sizeof(input), \&ouput,  sizeof(output))}. The enclave passes a pointer to the value, the size of the argument and any necessary return buffer information. 
 After allocating an \texttt{edge\_call} structure in the shared memory region, the runtime fills out the call type, copies the value into another part of the shared memory, and sets up the offset to the argument value. Note that, in Keystone, edge calls employ offset values in the shared memory area, rather than pointers.
 The runtime subsequently exits the enclave with an \texttt{SBI\_CALL}, i.e. \texttt{sbi\_stop\_enclave()}, passing a value indicating that the enclave is executing an \textit{ocalls} rather than shutting down. 

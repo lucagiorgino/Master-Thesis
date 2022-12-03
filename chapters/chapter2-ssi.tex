@@ -4,7 +4,8 @@
 %\section{Self-Sovereign-Identity}
 Self-Sovereign Identity (SSI) \cite{tobin2016inevitable} is a new model for digital identity. In the SSI ecosystem, a user can fully control his own identity and can use it between any service. SSI is different from today's digital identities: it is anchored to distributed ledgers so is not controlled by any centralized services.
 One SSI innovation is the design and development of a common set of specifications: 
-Decentralized Identifiers (DIDs) \cite{didW3C} and Verifiable Credentials (VCs) \cite{vcW3C}. Using these specifications, user identity can be anchored to different distributed ledgers, but it will also be defined in the same standard way.
+Decentralized Identifiers (DIDs) \cite{didW3C} and Verifiable Credentials (VCs) \cite{vcW3C}. 
+Thanks to a standardised set of specifications, user identity can be anchored to different distributed ledgers, but it will also be defined in the same standard way.
 
 \section{Decentralized Identifiers}  
 DIDs \cite{didW3C} are identifiers referring to any subject determined by the controller of the DID.
@@ -200,14 +201,21 @@ Verifiable credentials and verifiable presentations can be represented in JSON \
 \section{Distributed Ledgers Technologies}
 
 Distributed Ledger Technology (DLT)  is a new paradigm for collecting and sharing information between people. A distributed ledger is a database that is spread across several nodes or computing devices in a network. An exact copy of the ledger is replicated and stored on each node. The revolutionary aspect of distributed ledger technology is that no single administrator or central authority is responsible for maintaining the ledger. Each network's participant node keeps its state updated by constructing and recording updates to the ledger independently. The nodes then vote on these adjustments to ensure that the majority agrees with the conclusion reached. This voting and agreement on the state of the ledger is called consensus and is conducted automatically via a consensus algorithm \cite{dlt-intro-1}. 
-The following criteria can be used to categorize DLTs: data structures, consensus algorithms, permissions, mining accessibility and so on. The main data structure types are blockchains and Directed Acyclic Graphs (DAGs). Although blockchains are the most popular and well-known DLT type,  DLTs based on Directed Acyclic Graph (DAG) data structures are becoming more popular because they reduce transaction data size and transaction fees, and increase transaction speeds \cite{dlt-intro-2}.
+The following criteria can be used to categorize DLTs: data structures, consensus algorithms, permissions, mining accessibility and so on. The main data structure types are blockchains and Directed Acyclic Graphs (DAGs). Although blockchains are the most popular and well-known DLT type,  DLTs based on Directed Acyclic Graph (DAG) data structures are becoming more popular because they increase transaction speeds \cite{dlt-intro-2}. 
+% reduce transaction data size and transaction fees, and
+The key features of DLTs are:
+\begin{itemize}
+    \item decentralization: everyone can participate in consensus without being granted access. No single entity has control over the network
+    \item immutability: the validated transaction cannot be altered. From a security point of view, this provides integrity to the data stored
+    \item transparency: everyone can observe the transactions in the network
+\end{itemize}
 
-An Example of DAG DLT is \textit{The Tangle} of IOTA \cite{popov2018tangle}, a cryptocurrency for the IoT industry.
+An Example of DAG DLT is \textit{The Tangle} of IOTA \cite{popov2018tangle}, a cryptocurrency for the IoT industry. IOTA offers the ability to transfer messages for free. There are several types of implemented messages. Some messages transfer value (the IOTA token or digital assets), while others transfer only pure data, and some message types can even contain both value and data. These properties make the Tangle suitable for storing SSI-related information. However, since the data on the Tangle are public, it may be necessary to protect them using encryption algorithms or other cryptographic protocols such as those described in \cite{iota-streams, ac1}.
 
 \begin{figure}[h!]
     \centering 
     \includegraphics[width=10cm]{./chapters/images/tangle.png}
-    \caption{Visualizations of the IOTA tangle \cite{popov2018tangle}.}
+    \caption{Visualizations of the IOTA Tangle \cite{popov2018tangle}.}
     \label{tangleFigure}
 \end{figure}
 
