@@ -1,10 +1,10 @@
 %!TEX encoding = IsoLatin
 %!TEX main = ../../main.tex
 
-The idea of a Self-Sovereign-Identity as a Service is to support a constrained device to create and manage its self-sovereign-identity. Since IoT devices cannot run natively the complete SSI stack there is a need to design and develop an edge device capable of providing such an identity to constraint devices as a service.  Such a solution has the advantage of increasing the number of devices that can interact in such a secure digital ecosystem.
+The idea of a Self-Sovereign-Identity as a Service (SSIaaS) is to support a constrained device to create and manage its Self-Sovereign Identity. Since IoT devices cannot run natively the complete SSI stack there is a need to design and develop an edge device capable of providing such an identity to constraint devices as a service.  Such a solution has the advantage of increasing the number of devices that can interact in such a secure digital ecosystem.
 
 \section{Use case analysis}
-The first step is to analyse and identify critical cryptographic operations involved in self-sovereign-identity management. The examples in figures \ref{usecase-did}, \ref{usecase-issuer} and \ref{usecase-verifier} illustrate in a high-level way how to create and use verifiable credentials. 
+The first step is to analyse and identify critical cryptographic operations involved in self-sovereign-identity management. The examples in Figs. \ref{usecase-did}, \ref{usecase-issuer} and \ref{usecase-verifier} illustrate a high-level procedure to create and use verifiable credentials. 
 \begin{figure}[!h]
     \centering
     \includesvg[inkscapelatex=false, scale=0.80]{./chapters/images/use-case-did_creation.svg}
@@ -13,7 +13,7 @@ The first step is to analyse and identify critical cryptographic operations invo
 \end{figure}
 
 \subsection{Creation of a DID}
-Independently from the chosen registry, when a holder creates a DID, he uniquely binds cryptographic proofs with the DID identifier. In this process, the holder typically needs to generate public-private key pairs and then insert them in the DID document. The order of operations can be seen in figure \ref{usecase-did}. 
+Independently from the chosen DLT, when a holder creates a DID, he uniquely binds cryptographic proofs with the DID identifier. In this process, the holder typically needs to generate public and private key pairs and then insert them in the DID document. The order of operations is presented in Fig. \ref{usecase-did}. 
 \subsection{Verifiable Credential Issuance}
 \begin{figure}[!h]
     \centering
@@ -21,7 +21,7 @@ Independently from the chosen registry, when a holder creates a DID, he uniquely
     \caption{Issuance - verifiable credential creation}
     \label{usecase-issuer}
 \end{figure}
-Next, a holder can get a verifiable credential from an issuer, that will verify the identity in some way, for example by examining some provided documentation. If the requirements are satisfied, the issuer will generate a verifiable credential by linking her identity information to DID. The holder receiving the verifiable credential will verify its validity and save it in his personal credential repository. All of this is shown in figure \ref{usecase-issuer}. 
+After the creation of a DID, a holder can get a verifiable credential from an issuer, that will verify the identity in some way, for example by examining some provided documentation. If the requirements are satisfied, the issuer will generate a verifiable credential by linking her identity information to DID. The holder receiving the verifiable credential will verify its validity and save it in his personal credential repository. The whole procedure is depicted in Fig. \ref{usecase-issuer}. 
 \subsection{Verifiable Credential Verification}
 \begin{figure}[!h]
     \centering
@@ -30,9 +30,9 @@ Next, a holder can get a verifiable credential from an issuer, that will verify 
     \label{usecase-verifier}
 \end{figure}
 
-Moreover, as can be seen in figure \ref{usecase-verifier}, once a holder has a DID and a verifiable credential, he can use them to access a service to a verifier. The holder will use the DID to prove to the requesting party that it is the controller of that DID through some sort of challenge-response. Then, the holder will create a verifiable presentation starting from one or more verifiable credentials. If possible, it is recommended to use selective disclosure, i.e. presenting proofs of claims without revealing the entire verifiable credential, to reduce correlation. Once created the verifiable presentation the holder can send it to the verifier and he will check its validity and authorize the holder if everything is fine.  
+As can be seen in Fig. \ref{usecase-verifier}, once a holder has a DID and a verifiable credential, he can use them to access a service to a verifier. The holder will use the DID to prove to the requesting party that it is the controller of that DID through some sort of challenge-response. Then, the holder will create a verifiable presentation starting from one or more verifiable credentials. Whenever possible, to reduce correlation it is recommended to use selective disclosure, i.e. presenting proofs of claims without revealing the entire verifiable credential. Once created the verifiable presentation, the holder can send it to the verifier, which will check its validity and will authorize the holder if everything is correct.  
 \section{Performance analysis}
-After analysing the different use cases, as highlighted in figures \ref{usecase-did}, \ref{usecase-issuer} and \ref{usecase-verifier}, the cryptographic operations that could be  critical for a constrained device are:
+After analysing the different use cases, as highlighted in Figs. \ref{usecase-did}, \ref{usecase-issuer} and \ref{usecase-verifier}, the cryptographic operations that could be  critical for a constrained device are:
 \begin{itemize}
     \item keys generation
     \item signature generation and verification
@@ -40,7 +40,8 @@ After analysing the different use cases, as highlighted in figures \ref{usecase-
 \end{itemize}
 
 To understand how much critical these operations are on a constrained device it is necessary to analyse the differences between a non-constrained one by getting their execution times and comparing the result. 
-STM32L4+ Discovery kit IoT node\cite{stm32-board-product} has been used as a constrained device equipped with the \texttt{STM32L4S5 MCU @ 120 MHz}, 2 Mbytes of flash memory and 640 Kbytes of SRAM. While, as a non-constrained device, which has also been called \textit{edge device}, has been used a server with an \texttt{Intel Xeon Silver 4110 CPU @ 2.10GHz}. 
+STM32L4+ Discovery kit IoT node\cite{stm32-board-product} has been used as a constrained device equipped with the \texttt{STM32L4S5 MCU @ 120 MHz}, 2 Mbytes of flash memory and 640 Kbytes of SRAM. 
+The employed non-constrained device is instead more powerful and is equipped with an \texttt{Intel Xeon Silver 4110 CPU @ 2.10GHz}. 
 
 \begin{figure}[h!]
     \centering
@@ -49,10 +50,11 @@ STM32L4+ Discovery kit IoT node\cite{stm32-board-product} has been used as a con
     \label{stm-board}
 \end{figure}
 
-\textit{Mbed TLS} has been used as a library that implements the operation for key generation and signature (generation and verification). Mbed TLS is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library which implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
+Mbed TLS \cite{mbed-tls} has been used as a library that implements the operation for key generation and signature (generation and verification). Mbed TLS is a C library that implements cryptographic primitives, it supports RSA, ECDSA, and other algorithms such as Ed25519. It has a small code footprint which makes it reasonable to use for embedded systems \cite{mbed-tls}. To test if a constrained device could be capable to implement and use some \textit{zero-knowledge proof} mechanisms, it has been decided to use a library which implements the BBS\texttt{+} signature scheme \cite{bbsplus}. BBS\texttt{+} signatures can be used to generate signature proofs of knowledge and selective disclosure zero-knowledge proofs \cite{bbs-rust} and they are implemented on top of BLS12-381 elliptic curve \cite{bls-curve}, which is a curve not supported in Mbed TLS. Since available BBS\texttt{+} libraries are also not supported for STM32L4, it has been decided to take execution times only on the edge device. Then execution times between the ECDSA signature scheme and BBS\texttt{+} signature scheme are comparable since they are been taken on the same architecture and they are both elliptic curve signature schemes.
 
 \section{Results}
-It is evident from the table \ref{time-table1} that RSA is usable on constrained devices in real-life applications only if the key generation is precomputed, otherwise is unusable. On the constrained device, RSA signing and verification are faster than ECDSA, but ECDSA provides the same level of security as RSA but it does so while using much shorter key lengths. In applications where it could be useful to generate a keypair on the fly, ECDSA is a must. On the edge device, the ECDSA signing operation is faster than RSA, while the RSA verification process is faster than ECDSA.  It can also be noted that the time difference between the constrained device and the edge device is huge, probably due to the frequency of operation of the MCU and the CPU.
+\label{sec-results}
+It is evident from the Table \ref{time-table1} that RSA is usable on constrained devices in real-life applications only if the key generation is precomputed, otherwise is unusable. On the constrained device, RSA signing and verification are faster than ECDSA, but ECDSA provides the same level of security as RSA but it does so while using much shorter key lengths. In applications where it could be useful to generate a keypair on the fly, ECDSA is a must. On the edge device, the ECDSA signing operation is faster than RSA, while the RSA verification process is faster than ECDSA.  It can also be noted that the time difference between the constrained device and the edge device is extensive, due to the frequency of operation of the MCU and the CPU.
 
 \begin{table}[!h]
     \centering
@@ -78,7 +80,7 @@ It is evident from the table \ref{time-table1} that RSA is usable on constrained
     \label{time-table1}
 \end{table}
 
-Furthermore, in table \ref{time-table2} ECDSA signatures and BBS\texttt{+} signatures are compared on the same CPU architecture. The obtained results are that BBS\texttt{+} signature scheme is much slower than the ECDSA one, even if they are both elliptic curve based. The order of magnitude of the percentage increase is 3, which is a significant difference. 
+Furthermore, in Table \ref{time-table2} ECDSA signatures and BBS\texttt{+} signatures are compared on the same CPU architecture. The obtained results are that BBS\texttt{+} signature scheme is much slower than the ECDSA one, even if they are both elliptic curve based. The order of magnitude of the percentage increase is 3, which is a significant difference. 
    
 \begin{table}[!h]
     \centering
@@ -100,28 +102,42 @@ Furthermore, in table \ref{time-table2} ECDSA signatures and BBS\texttt{+} signa
 \end{table}
 
 \section{Design and implementation choices}
-The obtained results suggest that a constrained device cannot use the BBS\texttt{+} signature scheme in real-world applications, since it can be supposed that execution times will be considerably high. In the Self-sovereign Identity as a Service (SSIaaS) paradigm, a new role,  called edge, is defined. The edge device interacts with a constrained IoT object and provides functionalities to create and support it in identity management, this can be seen in figure \ref{poc-design}. The identified and exposed operations by the edge device are:
+\label{sec:Design}
+The results obtained in Sect. \ref{sec-results} suggest that a constrained device cannot use the BBS\texttt{+} signature scheme in real-world applications, since it can be supposed that execution times will be considerably high. In the SSIaaS paradigm, a new role, called \textit{edge}, is defined. The interaction with the edge device allows IoT-constrained devices to join the SSI ecosystem. Roles and interactions of SSIaaS can be seen in Fig. \ref{SSIaaS-img}.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/SSIaaS.svg}
+    \caption{The roles and information flows of Self-Sovereign-Identity as a Service}
+    \label{SSIaaS-img}
+\end{figure}
+
+\subsection{Self-Sovereign-Identity as a Service Ecosystem}
+\label{sec:SSIaaS-ecosystem}
+%The edge device interacts with constrained IoT devices and provides them with identity management functionalities 
+%The edge device interacts with a constrained IoT object and provides functionalities to create and support it in identity management. 
+The edge device interacts with IoT-constrained devices and provides functionalities to create and support them in identity management. As shown in Fig. \ref{poc-design}, the exposed operations by the edge device are:
 \begin{itemize}
     \item key pairs generation
     \item storage of a verifiable credential
     \item generation of a verifiable presentation
 \end{itemize}
 
-\subsection{Self-Sovereign-Identity as a Service Ecosystem}
+% From now on, the focus is on the interaction between the edge device and the IoT-constrained node. 
+The IoT device can request the edge node to generate key pairs that could later use to generate a verifiable presentation. The IoT device can store on the edge node a verifiable credential got from an issuer. If the IoT device wants to interact with a verifier, it has to provide a verifiable presentation, which is generated by the edge device starting from the verifiable credential and signing the verifiable credential with a keypair previously generated for that specific IoT client. 
+Since these are security-critical operations because they handle the identity of the IoT node, it needs the guarantee that the data shared with the edge device and the executed code are protected with respect to confidentiality and integrity. Hence, a TEE has been implemented using the Keystone framework. Figs. \ref{manufacturer-provisioning} and \ref{poc-architecture} show the architecture and the preliminary interactions between the IoT device and the edge device before the constrained device can ask for services. 
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
-    \includesvg[inkscapelatex=false, scale=1]{./chapters/images/poc.svg}
+    \includesvg[inkscapelatex=false, scale=1]{./chapters/images/des2.svg}
     \caption{Basic components of Self-Sovereign-Identity as a Service}
     \label{poc-design}
 \end{figure}
 
-From now on, the focus is on the interaction between the edge device and the IoT-constrained node. The IoT device can request the edge node to generate key pairs that could later use to generate a verifiable presentation. The IoT device can store on the edge node a verifiable credential got from an issuer. If the IoT device want to interact with a verifier, it has to provide a verifiable presentation, which is generated by the edge device starting from the verifiable credential and signing the vc with a keypair previously generated for that specific IoT client. 
-Since these are security-critical operations because they handle the identity of the IoT node, it needs the guarantee that the data shared with the edge device and the executed code are protected with respect to confidentiality and integrity. Hence, a TEE has been implemented using the keystone framework.  Figures \ref{manufacturer-provisioning} and \ref{poc-architecture} show the architecture and the preliminary interactions between the IoT device and the edge device before the constrained device can ask for services. Figures \ref{poc-gen-keys}, \ref{poc-store-vc} and \ref{poc-get-vp} show in a top-level way how the operations have been implemented. 
-
 \subsection{IoT Device Provisioning}
-
-The first step before deploying an IoT device in the network is its provisioning. Provisioning means configuring the IoT device to be ready when joining the network to communicate with and be authenticable by the edge device. In the implemented solution, a trustworthy system administrator provisions the client, i.e. the constrained device, with: 
+Before deploying an IoT device in the network, it needs to be configured and initialised to be able to communicate and establish a trust relationship with the edge device. This operation is named \textit{provisioning}. 
+After the provisioning, the IoT device can be authenticable by the edge device and can communicate with it. 
+In the implemented solution, a trustworthy system administrator provisions the client, i.e. the constrained device, with: 
 \begin{itemize}
     \item a key pair (client secret and public keys) used to authenticate itself to the server, i.e., the edge device
     \item expected security monitor and enclave hashes to verify that the edge device is running the expected application in the enclave 
@@ -130,18 +146,18 @@ The first step before deploying an IoT device in the network is its provisioning
 
 \begin{figure}[!h]
     \centering
-    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/manufacturer.svg}
-    \caption{Manufacturer provisions device with expected hashes, keys and signature of the public key}
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/sysadmin2.svg}
+    \caption{System administrator provisions IoT client with expected hashes, keys and signature of the public key}
     \label{manufacturer-provisioning}
 \end{figure}
 
-Then, the system administrator signs the public key of the IoT client and saves the signature. The signature is verifiable with the public key of the system administrator. It proves (trust assumptions) that the device with access to the client's secret belongs to a recognised IoT network group. This client authentication method was chosen because the edge device only needs to retain in memory the system administrator's public key, rather than keeping track of all the clients' public keys in a database to determine whether a client is authorized to access services.
+Then, the system administrator signs the public key of the IoT client and saves the signature. The signature is verifiable with the public key of the system administrator. It proves that the device with access to the client's secret belongs to a recognised IoT network group. This rest on the assumption of a pre-existent trust relationship between the system administrator and the edge device. The client authentication method just described was chosen because the edge device only needs to retain in memory the system administrator's public key, rather than keeping track of all the clients' public keys in a database, to determine whether a client is authorized to access edge SSI services on-demand.
 
 \subsection{Attestation Report and Session Context}
-With the use of ed25519 signatures on hashes of the security monitor and enclave content, Keystone supports a basic attestation mechanism, as introduced in section \ref{keystone-components}. Once an enclave has started the execution, it requests the SM to generate a signed enclave report and a signed SM report. The SM Report encloses a hash of the security monitor and the attestation public key, all signed by the device root key. The enclave report consists of a hash of the enclave at initialization and a data block from the enclave of up to 1Kbytes, all signed by the attestation public key. 
+Keystone supports a basic attestation mechanism, as introduced in Sect. \ref{keystone-components} and uses ed25519 signatures \cite{bernstein2012high} for computing hashes of the security monitor and enclave content. Once an enclave has started the execution, it requests the SM to generate a signed enclave report and a signed SM report. The SM Report contains a hash of the security monitor and the attestation public key, all signed by the device root key. The enclave report consists of a hash of the enclave at initialization and a data block from the enclave of up to 1Kbytes, all signed with the attestation public key of the SM. 
 
-A client will verify the signatures of these reports by using the device's public key, the expected SM hash, and the expected enclave hash. An example of an attestation report is shown in figure \ref{attestation-report}. \\
-\begin{figure}[h!]
+A client will verify the signatures and values contained in the attestation report by using the device's public key, the expected SM hash, and the expected enclave hash. An example of an attestation report is shown in Fig. \ref{attestation-report}. \\
+\begin{figure}[H]
 \begin{lstlisting}[style=json, frame=single]
 {
     "enclaveApplication": {
@@ -157,12 +173,12 @@ A client will verify the signatures of these reports by using the device's publi
     "devicePublicKey": "0faad4ff01178583baa588966f7c1ff32564dd17d..."
 }
 \end{lstlisting}
-\caption{Example of a attestation report  generated by the enclave. \label{attestation-report}}
+\caption{Example of an attestation report generated by the enclave. \label{attestation-report}}
 \end{figure}
-When designing the demo, the session context has been introduced to authenticate the client on the server side. The session context includes two sections: the stub certificate and the homonym session context. The first one contains the client's public key and the signature of the client's public key, made at the provisioning phase by the system administrator and verifiable with the public root key. The enclosed session context contains a data block, all signed by the client public key. 
+When designing the demo, the session context has been introduced to authenticate the client on the server side. The session context includes two sections: the stub certificate and the homonym session context. The first section contains the client's public key and the signature of the client's public key, made at the provisioning phase by the system administrator and verifiable with the public root key. The enclosed session context contains a data block, all signed by the client public key. 
 
-The edge node will verify the signatures of this structure by using the root public key of the system administrator. An example of a session context is shown in figure \ref{session-context}. \\
-\begin{figure}[h!]
+The edge node will verify the signatures of this structure by using the root public key of the system administrator. An example of a session context is shown in Fig. \ref{session-context}. \\
+\begin{figure}[H]
 \begin{lstlisting}[captionpos=b,style=json, frame=single]
 {
     "sessionContext": {
@@ -180,13 +196,15 @@ The edge node will verify the signatures of this structure by using the root pub
 In the demo implementation, the data part of the session context and the attestation report are both used for the Diffie-Hellman key exchange protocol so that the two parties can securely compute a shared key for creating a secure encrypted channel. 
 
 \subsection{Demo Architecture}
-In the following description, the implemented architecture has been simplified for development reasons. This demo demonstrates how a remote (constrained) device can request computation to be performed on an untrusted server using an enclave. (The demo uses test keys, it is not safe and should not be used in production). The demo architecture consists of:
+To ease the development of a first demonstration application, the architecture described in Sect. \ref{sec:SSIaaS-ecosystem} has been simplified. In the presented implementation a single instance of edge device can handle requests only from one IoT node at a time. The developed application demonstrates how a remote-constrained device can request on-demand SSI services, by offloading computations to be performed on an untrusted edge server using an enclave. It has to be pointed out that the developed application code contains test keys, which are not safe and should not be used in production. 
+
+The demo architecture consists of:
 \begin{itemize}
     \item a server enclave application and an untrusted host application hosted on a RISC-V processor
     \item an IoT client provisioned by the system administrator  
 \end{itemize} 
 
-The demo enclave application has essential enclave capabilities (attestation report generation, data sealing, etc.), uses \texttt{libsodium} for establishing a secure channel and exposes three SSI-related services. The untrusted enclave host serves a few functions: starting the enclave, proxying network packets from and to the client and storing sealed data. The remote client establishes a connection with the untrusted host, verifies the enclave report, transmits the session context, and creates a secure channel before being able to communicate with the host to request offloaded computations. 
+The demo enclave application has essential enclave capabilities (attestation report generation, data sealing, etc.). It uses Libsodium \cite{libsodium} for establishing a secure channel between the IoT client and the edge server. It exposes the three SSI-related services, as presented in the Sect. \ref{sec:Design}. The untrusted enclave host serves a few functions: starting the enclave, proxying network packets from and to the client and storing sealed data. The remote client establishes a connection with the untrusted host, verifies the enclave report, transmits the session context, and creates a secure channel before being able to communicate with the host to request offloaded SSI-related computations. 
 
 \begin{figure}[!h]
     \centering
@@ -196,15 +214,17 @@ The demo enclave application has essential enclave capabilities (attestation rep
 \end{figure}
 
 \subsubsection{Running the demo}
-
-At the start, the client will connect to the enclave and perform the remote attestation. Expected hashes in the attestation report will be used by the trusted client to verify that the enclave is created with the right application and initialized by the known version of the security monitor. If the attestation is successful, the client can send its attestation, also called session context. The server will check the signature validity provided by the client verifying it with the public key of the system administrator (\texttt{root\_pk}). On the contrary, if the edge device attestation report is invalid, the client will close the connection. (For instance, you could pass a flag when launching the client to ignore the attestation report of the server for testing purposes or during development when changing the enclave application).
-Upon exchanging the session context and the attestation report, they establish a secure channel and the enclave-host waits for messages.
+At the start, the client will connect to the enclave and perform the remote attestation. Expected hashes in the attestation report will be used by the trusted client to verify that the enclave is created with the right application and initialized by the known version of the security monitor. If the attestation is successful, the client can send its attestation, also called session context. The server will check the signature validity provided by the client verifying it with the public key of the system administrator (\texttt{root\_pk}). On the other hand, if the edge device attestation report is invalid, the client will close the connection for security reasons, i.e. it is not the known edge device.
+Upon exchanging the session context and the attestation report, they establish a secure channel and the enclave-host waits for service requests.
 
 \subsection{Offloaded Operations}
-Once the edge node and the constrained devices have established a secure channel to communicate, the enclave waits for the client to request service. Once a message is received, the enclave authenticates and decrypts the message. If successful, it processes the message and passes the request to a specific \textit{ocall}, i.e \texttt{ocall\_wait\_for\_request(...)}, which dispatches the requests proxied by the untrusted host coming from the client. The enclave understands what service the client has requested by checking the request type. After processing the request, the enclave returns the result through the secure channel.
+Once the edge node and the constrained devices have established a secure channel to communicate, the enclave waits for the client to request service. Once a message is received, the enclave authenticates and decrypts the message. 
+If successful, it processes the message and passes the request to a specific \textit{ocall}, i.e \texttt{ocall\_wait\_for\_request(...)}, which dispatches the requests proxied by the untrusted host coming from the client. 
+The enclave understands what service has been requested by checking the type of request sent by the IoT client.
+After processing the request, the enclave returns the result through the secure channel previously established. Figs. \ref{poc-gen-keys}, \ref{poc-store-vc} and \ref{poc-get-vp} show a high-level view of the operations that have been implemented. 
 
 \subsubsection{Setup phase}
-Using Keystone SDK, generated sealing key size will be 128 bytes. In the demo implementation, the sealing key is used as a seed for generating an ed25519 key pair. The sealed data are signed with the ed25519 key pair. Whereas, the key used for encryption consists of the first \texttt{crypto\_aead\_chacha20poly1305\_KEYBYTES} bytes, i.e. 32 bytes. of the sealing key. As is visible in the figure \ref{setup-seal-material}, \textit{libsodioum} \cite{libsodium}, a cryptographic library written in C, is used for generating these keys. \\
+Using Keystone SDK, the generated sealing key size will be 128 bytes. In the demo implementation, the sealing key is used as a seed for generating an ed25519 key pair. The sealed data are signed with the ed25519 key pair. Whereas, the key used for encryption consists of the first \texttt{crypto\_aead\_chacha20poly1305\_KEYBYTES} bytes, i.e. 32 bytes. of the sealing key. As is visible in Fig. \ref{setup-seal-material}, \textit{libsodioum}, a cryptographic library written in C, is used for generating these keys. \\
 \begin{figure}[h!]
 \begin{lstlisting}[language=C,frame=single]
 // here sealing_key is used as a seed to gen sign keys
@@ -216,6 +236,16 @@ memcpy(enc_key, sealing_material.key, crypto_aead_chacha20poly1305_KEYBYTES);
 \end{lstlisting}
 \caption{Setup of the encryption key and ed25519 keypair. \label{setup-seal-material}}
 \end{figure}
+
+\subsubsection{Generate public keys}
+Consider the service of key pairs generation. The client sends this request along with the key type and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. Then, it generates two key pairs of the type that the client indicates in the request. (To ease the development only \texttt{EdDSA} can be generated, in the future \texttt{BBS+} signature scheme will be implemented). 
+Next, it encrypts the generated key pair with the obtained sealing key and signs the obtained ciphertext with an enclave signing key. 
+The encryption of the data prevents the untrusted host to violate confidentiality.
+By checking the integrity and authenticity of the stored data with the signature, the enclave is able to verify that no alteration has been carried out from the untrusted host.
+Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall(OCALL\_SAVE\_SEALED\_DATA, buffer, len, 0, 0)}. This call exports the buffer, containing the ciphertext and the signature of the generated key pairs, from the enclave to be stored in the untrusted non-volatile memory by the host process. The file name is composed of the public key of the client and the type of data saved, in this case, keys. Hence, the file name will be \texttt{<client\_pub\_key>\_keys}. 
+The host saves the data received with the \textit{ocall} and returns the control to the enclave. 
+Finally, the enclave sends the response to the host, which will proxies the response back to the client. The response contains only the public part of the generated keys. \\
+
 \begin{figure}[H]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-keys.svg}
@@ -223,14 +253,13 @@ memcpy(enc_key, sealing_material.key, crypto_aead_chacha20poly1305_KEYBYTES);
     \label{poc-gen-keys}
 \end{figure}
 
-\subsubsection{Generate public keys}
-Consider the service of key pairs generation. The client sends this request along with the key type and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. Then, it generates two key pairs of the type that the client indicates in the request. (For demo purposes only \texttt{EdDSA} can be generated, in future \texttt{BBS+} signature scheme will be implemented). 
-Next, it encrypts the generated key pair with the obtained sealing key and signs the obtained ciphertext with an enclave signing key. Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall(OCALL\_SAVE\_SEALED\_DATA, buffer, len, 0, 0)}. This call exports the buffer, containing the ciphertext and the signature of the generated key pairs, from the enclave to be stored in the untrusted non-volatile memory by the host process. The file name is composed of the public key of the client and the type of data saved, in this case, keys. Hence, the file name will be \texttt{<client\_pub\_key>\_keys}. The host saves the data obtained from the enclave and returns the control. 
-Finally, the enclave sends back to the client the response, which will contain only the public part of the generated keys. 
-
 \subsubsection{Store verifiable credential}
-Consider the service of storing a verifiable credential. The client sends this request along with the verifiable credential and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. (The sealing key will be equal for the same client). Then, it encrypts the received verifiable credential with the obtained sealing key and signs the obtained ciphertext with an enclave signing key. Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall(OCALL\_SAVE\_SEALED\_DATA, buffer, len, 0, 0)}. This call exports the buffer, containing the ciphertext and the signature of the verifiable credential, from the enclave to be stored in the untrusted non-volatile memory by the host process. The file name is composed of the public key of the client and the type of data saved, in this case a verifiable credential. Hence, the file name will be \texttt{<client\_pub\_key>\_vc}. The host saves the data obtained from the enclave and returns the control. 
-Finally, the enclave sends back to the client the response, which will contain in this case only a \texttt{SUCCESS} flag. \\
+The IoT client device can request the edge device for the storage service of a verifiable credential.
+The client sends this request along with the verifiable credential and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. The sealing key employed for encryption will be identical for the same client. Then, it encrypts the received verifiable credential with the obtained sealing key and signs the obtained ciphertext with an enclave signing key. 
+The encryption of the data prevents the untrusted host to violate confidentiality. By checking the integrity and authenticity of the stored data with the signature, the enclave is able to verify that no alteration has been carried out from the untrusted host.
+Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall(OCALL\_SAVE\_SEALED\_DATA, buffer, len, 0, 0)}. This call exports the buffer, containing the ciphertext and the signature of the verifiable credential, from the enclave to be stored in the untrusted non-volatile memory by the host process. The file name is composed of the public key of the client and the type of data saved, in this case, a verifiable credential. Hence, the file name will be \texttt{<client\_pub\_key>\_vc}. 
+The host saves the data received with the \textit{ocall} and returns the control to the enclave.  
+Finally, the enclave sends the response to the host, which will proxies the response back to the client. The response contains only feedback about the success of the storage operation. \\
 
 \begin{figure}[H]
     \centering
@@ -238,11 +267,14 @@ Finally, the enclave sends back to the client the response, which will contain i
     \caption{Storage of a verifiable credential operation (pseudo-code)}
     \label{poc-store-vc}
 \end{figure}
+
 \subsubsection{Get verifiable presentation}
-Consider the service of generating a verifiable credential. The client sends this request along with a nonce and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. (The sealing key will be equal for the same client). Then, the enclave application calls \texttt{ocall\_retrieve\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall( OCALL\_RETRIEVE\_SEALED\_DATA, buffer, len, msg, sizeof( struct edge\_data ))}. This call exports the buffer, containing the file name to be retrieved, and the host once read the correct file copies it into the shared memory region, sets the \textit{edge\_call} return status to SUCCESS and returns control to the enclave. The host saves the data obtained from the enclave and returns the control. The runtime copies the file from the shared region into return buffers and then resumes the enclave ocall wrapper code.
+The IoT client device can request the edge device to create a verifiable presentation.
+The client sends this request along with a nonce and a secret. The server processes the incoming request. It generates the sealing key, using as an identifier in the key derivation function the client's public key and the secret sent by the client. The sealing key employed for encryption will be identical for the same client. 
+Then, the enclave application calls \texttt{ocall\_retrieve\_sealed\_data(...)}, which is the edge wrapper function to the system-call \texttt{ocall( OCALL\_RETRIEVE\_SEALED\_DATA, buffer, len, msg, sizeof( struct edge\_data ))}. This call exports the buffer, containing the file name to be retrieved, and the host once reading the correct file copies it into the shared memory region, sets the \textit{edge\_call} return status to SUCCESS and returns control to the enclave. The host saves the data obtained from the enclave and returns the control. The runtime copies the file from the shared region into return buffers and then resumes the enclave ocall wrapper code.
 The function will be executed for retrieving from the untrusted non-volatile memory the verifiable credential (the file name will be \texttt{<client\_pub\_key>\_vc}) and for retrieving the previously generated keys (the file name will be \texttt{<client\_pub\_key>\_keys}).
 The enclave will check the validity of signatures and decrypt the sealed data.  
-Finally, the enclave using the retrieved keys signs the verifiable credential with the nonce received from the client and sends back the response, which will contain a freshly generated verifiable presentation. \\
+Finally, the enclave using the retrieved keys signs the verifiable credential with the nonce received from the client and sends the response to the host, which will proxies the response back to the client. The response contains a freshly generated verifiable presentation. \\
 
 \begin{figure}[H]
     \centering
@@ -250,4 +282,3 @@ Finally, the enclave using the retrieved keys signs the verifiable credential wi
     \caption{Generation of a verifiable presentation operation (pseudo-code)}
     \label{poc-get-vp}
 \end{figure}
-

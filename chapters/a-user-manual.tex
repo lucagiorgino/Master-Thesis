@@ -127,7 +127,7 @@ $ sudo apt install autoconf automake autotools-dev bc \
   libssl-dev screen device-tree-compiler expect makeself \
   unzip cpio rsync cmake p7zip-full
 \end{lstlisting}
-Then check out the keystone repository and install everything with the quick setup script, it will install the RISC-V toolchain and if \texttt{KEYSTONE\_SDK\_DIR} environment variable is not set, it will also install Keystone SDK. \\
+Then check out the Keystone repository and install everything with the quick setup script, it will install the RISC-V toolchain and if \texttt{KEYSTONE\_SDK\_DIR} environment variable is not set, it will also install Keystone SDK. \\
 \begin{lstlisting}[style=terminal,frame=single]
 $ git clone https://github.com/keystone-enclave/keystone.git
 $ cd keystone
@@ -138,7 +138,7 @@ If everything goes right, the following message is shown: \\
     RISC-V toolchain and Keystone SDK have been fully setup
 \end{lstlisting}
 After running \texttt{fast-setup.sh}, run the following command to temporarily set in the current shell relevant environment variables: \\
-\begin{lstlisting}style=terminal,[frame=single]
+\begin{lstlisting}[style=terminal,frame=single]
 $ source source.sh
 \end{lstlisting}
 Otherwise for permanently store the environment variables, if bash is used this command will add the lines in \texttt{source.sh} to the shell's startup file: \\
@@ -163,7 +163,7 @@ $ cd keystone-demo-poc
 $ source ./setup_musl.sh
 $ SM_HASH=./include/sm_expected_hash.h ./quick-start.sh
 \end{lstlisting}
-Then once the demo is built, the binaries need to be copied into the keystone build folder. \\
+Then once the demo is built, the binaries need to be copied into the Keystone build folder. \\
 
 \begin{lstlisting}[style=terminal,frame=single]
 $ cp ./build/demo-server.ke ./build/trusted_client.riscv ../keystone/build/overlay/root/
@@ -188,7 +188,7 @@ $ ssh root@localhost -p <port number>
 Login as \texttt{\color{RedOrange}root} with the password \texttt{\color{RedOrange}sifive}. You can exit QEMU by \texttt{\color{RedOrange}ctrl-a\ `+`\ x} or using  \texttt{\color{RedOrange}poweroff}  command.
 
 \subsection{Run the demo}
-Inside QEMU, run the following commands. The first one will load the keystone kernel module and the second one will set up the loopback device. \\
+Inside QEMU, run the following commands. The first one will load the Keystone kernel module and the second one will set up the loopback device. \\
 \begin{lstlisting}[style=terminal,frame=single]
 > insmod keystone-driver.ko 
 > ifdown lo && ifup lo           
@@ -248,10 +248,7 @@ Type the service to request:
 \end{lstlisting}
 \caption{Example of output at client side. \label{l-demo-c}}
 \end{figure}
-\leavevmode\newline
-\leavevmode\newline
-\leavevmode\newline
-\leavevmode\newline
+\newpage
 
 
 \begin{figure}[H]

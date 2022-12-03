@@ -64,7 +64,7 @@ It generates an ECDSA key pair, computes the ECDSA signature of a random hashed 
   \item \texttt{int iterations}, number of times that the test will be executed
 \end{itemize}
 \textit{Output}:  Returns \texttt{1} if successful, or an \texttt{MBEDTLS\_ERR\_XXX\_XXX} error code
-
+\newpage
 % ===========================================================================
 % SUBSECTION
 % ===========================================================================
@@ -113,7 +113,7 @@ fn main() {
 % ===========================================================================
 % SUBSECTION
 % ===========================================================================
-
+\newpage
 \section{Proof of concept}
 \subsection{Guide to Keystone Components}
 The Keystone repository consists of several sub-components such as gitmodules or directories. This is a brief overview of them. \\
@@ -138,9 +138,9 @@ The Keystone repository consists of several sub-components such as gitmodules or
 |-- qemu/
 |  # QEMU
 +-- sdk/
-    # Tools, libraries, and example apps for building enclaves on Keystone        
+  # Tools, libraries, and example apps for building enclaves on Keystone        
 \end{lstlisting}
-
+\newpage
 \subsection{Guide to Keystone Demo Proof of concept}
 The designed solution has been developed starting from the officially \texttt{kestone-demo} repository available at this link: \url{https://github.com/keystone-enclave/keystone-demo}, commit \texttt{8c6c0565e44f3d0e00bc3e4a6e77fc84c9e6d343}. The demo uses test keys and is not safe for production use. \\
 \begin{lstlisting}[frame=single]
@@ -158,9 +158,9 @@ The designed solution has been developed starting from the officially \texttt{ke
 |-- sodium_patches/
 |  # Contains patch for libsodium that will run in the server eapp
 +-- trusted_client/
-    # simple remote client that connects to the host, validates the enclave report, constructs a secure channel, and then can send messages to the host for computation.       
+  # simple remote client that connects to the host, validates the enclave report, constructs a secure channel, and then can send messages to the host for computation.       
 \end{lstlisting}
-
+\newpage
 \subsection{Relevant files of the demo}
 Below are explained relevant files that change from the official \texttt{kestone-demo} repository.
 Functions, types and variables not mentioned here can be deepened in the official \texttt{kestone-demo} repository and Keystone documentation.
@@ -192,7 +192,7 @@ typedef struct response_message_t {
   unsigned char payload[]; // Flexible member
 } response_message_t;
 \end{lstlisting}
-
+\newpage
 \subsubsection{include/session\_context.c and include/session\_context.h}
 The session context is the structure that the client provides to the enclave to prove that is built by a trusted manufacturer. With the function \texttt{session\_context\_from\_buffer} the session context is extracted from the received buffer. \\
 \begin{lstlisting}[language=C,frame=single]
@@ -222,7 +222,7 @@ void session_context_from_buffer(struct session_context_t* session_context, unsi
 % ===========================================================================
 % SUBSUBSECTION
 % ===========================================================================
-
+\newpage
 \subsubsection{server\_eapp/service.c and server\_eapp/service.h}
 \label{service.c}
 The file \texttt{service.h} just exposes the function that processes the request received by the client. \\   
@@ -291,7 +291,8 @@ It handles the request of the client to generate two key pairs. It saves the key
 \textit{Input}:
 \begin{itemize}[noitemsep,nolistsep]
 \item \texttt{size\_t* pt\_finalsize}, pointer to store the final length of the response
-\item \texttt{int key\_type}, the key type that the client chooses to generate (for demo purposes only \texttt{EdDSA} can be generated, in future \texttt{BBS+} signature scheme will be implemented)
+\item \texttt{int key\_type}, the key type that the client chooses to generate 
+% (for demo purposes only \texttt{EdDSA} can be generated, in future \texttt{BBS+} signature scheme will be implemented)
 \end{itemize}
 \textit{Output}: the built response \\
 
@@ -314,21 +315,21 @@ It handles the request of the client to generate a verifiable presentation to us
   \item \texttt{size\_t* pt\_finalsize}, pointer to store the final length of the response
   \item \texttt{unsigned char* nonce}, \textit{(optional)} nonce that the verifier asks the client to insert in the verifiable presentation  
   \item \texttt{size\_t nonce\_len}, length of nonce
-  \item \texttt{int key\_type}, the key type that the client previously chose to generate (for demo purposes only \texttt{EdDSA} can be used, in future \texttt{BBS+} signature scheme will be implemented)
+  \item \texttt{int key\_type}, the key type that the client previously chose to generate 
+  % (for demo purposes only \texttt{EdDSA} can be used, in future \texttt{BBS+} signature scheme will be implemented)
 \end{itemize}
 \textit{Output}: the built response 
-
 
 % ===========================================================================
 % SUBSUBSECTION
 % ===========================================================================
-
+\newpage
 \subsubsection{server\_eapp/server\_eapp.c}
 In this file, the important functions to mention are:
 
 \noindent
 \texttt{\bfseries void attest\_and\_establish\_channel()}\\
-In this function, as explained in \autoref{chap:SSIaaS}, the enclave sends its report to the client and waits for the session context of the client. Once received, it validates the session context and established the channel with the client. If some error occurs, the program terminates. 
+In this function, as explained in Chap. \ref{chap:SSIaaS}, the enclave sends its report to the client and waits for the session context of the client. Once received, it validates the session context and established the channel with the client. If some error occurs, the program terminates. \\
 
 \begin{lstlisting}[language=C,frame=single]
 void attest_and_establish_channel() {
@@ -345,11 +346,11 @@ void attest_and_establish_channel() {
   channel_establish(); // Ask libsodium to generate session keys based on the received pk
 } 
 \end{lstlisting}
-\leavevmode\newline
-
+% \leavevmode\newline
+\newpage
 \noindent
 \texttt{\bfseries void handle\_requests()}\\
-In this function, as explained in \autoref{chap:SSIaaS} and in \autoref{service.c}, the enclave will wait for client requests. Whenever a request arrives, the enclave copies the request from the shared region, processes the request (interacting with the enclave host for data sealing), and sends the response back to the client. If some error occurs, the program terminates. \\
+In this function, as explained in Chap. \ref{chap:SSIaaS} and in Sect. \ref{service.c}, the enclave will wait for client requests. Whenever a request arrives, the enclave copies the request from the shared region, processes the request (interacting with the enclave host for data sealing), and sends the response back to the client. If some error occurs, the program terminates. \\
 
 \begin{lstlisting}[language=C,frame=single]
 void handle_requests() {
@@ -388,7 +389,7 @@ void handle_requests() {
 % ===========================================================================
 % SUBSUBSECTION
 % ===========================================================================
-
+\newpage
 \subsubsection{trusted\_client/trusted\_client.c and trusted\_client/trusted\_client.h}
 In this file, the important functions to mention are:
 
