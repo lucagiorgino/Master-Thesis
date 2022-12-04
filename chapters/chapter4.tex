@@ -215,16 +215,17 @@ As represented in Fig. \ref{poc-architecture-s}, the demo architecture consists 
 
 \begin{figure}[!h]
     \centering
-    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/demo-s.svg}
-    \caption{Execution flow and architecture of the demo (high-level view) }
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo-s (2).svg}
+    \caption{Architecture of the demo (high-level view) }
     \label{poc-architecture-s}
 \end{figure}
 
-The demo enclave application has essential enclave capabilities (attestation report generation, data sealing, etc.). It uses Libsodium \cite{libsodium} for establishing a secure channel between the IoT client and the edge server. It exposes the three SSI-related services, as presented in the Sect. \ref{sec:Design}. The untrusted enclave host serves a few functions: starting the enclave, proxying network packets from and to the client and storing sealed data. The remote client establishes a connection with the untrusted host, verifies the enclave report, transmits the session context, and creates a secure channel before being able to communicate with the host to request offloaded SSI-related computations. 
+The demo enclave application has essential enclave capabilities (attestation report generation, data sealing, etc.). It uses Libsodium \cite{libsodium} for establishing a secure channel between the IoT client and the edge server. It exposes the three SSI-related services, as presented in the Sect. \ref{sec:Design}. The untrusted enclave host serves a few functions: starting the enclave, proxying network packets from and to the client and storing sealed data. The remote client establishes a connection with the untrusted host, verifies the enclave report, transmits the session context, and creates a secure channel before being able to communicate with the host to request offloaded SSI-related computations.
 
 \begin{figure}[!h]
     \centering
-    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture3.svg}
+    \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture-rounded.svg}
+    %\includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/Demo architecture3.svg}
     \caption{Execution flow and architecture of the demo}
     \label{poc-architecture}
 \end{figure}
@@ -262,7 +263,7 @@ Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, whi
 The host saves the data received with the \textit{ocall} and returns the control to the enclave. 
 Finally, the enclave sends the response to the host, which will proxies the response back to the client. The response contains only the public part of the generated keys. \\
 
-\begin{figure}[H]
+\begin{figure}[!tb]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-keys.svg}
     \caption{Key pairs generation operation (pseudo-code)}
@@ -277,12 +278,13 @@ Next, the enclave application calls \texttt{ocall\_save\_sealed\_data(...)}, whi
 The host saves the data received with the \textit{ocall} and returns the control to the enclave.  
 Finally, the enclave sends the response to the host, which will proxies the response back to the client. The response contains only feedback about the success of the storage operation. \\
 
-\begin{figure}[H]
+\begin{figure}[!tb]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-vc.svg}
     \caption{Storage of a verifiable credential operation (pseudo-code)}
     \label{poc-store-vc}
 \end{figure}
+\newpage
 
 \subsubsection{Get verifiable presentation}
 The IoT client device can request the edge device to create a verifiable presentation.
@@ -292,7 +294,7 @@ The function will be executed for retrieving from the untrusted non-volatile mem
 The enclave will check the validity of signatures and decrypt the sealed data.  
 Finally, the enclave using the retrieved keys signs the verifiable credential with the nonce received from the client and sends the response to the host, which will proxies the response back to the client. The response contains a freshly generated verifiable presentation. \\
 
-\begin{figure}[H]
+\begin{figure}[!tb]
     \centering
     \includesvg[inkscapelatex=false, scale=0.7]{./chapters/images/poc-vp.svg}
     \caption{Generation of a verifiable presentation operation (pseudo-code)}
